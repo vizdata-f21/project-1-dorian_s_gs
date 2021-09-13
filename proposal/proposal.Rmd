@@ -17,13 +17,24 @@ superbowl <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 glimpse(superbowl)
 ```
 
+## Description
+
 This dataset is created by FiveThirtyEight, originally collected through superbowl-ads.com. There are `r count(superbowl)` different commercials  with `r ncol(superbowl)` different variables, including the year, brand, and view count. However, they only take from `r length(unique(superbowl$brand))` different brands for their dataset. Their purpose for creating this dataset is to identify defining characteristics of superbowl ads from popular brands like Toyota and Bud Light. Some questions they asked included; Was it funny? Was it patriotic? Did it include animals? Did it use sex to sell this product? Afterwards, they explored how these categories cluster with each other, and found some unique combinations such as ads that included both sex appeal and animals. 
 
 There are different types of variables included in this dataset. `r sum(sapply(superbowl, is.numeric))` are integers, including the `view_count`, `like_count`, `dislike_count`. `r sum(sapply(superbowl, is.character))`  variables are characters, including `brand`, `title`, and `description`. `r sum(sapply(superbowl, is.double))` variable is a double variable, which is `year`. `r sum(sapply(superbowl, is.logical))` variables are logical, which shows either `TRUE` or `FALSE` for some categories, including whether or not the ad is funny, patriotic, includes animals, and includes sex. These logical variables were determined by the FiveThirtyEight team as they watched all of the advertisements.
 
+## Why this dataset?
+
+We chose this dataset due to a number of factors. First, all the members of our group have an interest in the Super Bowl. All of us watch the game every year. In our personal experiences, there have been certain memorable ads, and we are aware of the popularity surrounding ads during the Super Bowl. As a group, we thought it would be interesting to look at what makes ads popular and if there is statistical reasoning behind why we remember specific ads and not others. 
+
+The dataset itself also seems as if it fits the parameters discussed it he project description. There are a wide array of  numerical and categorical variables. The dataset also allows for us to ask two distinct questions, one related to the popularity of ads depending on what categories they include (or do not include) in the ads, and the other looking at analysis of the variables over time. There are many different angles that we can analyze the dataset from, and potentially interesting visualizations that can be made.
+
 ## Questions
 
-The two questions you want to answer.
+
+### What is the relationship between popularity of a video and how well it is interacted with?
+
+This question deals with whether popularity is connected with rating, as well as overall interaction with a video. In this question we will look at how the variables `view_count`, `like_count`, `dislike_count`, `comment_count`, and `favorite_count` are related. For the first part of this question we can look at the nubmer of views and proportion of likes to dislikes. In the latter part of question two, we can use the number of comments and favorites to show the degree of interaction with videos.
 
 ## Analysis plan
 
