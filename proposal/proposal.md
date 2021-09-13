@@ -49,6 +49,8 @@ glimpse(superbowl)
     ## $ channel_title             <chr> "Funny Commercials", "VCU Brandcenter", "Joh…
     ## $ category_id               <dbl> 1, 27, 17, 22, 24, 1, 24, 2, 24, 24, 24, 24,…
 
+## Description
+
 This dataset is created by FiveThirtyEight, originally collected through
 superbowl-ads.com. There are 247 different commercials with 25 different
 variables, including the year, brand, and view count. However, they only
@@ -70,12 +72,44 @@ including whether or not the ad is funny, patriotic, includes animals,
 and includes sex. These logical variables were determined by the
 FiveThirtyEight team as they watched all of the advertisements.
 
+## Why this dataset?
+
+We chose this dataset due to a number of factors. First, all the members
+of our group have an interest in the Super Bowl. All of us watch the
+game every year. In our personal experiences, there have been certain
+memorable ads, and we are aware of the popularity surrounding ads during
+the Super Bowl. As a group, we thought it would be interesting to look
+at what makes ads popular and if there is statistical reasoning behind
+why we remember specific ads and not others.
+
+The dataset itself also seems as if it fits the parameters discussed it
+he project description. There are a wide array of numerical and
+categorical variables. The dataset also allows for us to ask two
+distinct questions, one related to the popularity of ads depending on
+what categories they include (or do not include) in the ads, and the
+other looking at analysis of the variables over time. There are many
+different angles that we can analyze the dataset from, and potentially
+interesting visualizations that can be made.
+
 ## Questions
 
-The two questions you want to answer.
+### What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
+
+For our first question, we want to get a general sense of which of the
+characteristics of the ad contributes to really high view counts.
+Specifically, we want to investigate how the variables `animals`,
+`celebrity`, `use_sex` affect `view_count`. For the second part of the
+question, we will primarily investigate how the trends and relationship
+we explored in the first question has changed over time.
+
+### What is the relationship between popularity of a video and how well it is interacted with?
+
+This question deals with whether popularity is connected with rating, as
+well as overall interaction with a video. In this question we will look
+at how the variables `view_count`, `like_count`, `dislike_count`,
+`comment_count`, and `favorite_count` are related. For the first part of
+this question we can look at the nubmer of views and proportion of likes
+to dislikes. In the latter part of question two, we can use the number
+of comments and favorites to show the degree of interaction with videos.
 
 ## Analysis plan
-
-A plan for answering each of the questions including the variables
-involved, variables to be created (if any), external data to be merged
-in (if any).

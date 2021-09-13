@@ -31,6 +31,11 @@ The dataset itself also seems as if it fits the parameters discussed it he proje
 
 ## Questions
 
+### What factors contribute to the most viewed ads and  has the relationship between those factors and the views changed over time?
+ 
+For our first question, we want to get a general sense of which of the characteristics of the ad contributes to really high view counts. Specifically, we want to investigate how the variables `animals`, `celebrity`, `use_sex` affect `view_count`.  For the second part of the question,  we will primarily investigate how the trends and relationship we explored in the first question has changed over time. 
+
+
 
 ### What is the relationship between popularity of a video and how well it is interacted with?
 
@@ -38,4 +43,4 @@ This question deals with whether popularity is connected with rating, as well as
 
 ## Analysis plan
 
-A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).
+
