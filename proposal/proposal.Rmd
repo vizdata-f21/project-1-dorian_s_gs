@@ -1,14 +1,21 @@
 ---
 title: "Project proposal"
-author: "Team name"
+author: "dorian's gs"
 output: github_document
 ---
 
 ```{r load-packages, message = FALSE}
 library(tidyverse)
+library("tidytuesdayR")
 ```
 
 ## Dataset
+
+```{r superbowl, message = FALSE}
+superbowl <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-02/youtube.csv')
+
+glimpse(superbowl)
+```
 
 A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
 
