@@ -44,8 +44,6 @@ This question deals with whether popularity is connected with rating, as well as
 
 ## Analysis plan
 
-"A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any)."
-
 ### Question 1 Plan
 
 For the first plot, we would like to create 3 different bar graphs for each of the different logical variables: `animals`, `celebrity`, and `use_sex`. Each graph will have 2 bars (one for true, one for false) and we will plot average view count on the y-axis. We then will plot the like to dislike ratio as a green:red fill on the bars. This means that we will have to caculate average view count for each specific category and boolean value (3x2 = 6 different bars/calculations). We will then identify trends based off the newly-created plots.
