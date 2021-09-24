@@ -21,7 +21,7 @@ glimpse(superbowl)
 
 This dataset is created by FiveThirtyEight, originally collected through superbowl-ads.com. There are `r count(superbowl)` different commercials  with `r ncol(superbowl)` different variables, including the year, brand, and view count. However, they only take from `r length(unique(superbowl$brand))` different brands for their dataset. Their purpose for creating this dataset is to identify defining characteristics of superbowl ads from popular brands like Toyota and Bud Light. Some questions they asked included; Was it funny? Was it patriotic? Did it include animals? Did it use sex to sell this product? Afterwards, they explored how these categories cluster with each other, and found some unique combinations such as ads that included both sex appeal and animals. 
 
-There are different types of variables included in this dataset. `r sum(sapply(superbowl, is.numeric))` are integers, including the `view_count`, `like_count`, `dislike_count`. `r sum(sapply(superbowl, is.character))`  variables are characters, including `brand`, `title`, and `description`. `r sum(sapply(superbowl, is.double))` variable is a double variable, which is `year`. `r sum(sapply(superbowl, is.logical))` variables are logical, which shows either `TRUE` or `FALSE` for some categories, including whether or not the ad is funny, patriotic, includes animals, and includes sex. These logical variables were determined by the FiveThirtyEight team as they watched all of the advertisements.
+There are different types of variables included in this dataset. `r sum(sapply(superbowl, is.numeric))` are integers, including the `view_count`, `like_count`, `dislike_count`. `r sum(sapply(superbowl, is.character))`  variables are characters, including `brand`, `title`, and `description`. There is one double variable, which is `year`. `r sum(sapply(superbowl, is.logical))` variables are logical, which shows either `TRUE` or `FALSE` for some categories, including whether or not the ad is funny, patriotic, includes animals, and includes sex. These logical variables were determined by the FiveThirtyEight team as they watched all of the advertisements.
 
 ## Why this dataset?
 
@@ -33,13 +33,13 @@ The dataset itself also seems as if it fits the parameters discussed it he proje
 
 ### What factors contribute to the most viewed ads and  has the relationship between those factors and the views changed over time?
  
-For our first question, we want to get a general sense of which of the characteristics of the ad contributes to really high view counts. Specifically, we want to investigate how the variables `animals`, `celebrity`, `use_sex` affect `view_count`.  For the second part of the question,  we will primarily investigate how the trends and relationship we explored in the first question has changed over time. 
+For our first question, we want to get a general sense of which of the characteristics of the ad contributes to really high view counts. Specifically, we want to investigate how the variables `animals`, `celebrity`, `use_sex` affect `view_count`. Even though the dataset provides a lot more variables related to ad characteristics, we chose to focus on these three because we think they have the most potential to influence view counts. For the second part of the question,  we will primarily investigate how the trends and relationship we explored in the first question has changed over time. 
 
 
 
-### What is the relationship between popularity of a video and how well it is interacted with?
+### What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
 
-This question deals with whether popularity is connected with rating, as well as overall interaction with a video. In this question we will look at how the variables `view_count`, `like_count`, `dislike_count`, `comment_count`, and `favorite_count` are related. For the first part of this question we can look at the nubmer of views and proportion of likes to dislikes. In the latter part of question two, we can use the number of comments and favorites to show the degree of interaction with videos.
+This question deals with whether popularity is connected with rating, as well as overall interaction with a video. In this question we will look at how the variables `view_count`, `like_count`, `dislike_count`, `comment_count`, and `favorite_count` are related. For the first part of this question we can look at the number of views and proportion of likes to dislikes. In the latter part of question two, we can use the number of comments and favorites to show the degree of interaction with videos.
 
 
 ## Analysis plan
@@ -52,8 +52,10 @@ For the second plot, we would like to create a line plot with `year` on the x-ax
 
 ### Question 2 Plan
 
-For the first part of this question, our first plot will have view count on the x-axis and like:dislike ratio on the y-axis. We will try many different plots and color schemes to best show this. Histograms, lineplots, point plots, and filling points/bars/lines with different colors are all considerations. We may need to create a new variable that has the ratio of like:disklikes for each given video.
+To begin addressing this question, we first need to create a new variable that has the ratio of like:disklikes for each given video. For the first part of this question, our first plot will have view count on the x-axis and like:dislike ratio on the y-axis. We havent yet settled on the best to visualize this relationship but we have some preliminary ideas. Given that both variables of interest are continuous, lineplots, scatter plots, smoothed conditional means plots are all in consideration.  
 
-For the second part of our question, our biggest challenge will be figuring out how to graph comments and favorites. Combining the variables by adding them wouldn't be a good idea because we want to see if there's a relationship among the trend of comments and farvorites. We will expirement with having view counts on the x-axis and then the best way to graph both comments and favorites on the y-axis. We will expirement with using different colors and plots (line plot, point plot, side-by-side histrograms) to best show this relationship.
+For the second part of our question, our biggest challenge will be figuring out how to graph comments and favorites. Combining the variables by adding them wouldn't be a good idea because we want to see if there's a relationship among the trend of comments and favorites. One possible idea is to
+first turn the the comment and favorite variables into categorical levels. We would decide the categories based on their respective distribution. Then, we could facet the plot of the view count vs like-to-dislike ratio by the comment variable for one plot and by the favorite variable for another plot.
+.
 
 
