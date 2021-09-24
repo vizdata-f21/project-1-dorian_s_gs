@@ -39,7 +39,7 @@ For our first question, we want to get a general sense of which of the character
 
 ### What is the relationship between popularity of a video and how well it is interacted with?
 
-This question deals with whether popularity is connected with rating, as well as overall interaction with a video. In this question we will look at how the variables `view_count`, `like_count`, `dislike_count`, `comment_count`, and `favorite_count` are related. For the first part of this question we can look at the nubmer of views and proportion of likes to dislikes. In the latter part of question two, we can use the number of comments and favorites to show the degree of interaction with videos.
+This question deals with whether popularity (number of views) is connected with rating, as well as overall interaction with a video. In this question we will look at how the variables `view_count`, `like_count`, `dislike_count`, `comment_count`, and `favorite_count` are related. For the first part of this question we can look at the number of views and proportion of likes to dislikes. In the latter part of question two, we can use the number of comments and favorites to show the degree of interaction with videos.
 
 
 ## Analysis plan
@@ -52,7 +52,7 @@ For the second plot, we would like to create a line plot with `year` on the x-ax
 
 ### Question 2 Plan
 
-For the first part of this question, our first plot will have view count on the x-axis and like:dislike ratio on the y-axis. We will try many different plots and color schemes to best show this. Histograms, lineplots, point plots, and filling points/bars/lines with different colors are all considerations. We may need to create a new variable that has the ratio of like:disklikes for each given video.
+For the first part of this question, we first will need to a create a variable for the like:dislike dislike ratio. We will do this by dividing the number of likes by the number of dislikes. Then, we will create another new variable that divides the number of views into specific ranges (similar to bins in a histogram). We will then use a boxplot with each range of view count on the x-axis and like:dislike ratio on the y-axis to see what the overall spread looks like for each range of view count.
 
 For the second part of our question, our biggest challenge will be figuring out how to graph comments and favorites. Combining the variables by adding them wouldn't be a good idea because we want to see if there's a relationship among the trend of comments and farvorites. We will expirement with having view counts on the x-axis and then the best way to graph both comments and favorites on the y-axis. We will expirement with using different colors and plots (line plot, point plot, side-by-side histrograms) to best show this relationship.
 
