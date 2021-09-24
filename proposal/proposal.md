@@ -28,15 +28,14 @@ explored how these categories cluster with each other, and found some
 unique combinations such as ads that included both sex appeal and
 animals.
 
-The dataset contains 247 different superbowl ads. Additionally, there
-are different types of variables included in this dataset. 7 of them are
-integers, including the `view_count`, `like_count`, `dislike_count`. 10
-variables are characters, including `brand`, `title`, and `description`.
-7 variables are logical, which shows either `TRUE` or `FALSE` for some
-categories, including whether or not the ad is funny, patriotic,
-includes animals, and includes sex. These logical variables were
-determined by the FiveThirtyEight team as they watched all of the
-advertisements.
+There are different types of variables included in this dataset. 7 of
+them are integers, including the `view_count`, `like_count`,
+`dislike_count`. 10 variables are characters, including `brand`,
+`title`, and `description`. 7 variables are logical, which shows either
+`TRUE` or `FALSE` for some categories, including whether or not the ad
+is funny, patriotic, includes animals, and includes sex. These logical
+variables were determined by the FiveThirtyEight team as they watched
+all of the advertisements.
 
 ## Why this dataset?
 
