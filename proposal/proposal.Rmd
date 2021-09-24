@@ -14,14 +14,13 @@ library("tidytuesdayR")
 ```{r superbowl, message = FALSE}
 superbowl <- readr::read_csv(
   'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-02/youtube.csv')
-glimpse(superbowl)
 ```
 
 ## Description
 
 This dataset is created by FiveThirtyEight, originally collected through superbowl-ads.com. There are `r count(superbowl)` different commercials  with `r ncol(superbowl)` different variables, including the year, brand, and view count. However, they only take from `r length(unique(superbowl$brand))` different brands for their dataset. Their purpose for creating this dataset is to identify defining characteristics of superbowl ads from popular brands like Toyota and Bud Light. Some questions they asked included; Was it funny? Was it patriotic? Did it include animals? Did it use sex to sell this product? Afterwards, they explored how these categories cluster with each other, and found some unique combinations such as ads that included both sex appeal and animals. 
 
-There are different types of variables included in this dataset. `r sum(sapply(superbowl, is.numeric))` are integers, including the `view_count`, `like_count`, `dislike_count`. `r sum(sapply(superbowl, is.character))`  variables are characters, including `brand`, `title`, and `description`. `r sum(sapply(superbowl, is.logical))` variables are logical, which shows either `TRUE` or `FALSE` for some categories, including whether or not the ad is funny, patriotic, includes animals, and includes sex. These logical variables were determined by the FiveThirtyEight team as they watched all of the advertisements.
+The dataset contains 247 different superbowl ads. Additionally, there are different types of variables included in this dataset. `r sum(sapply(superbowl, is.numeric))` of them are integers, including the `view_count`, `like_count`, `dislike_count`. `r sum(sapply(superbowl, is.character))`  variables are characters, including `brand`, `title`, and `description`. `r sum(sapply(superbowl, is.logical))` variables are logical, which shows either `TRUE` or `FALSE` for some categories, including whether or not the ad is funny, patriotic, includes animals, and includes sex. These logical variables were determined by the FiveThirtyEight team as they watched all of the advertisements.
 
 ## Why this dataset?
 
