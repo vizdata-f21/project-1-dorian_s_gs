@@ -138,9 +138,26 @@ data %>%
 ## Plots (Q1 Plot 2)
 
 ```{r Q1-plot-2}
-data %>%
-  ggplot(aes(x = animals, celebrity, use_sex, y = view_count, fill = )) +
-  geom_bar(stat = "identity", position = "dodge")
+
+
+superbowlQ1P2 <- superbowl %>%
+  select(year, view_count, animals, celebrity, use_sex) %>%
+  group_by(animals, year) %>%
+  mutate(average_view_count_animals = sum(view_count, na.rm = TRUE) / n()) %>%
+  ungroup() %>%
+  group_by(celebrity, year) %>%
+  mutate(average_view_count_celebrity = sum(view_count, na.rm = TRUE) / n()) %>%
+  ungroup() %>%
+  group_by(use_sex, year) %>%
+  mutate(average_view_count_use_sex = sum(view_count, na.rm = TRUE) / n()) %>%
+  select(-view_count) 
+superbowlQ1P2 <- superbowlQ1P2[!duplicated(superbowlQ1P2), ]
+
+view(superbowlQ1P2)
+
+  
+
+
 
 
 ```
