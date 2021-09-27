@@ -115,15 +115,40 @@ ggplot(penguins_modified, aes(x = flipper_length_mm, y = body_mass_g, color = sp
 ```
 
 
+```{r}
+superbowl_animals <- superbowl %>%
+  group_by(animals) %>%
+  summarise(total_view_count = sum(view_count, na.rm = TRUE),
+            count = n(),
+            avg_view_count = total_view_count/count) %>%
+  rename(variable = animals)
+```
 
 ```{r}
+superbowl_celebrity <- superbowl %>%
+  group_by(celebrity) %>%
+  summarise(total_view_count = sum(view_count, na.rm = TRUE))
+```
 
+```{r}
+superbowl_use_sex <- superbowl %>%
+  group_by(use_sex) %>%
+  summarise(total_view_count = sum(view_count, na.rm = TRUE))
+```
+
+
+
+
+
+```{r}
+  select(animals, celebrity, use_sex) %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex), names_to = "variable", values_to = "count")
 
 ```
 
 ```{r Q1-plot-1}
-data %>%
-  ggplot(aes(x = animals, celebrity, use_sex, y = view_count, fill = )) +
+superbowl %>%
+  ggplot(aes(x = animals, celebrity, use_sex, y = view_count, fill = animals)) +
   geom_bar(stat = "identity", position = "dodge")
 
 
