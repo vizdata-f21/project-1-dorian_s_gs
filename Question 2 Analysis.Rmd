@@ -1,0 +1,45 @@
+---
+title: "Question 2 Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(fs)
+library(ggplot2)
+```
+
+```{r}
+superbowl <- superbowl %>%
+  mutate(ratio = like_count / (like_count + dislike_count))
+```
+
+```{r}
+ggplot(data = superbowl, aes(x = view_count, y = ratio)) +
+  geom_point()
+```
+
+```{r}
+superbowl_no_outliers <- superbowl %>%
+  filter(view_count < 1.5e+05)
+
+ggplot(data = superbowl_no_outliers, aes(x = view_count)) +
+  geom_histogram()
+```
+
+```{r}
+superbowl_no_outliers %>%
+  select(view_count,brand)%>%
+  filter(view_count > 5000)
+  
+```
+
+
+```{r}
+ggplot(superbowl_no_outliers, aes(x = "view_count", y = view_count)) +
+  geom_boxplot()
+```
+
+
+
+
