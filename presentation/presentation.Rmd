@@ -1,12 +1,12 @@
 ---
-title: "Presentation title"
+title: "SuperBowl Ads"
 subtitle: "Presentation subtitle (if any)"
-author: "Team name <br> Names of team members"
+author: "Dorian's Gs <br> Courtney Lee, Eli Feder, Parker Dingman, Martha          Aboagye"
 institute: "Duke University"
 date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
-    css: xaringan-themer.css
+    css:  xaringan-themer.css
     lib_dir: libs
     nature:
       ratio: "16:9"
@@ -48,19 +48,24 @@ style_xaringan(
 
 class: inverse, middle, center
 
-# Using xaringan
+# Characteristics Of The Most Viewed Ads
 
 ---
 
-## xaringan
+class: inverse, middle, center
 
-- The presentation is created using the `xaringan` package
+## What factors contribute to the most viewed ads and  has the relationship between those factors and the views changed over time?
 
-- Use `---` to separate slides and `--` for incremental builds
+---
+
+## Approach
+
+The relevant variables are all numerical and include:
+`view_count`, `like_count`, `dislike_count`, `comment_count`, and `favorite count`. 
 
 --
-
-- Like this
+- The `view_count` is the measure for popularity, while the other variables define interaction with the ad
+  
 
 ---
 
