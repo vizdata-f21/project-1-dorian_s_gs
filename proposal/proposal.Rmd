@@ -6,7 +6,7 @@ output: github_document
 
 ```{r load-packages, message = FALSE}
 library(tidyverse)
-library("tidytuesdayR")
+library(tidytuesdayR)
 ```
 
 ## Dataset
