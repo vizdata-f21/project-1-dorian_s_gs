@@ -37,7 +37,8 @@ knitr::opts_chunk$set(
 ```
 
 ```{r load-data, include=FALSE}
-# Load your data here
+superbowl <- readr::read_csv(
+  'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-02/youtube.csv')
 ```
 
 ```{r style-slides, echo = FALSE}
@@ -111,6 +112,13 @@ penguins_modified <- penguins %>%
 ggplot(penguins_modified, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
   geom_point() + 
   theme_minimal()
+```
+
+
+
+```{r}
+
+
 ```
 
 ```{r Q1-plot-1}
