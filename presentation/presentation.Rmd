@@ -95,7 +95,7 @@ glance(model)
 
 ---
 
-## Plots
+## Plots (Q1 Plot 1)
 
 ```{r recode-species, echo = FALSE}
 # In this chunk I'm doing a bunch of analysis that I don't want to present 
@@ -111,6 +111,30 @@ penguins_modified <- penguins %>%
 ggplot(penguins_modified, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
   geom_point() + 
   theme_minimal()
+```
+
+```{r Q1-plot-1}
+data %>%
+  ggplot(aes(x = animals, celebrity, use_sex, y = view_count, fill = )) +
+  geom_bar(stat = "identity", position = "dodge")
+
+
+```
+
+
+
+
+
+---
+
+## Plots (Q1 Plot 2)
+
+```{r Q1-plot-2}
+data %>%
+  ggplot(aes(x = animals, celebrity, use_sex, y = view_count, fill = )) +
+  geom_bar(stat = "identity", position = "dodge")
+
+
 ```
 
 ---
