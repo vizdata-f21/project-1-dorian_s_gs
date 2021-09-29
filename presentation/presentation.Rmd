@@ -1,7 +1,7 @@
 ---
 title: "SuperBowl Ads"
 subtitle: "Presentation subtitle (if any)"
-author: "Dorian's Gs <br> Courtney Lee, Eli Feder, Parker Dingman, Martha          Aboagye"
+author: "Dorian's Gs <br> Courtney Lee, Eli Feder, Parker Dingman, Martha Aboagye"
 institute: "Duke University"
 date: "`r Sys.Date()`"
 output:
