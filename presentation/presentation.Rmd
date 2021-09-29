@@ -219,6 +219,7 @@ ggplot(penguins_modified, aes(x = flipper_length_mm, y = body_mass_g, color = sp
   geom_point() + 
   theme_minimal()
 ```
+
 ```{r}
 superbowl_viz <- superbowl %>%
   select(year, view_count, animals, celebrity, use_sex) %>%
@@ -228,7 +229,12 @@ superbowl_viz <- superbowl %>%
   summarise(total_vc = sum(view_count),
             total_ads = n(),
             average_vc = total_vc / total_ads) %>% 
-  relocate(average_vc, .before = total_vc)
+  relocate(average_vc, .before = total_vc) %>%
+  mutate(variable = case_when(variable == "animals" ~ "Animal",
+                           variable == "celebrity" ~ "Celebrity",
+                           variable == "use_sex" ~ "Sexual"))
+  
+
 ```
 
 
@@ -268,14 +274,12 @@ ggplot(aes(year, average_vc, color = variable)) +
   geom_line() + 
   coord_cartesian(ylim  = c(0, 2e+06)) + 
   scale_color_manual(
-    values = c(animals = "#E69F00", celebrity = "#56B4E9", use_sex = "#009E73")
+    values = c(Animal = "#E69F00", Celebrity = "#56B4E9", Sexual = "#009E73")
   ) +
   theme_minimal() + 
   labs(y = "Average View Count", 
        x = "year",
-       color = "Ad Type") + 
-  scale_fill_discrete(breaks = c("Animal", "Celebrity",
-                               "Sexual"))
+       color = "Ad Type") 
 ```
 
 ---
