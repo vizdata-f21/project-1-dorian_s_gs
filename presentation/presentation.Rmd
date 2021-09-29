@@ -1,7 +1,7 @@
 ---
 title: "SuperBowl Ads"
 subtitle: "Presentation subtitle (if any)"
-author: "Dorian's Gs <br> Courtney Lee, Eli Feder, Parker Dingman, Martha          Aboagye"
+author: "Dorian's Gs <br> Courtney Lee, Eli Feder, Parker Dingman, Martha Aboagye"
 institute: "Duke University"
 date: "`r Sys.Date()`"
 output:
@@ -23,6 +23,9 @@ library(tidymodels)
 library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
+library(ggeasy)
+
+#library(reshape2)
 ```
 
 ```{r setup, include=FALSE}
@@ -99,6 +102,104 @@ tidy(model)
 glance(model)
 ```
 
+```{r create-superbowl-viz-data}
+#transformed dataset that can be used to make visualizations
+# superbowl_viz_data <- superbowl %>%
+#   select(year, view_count, animals, celebrity, use_sex) %>%
+#   group_by(animals, year) %>%
+#   mutate(average_view_count_animals = sum(view_count, na.rm = TRUE) / n()) %>%
+#   ungroup() %>%
+#   group_by(celebrity, year) %>%
+#   mutate(average_view_count_celebrity = sum(view_count, na.rm = TRUE) / n()) %>%
+#   ungroup() %>%
+#   group_by(use_sex, year) %>%
+#   mutate(average_view_count_use_sex = sum(view_count, na.rm = TRUE) / n()) %>%
+#   ungroup() %>%
+#   select(-view_count) %>%
+#   select(year, animals, average_view_count_animals,
+#          celebrity, average_view_count_celebrity,
+#          use_sex, average_view_count_use_sex)
+# 
+# superbowl_viz_data <- superbowl_viz_data[!duplicated(superbowl_viz_data), ]
+# 
+# superbowl_plot <- superbowl_viz_data %>%
+#   mutate(avg_vc_ani_TRUE
+#          = case_when(animals == TRUE ~ average_view_count_animals)) %>%
+#   mutate(avg_vc_ani_FALSE
+#          = case_when(animals == FALSE ~ average_view_count_animals)) %>%
+#   mutate(avg_vc_cel_TRUE
+#          = case_when(celebrity == TRUE ~ average_view_count_celebrity)) %>%
+#   mutate(avg_vc_cel_FALSE
+#          = case_when(celebrity == FALSE ~ average_view_count_celebrity)) %>%
+#   mutate(avg_vc_sex_TRUE
+#          = case_when(use_sex == TRUE ~ average_view_count_use_sex)) %>%
+#   mutate(avg_vc_sex_FALSE
+#          = case_when(use_sex == FALSE ~ average_view_count_use_sex)) %>%
+#   select(year, avg_vc_ani_TRUE, avg_vc_ani_FALSE,
+#                avg_vc_cel_TRUE, avg_vc_cel_FALSE,
+#                avg_vc_sex_TRUE, avg_vc_sex_FALSE)
+# 
+# superbowl_plot_long <- melt(superbowl_plot, id = "year",
+#                            measure = c("avg_vc_ani_TRUE", "avg_vc_ani_FALSE",
+#                                        "avg_vc_cel_TRUE", "avg_vc_cel_FALSE",
+#                                        "avg_vc_sex_TRUE", "avg_vc_sex_FALSE"))
+# 
+# superbowl_plot_long <- superbowl_plot_long[!duplicated(superbowl_plot_long), ]
+# superbowl_plot_long <- superbowl_plot_long %>%
+#   na.omit() %>%
+#   filter(value != 0)
+```
+
+```{r}
+# superbowl_animals <- superbowl %>%
+#   select(view_count, animals, year) %>%
+#   filter(!is.na(view_count)) %>%
+#   group_by(animals, year) %>%
+#   mutate(average_view_count = sum(view_count) / n(),
+#          total_view_count = sum(view_count),
+#          total_ads = n())%>%
+#   ungroup() %>%
+#   select(-view_count)
+# 
+# superbowl_animals <- superbowl_animals[!duplicated(superbowl_animals), ]
+# superbowl_animals<- rename(superbowl_animals, 'have' = 'animals')
+# superbowl_animals$variable <- 'animals'
+# 
+# 
+# superbowl_celebrity <- superbowl %>%
+#   select(view_count, celebrity, year) %>%
+#   filter(!is.na(view_count)) %>%
+#   group_by(celebrity, year) %>%
+#   mutate(average_view_count = sum(view_count) / n(),
+#          total_view_count = sum(view_count),
+#          total_ads = n())%>%
+#   ungroup() %>%
+#   select(-view_count)
+# 
+# superbowl_celebrity <- superbowl_celebrity[!duplicated(superbowl_celebrity), ]
+# superbowl_celebrity<- rename(superbowl_celebrity, 'have' = 'celebrity')
+# superbowl_celebrity$variable <- 'celebrity'
+# 
+# 
+# superbowl_use_sex <- superbowl %>%
+#   select(view_count, use_sex, year) %>%
+#   filter(!is.na(view_count)) %>%
+#   group_by(use_sex, year) %>%
+#   mutate(average_view_count = sum(view_count) / n(),
+#          total_view_count = sum(view_count),
+#          total_ads = n())%>%
+#   ungroup() %>%
+#   select(-view_count)
+# 
+# superbowl_use_sex <- superbowl_use_sex[!duplicated(superbowl_use_sex), ]
+# superbowl_use_sex<- rename(superbowl_use_sex, 'have' = 'use_sex')
+# superbowl_use_sex$variable <- 'use_sex'
+# 
+# superbowl_viz <- rbind(superbowl_animals, superbowl_celebrity, superbowl_use_sex)
+# superbowl_viz <- superbowl_viz %>% relocate(variable, .before = have)
+```
+
+
 ---
 
 ## Plots (Q1 Plot 1)
@@ -119,44 +220,44 @@ ggplot(penguins_modified, aes(x = flipper_length_mm, y = body_mass_g, color = sp
   theme_minimal()
 ```
 
-
 ```{r}
-superbowl_animals <- superbowl %>%
-  group_by(animals) %>%
-  summarise(total_view_count = sum(view_count, na.rm = TRUE),
-            count = n(),
-            avg_view_count = total_view_count/count) %>%
-  rename(variable = animals)
-```
+superbowl_viz <- superbowl %>%
+  select(year, view_count, animals, celebrity, use_sex) %>%
+  filter(!is.na(view_count)) %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex), names_to = 'variable', values_to = 'have') %>%
+  group_by(variable, have, year) %>%
+  summarise(total_vc = sum(view_count),
+            total_ads = n(),
+            average_vc = total_vc / total_ads) %>% 
+  relocate(average_vc, .before = total_vc) %>%
+  mutate(variable = case_when(variable == "animals" ~ "Animal",
+                           variable == "celebrity" ~ "Celebrity",
+                           variable == "use_sex" ~ "Sexual"))
+  
 
-```{r}
-superbowl_celebrity <- superbowl %>%
-  group_by(celebrity) %>%
-  summarise(total_view_count = sum(view_count, na.rm = TRUE))
-```
-
-```{r}
-superbowl_use_sex <- superbowl %>%
-  group_by(use_sex) %>%
-  summarise(total_view_count = sum(view_count, na.rm = TRUE))
 ```
 
 
-
-
-
-```{r}
-  select(animals, celebrity, use_sex) %>%
-  pivot_longer(cols = c(animals, celebrity, use_sex), names_to = "variable", values_to = "count")
-
-```
 
 ```{r Q1-plot-1}
-superbowl %>%
-  ggplot(aes(x = animals, celebrity, use_sex, y = view_count, fill = animals)) +
-  geom_bar(stat = "identity", position = "dodge")
 
-
+superbowl_viz %>%
+  select(-year, -average_vc) %>%
+  group_by(variable, have)  %>%
+  summarise (aggregate_vc = sum(total_vc),
+            aggregate_ads = n(),
+            average_vc = aggregate_vc / aggregate_ads) %>% 
+  relocate(average_vc, .before = aggregate_vc) %>%
+  ggplot(aes(variable, average_vc, fill = have)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  scale_fill_manual(values = c("red", "blue"), 
+                    guide = guide_legend(reverse = TRUE)) + 
+  scale_y_continuous(labels = comma) +
+  labs(title = "Advertisement Views by Category",
+       x = "Category", y = "Average View Count") +
+  theme_minimal() +
+  easy_center_title()
+      
 ```
 
 
@@ -167,58 +268,18 @@ superbowl %>%
 
 ## Plots (Q1 Plot 2)
 
-```{r Q1-plot-2}
-superbowlQ1P2 <- superbowl %>%
-  select(year, view_count, animals, celebrity, use_sex) %>%
-  group_by(animals, year) %>%
-  mutate(average_view_count_animals = sum(view_count, na.rm = TRUE) / n()) %>%
-  ungroup() %>%
-  group_by(celebrity, year) %>%
-  mutate(average_view_count_celebrity = sum(view_count, na.rm = TRUE) / n()) %>%
-  ungroup() %>%
-  group_by(use_sex, year) %>%
-  mutate(average_view_count_use_sex = sum(view_count, na.rm = TRUE) / n()) %>%
-  ungroup() %>%
-  select(-view_count) %>%
-  select(year, animals, average_view_count_animals, 
-         celebrity, average_view_count_celebrity,
-         use_sex, average_view_count_use_sex)
-
-superbowlQ1P2 <- superbowlQ1P2[!duplicated(superbowlQ1P2), ]
-
-superbowl_plot <- superbowlQ1P2 %>%
-  mutate(avg_vc_ani_TRUE 
-         = case_when(animals == TRUE ~ average_view_count_animals)) %>%
-  mutate(avg_vc_ani_FALSE 
-         = case_when(animals == FALSE ~ average_view_count_animals)) %>%
-  mutate(avg_vc_cel_TRUE 
-         = case_when(celebrity == TRUE ~ average_view_count_celebrity)) %>%
-  mutate(avg_vc_cel_FALSE
-         = case_when(celebrity == FALSE ~ average_view_count_celebrity)) %>%
-  mutate(avg_vc_sex_TRUE 
-         = case_when(use_sex == TRUE ~ average_view_count_use_sex)) %>%
-  mutate(avg_vc_sex_FALSE 
-         = case_when(use_sex == FALSE ~ average_view_count_use_sex)) %>%
-  select(year, avg_vc_ani_TRUE, avg_vc_ani_FALSE,
-               avg_vc_cel_TRUE, avg_vc_cel_FALSE,
-               avg_vc_sex_TRUE, avg_vc_sex_FALSE)
-
-superbowl_plot_long <- melt(superbowl_plot, id = "year", 
-                           measure = c("avg_vc_ani_TRUE", "avg_vc_ani_FALSE",
-                                       "avg_vc_cel_TRUE", "avg_vc_cel_FALSE",
-                                       "avg_vc_sex_TRUE", "avg_vc_sex_FALSE"))
-
-superbowl_plot_long <- superbowl_plot_long[!duplicated(superbowl_plot_long), ]
-superbowl_plot_long <- superbowl_plot_long %>%
-  na.omit() %>%
-  filter(value != 0)
-view(superbowl_plot_long)
-
-
-ggplot(superbowl_plot_long, aes(year, value, colour = variable)) + 
-  geom_point() 
-
-
+```{r}
+superbowl_viz %>%
+ggplot(aes(year, average_vc, color = variable)) + 
+  geom_line() + 
+  coord_cartesian(ylim  = c(0, 2e+06)) + 
+  scale_color_manual(
+    values = c(Animal = "#E69F00", Celebrity = "#56B4E9", Sexual = "#009E73")
+  ) +
+  theme_minimal() + 
+  labs(y = "Average View Count", 
+       x = "year",
+       color = "Ad Type") 
 ```
 
 ---
