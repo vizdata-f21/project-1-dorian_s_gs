@@ -265,8 +265,9 @@ superbowl_viz %>%
 
 
 ```{r}
-ggplot(superbowl_plot_long, aes(year, value, colour = variable)) + 
-  geom_point() 
+superbowl_viz %>%
+ggplot(aes(year, average_vc, colour = variable)) + 
+  geom_line() 
 
 ```
 
