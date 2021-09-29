@@ -7,37 +7,61 @@ output: html_document
 library(tidyverse)
 library(fs)
 library(ggplot2)
+library(dplyr)
+library(ggridges)
+library(forcats)
 ```
+
+```{r}
+superbowl<- read.csv("data/superbowl.csv")
+```
+
 
 ```{r}
 superbowl <- superbowl %>%
   mutate(ratio = like_count / (like_count + dislike_count))
 ```
 
-```{r}
-ggplot(data = superbowl, aes(x = view_count, y = ratio)) +
-  geom_point()
-```
 
 ```{r}
+
+outliers <- boxplot.stats(superbowl$view_count)$out
+
+
 superbowl_no_outliers <- superbowl %>%
-  filter(view_count < 1.5e+05)
+  filter(!(view_count %in% outliers))
 
-ggplot(data = superbowl_no_outliers, aes(x = view_count)) +
-  geom_histogram()
+
+quantile(superbowl_no_outliers$view_count,na.rm = TRUE)
+  
 ```
 
-```{r}
-superbowl_no_outliers %>%
-  select(view_count,brand)%>%
-  filter(view_count > 5000)
+```{r official-outliers list}
+boxplot.stats(superbowl$view_count)$out
   
 ```
 
 
 ```{r}
-ggplot(superbowl_no_outliers, aes(x = "view_count", y = view_count)) +
-  geom_boxplot()
+superbowl <-superbowl %>%
+  mutate(view_category = case_when(
+    view_count < 4000 ~ "Little",
+    view_count >=4000 & view_count < 30000 ~ "Some",
+     view_count >= 30000 &view_count < 90000 ~ "Moderate",
+    view_count >= 90000 &view_count < 500000 ~ "Many",
+    view_count >= 500000 &view_count < 10000000 ~ "High",
+    TRUE ~ "Mega"
+  ))
+```
+
+
+```{r}
+superbowl%>%
+  mutate(view_category = fct_relevel(
+    view_category, "Mega", "High", "Many", "Moderate","Some","Little"
+  ))%>%
+ggplot(aes(x=ratio, y=view_category, fill=view_category))+
+  geom_density_ridges()
 ```
 
 
