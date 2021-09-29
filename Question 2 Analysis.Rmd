@@ -71,8 +71,8 @@ ggplot(data = superbowl, aes(x = ratio, fill = view_category)) +
   #scale_fill_continuous()
   facet_grid(view_category ~., scales = "free_y", space = "free_y") +
   geom_density(show.legend = FALSE) +
-  geom_text(aes(y = view_category, label = known_for), x = 2030, show.legend = FALSE, hjust = 0) +
-  geom_text(aes(label = profession), x = 1809, y = Inf, hjust = 1, vjust = 1, show.legend = FALSE) +
+  #geom_text(aes(y = view_category, label = known_for), x = 2030, show.legend = FALSE, hjust = 0) +
+  #geom_text(aes(label = profession), x = 1809, y = Inf, hjust = 1, vjust = 1, show.legend = FALSE) +
   theme(
     plot.title.position = "plot",
     plot.caption.position = "plot",
