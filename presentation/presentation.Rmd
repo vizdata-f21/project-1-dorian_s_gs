@@ -23,6 +23,8 @@ library(tidymodels)
 library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
+library(ggeasy)
+
 #library(reshape2)
 ```
 
@@ -232,6 +234,7 @@ superbowl_viz <- superbowl %>%
 
 
 ```{r Q1-plot-1}
+
 superbowl_viz %>%
   select(-year, -average_vc) %>%
   group_by(variable, have)  %>%
@@ -240,8 +243,15 @@ superbowl_viz %>%
             average_vc = aggregate_vc / aggregate_ads) %>% 
   relocate(average_vc, .before = aggregate_vc) %>%
   ggplot(aes(variable, average_vc, fill = have)) +
-  geom_bar(stat = "identity", position = "dodge")
-
+  geom_bar(stat = "identity", position = "dodge") + 
+  scale_fill_manual(values = c("red", "blue"), 
+                    guide = guide_legend(reverse = TRUE)) + 
+  scale_y_continuous(labels = comma) +
+  labs(title = "Advertisement Views by Category",
+       x = "Category", y = "Average View Count") +
+  theme_minimal() +
+  easy_center_title()
+      
 ```
 
 
