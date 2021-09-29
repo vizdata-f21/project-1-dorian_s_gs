@@ -278,7 +278,7 @@ ggplot(aes(year, average_vc, color = variable)) +
   ) +
   theme_minimal() + 
   labs(y = "Average View Count", 
-       x = "year",
+       x = "Year",
        color = "Ad Type") 
 ```
 
