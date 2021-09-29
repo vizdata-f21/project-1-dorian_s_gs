@@ -252,13 +252,20 @@ superbowl_viz %>%
 
 ## Plots (Q1 Plot 2)
 
-
-
 ```{r}
 superbowl_viz %>%
-ggplot(aes(year, average_vc, colour = variable)) + 
-  geom_line() 
-
+ggplot(aes(year, average_vc, color = variable)) + 
+  geom_line() + 
+  coord_cartesian(ylim  = c(0, 2e+06)) + 
+  scale_color_manual(
+    values = c(animals = "#E69F00", celebrity = "#56B4E9", use_sex = "#009E73")
+  ) +
+  theme_minimal() + 
+  labs(y = "Average View Count", 
+       x = "year",
+       color = "Ad Type") + 
+  scale_fill_discrete(breaks = c("Animal", "Celebrity",
+                               "Sexual"))
 ```
 
 ---
