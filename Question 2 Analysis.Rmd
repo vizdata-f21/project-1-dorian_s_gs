@@ -88,7 +88,7 @@ superbowl %>%
     labs(
       title = "YouTube Superbowl Ads and Like Ratios",
       x = "Proportion of Likes",
-      y = "Category of Views",
+      y = "Views Category",
       caption = "Source: FiveThirtyEight") +
     guides(fill = guide_legend(reverse = TRUE)) +
     theme_minimal() +
