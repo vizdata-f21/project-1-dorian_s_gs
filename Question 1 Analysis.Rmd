@@ -106,15 +106,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r load-data, include=FALSE}
 superbowl <- readr::read_csv(
-  'https://raw.githubusercontent.com/rfordatascience/tidytuesday/
-   master/data/2021/2021-03-02/youtube.csv')
+  'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-02/youtube.csv')
 ```
 
 
 ```{r}
 library(tidyverse)
 library(tidymodels)
-library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
 ```
@@ -155,7 +153,8 @@ superbowl_viz <- superbowl %>%
 
 
 
-```{r Q1-Plot1}
+```{r message=FALSE, Q1-Plot-1}
+#message related to grouping in summarise(), which is how we want it
 superbowl_viz %>%
   group_by(brand, variable)  %>%
   summarise (ads = n()) %>% 
@@ -183,7 +182,8 @@ superbowl_viz %>%
 
 ## Plots (Q1 Plot 2)
 
-```{r}
+```{r message=FALSE, Q1-Plot-2}
+#message related to geom_smooth() method and formula, which are both what we want
 superbowl_viz %>%
 ggplot(aes(year, ads, color = variable)) + 
   #geom_point(size = 1) + 
