@@ -147,7 +147,8 @@ ggplot(aes(x=view_count, y=interactions))+
         panel.spacing = unit(1.4, "lines"),
         tagger.panel.tag.text = element_text(color = "blue", size = 6),
         plot.caption = element_text(color = "blue", size = 8, hjust =0.5),
-        plot.caption.position = "panel") +
+        plot.caption.position = "panel",
+        axis.text.x = NULL) +
   scale_fill_viridis(discrete = T)
 ```
 
