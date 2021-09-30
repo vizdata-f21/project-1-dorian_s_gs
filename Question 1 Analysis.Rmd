@@ -160,7 +160,8 @@ superbowl_viz %>%
                                "#0072B2", "#D55E00", "#CC79A7")) +
   labs(title = "Ad Occurences by Brand",
        x = "Ad Occurences", y = "Brand",
-       fill = "Ad Type") +
+       fill = "Ad Type",
+       caption = "Source: FiveThirtyEight") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5) +
         scale_fill_discrete(breaks = c("Sexual", "Show Product Quickly", 
@@ -185,7 +186,8 @@ ggplot(aes(year, ads, color = variable)) +
   theme_minimal() + 
   labs(y = "Total View Count", 
        x = "Year",
-       color = "Ad Type") 
+       color = "Ad Type",
+       caption = "Source: FiveThirtyEight") 
 ```
 
 
