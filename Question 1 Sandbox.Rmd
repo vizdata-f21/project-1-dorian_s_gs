@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r create-superbowl-viz-data}
+```{r inital-clean-and-transform}
 #transformed dataset that can be used to make visualizations
 # superbowl_viz_data <- superbowl %>%
 #   select(year, view_count, animals, celebrity, use_sex) %>%
@@ -55,7 +55,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #   filter(value != 0)
 ```
 
-```{r}
+```{r secondary-clean-and-transform}
 # superbowl_animals <- superbowl %>%
 #   select(view_count, animals, year) %>%
 #   filter(!is.na(view_count)) %>%
@@ -148,7 +148,7 @@ superbowl_viz <- superbowl %>%
   relocate(category, .before = brand)
 ```
 
-# ```{r category-totals-label}
+```{r category-totals-label}
 # category_totals <- superbowl_viz %>%
 #   filter(ad_type != 'celebrity',
 #          ad_type != 'use_sex',
@@ -191,7 +191,9 @@ superbowl_viz <- superbowl %>%
 #   theme(plot.title = element_text(hjust = 0.075),
 #         plot.caption = element_text(hjust = 1.55),
 #         legend.position = c(0.8, 0.2)) 
-# ```
+```
+
+
 
 ```{r brand-totals-label}
 brand_totals <- superbowl_viz %>%
@@ -349,21 +351,3 @@ superbowl %>%
        title =  "Ad Occurrences by Type",
        subtitle = "From 2000 - 2020") 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
