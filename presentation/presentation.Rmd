@@ -250,13 +250,13 @@ superbowl_viz %>%
   relocate(average_vc, .before = aggregate_vc) %>%
   ggplot(aes(variable, average_vc, fill = have)) +
   geom_bar(stat = "identity", position = "dodge") + 
-  scale_fill_manual(values = c("red", "blue"), 
+  scale_fill_manual(values = c("#D2222D", "darkgreen"), 
                     guide = guide_legend(reverse = TRUE)) + 
   scale_y_continuous(labels = comma) +
   labs(title = "Advertisement Views by Category",
        x = "Category", y = "Average View Count") +
   theme_minimal() +
-  easy_center_title()
+  easy_center_title() 
       
 ```
 
@@ -274,8 +274,7 @@ ggplot(aes(year, average_vc, color = variable)) +
   geom_line() + 
   coord_cartesian(ylim  = c(0, 2e+06)) + 
   scale_color_manual(
-    values = c(Animal = "#E69F00", Celebrity = "#56B4E9", Sexual = "#009E73")
-  ) +
+    values = c(Animal = "#E69F00", Celebrity = "#56B4E9", Sexual = "#009E73"))+
   theme_minimal() + 
   labs(y = "Average View Count", 
        x = "year",
