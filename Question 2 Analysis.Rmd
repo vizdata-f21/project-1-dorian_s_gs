@@ -1,12 +1,6 @@
 ---
 title: "Question 2 Analysis"
-<<<<<<< HEAD
 output: html_document
-=======
-output:
-  html_document: default
-  pdf_document: default
->>>>>>> 3fd8e35e80aca1e7a0238a55a7db3ed54e75360d
 ---
 
 ```{r setup, include=FALSE}
@@ -150,7 +144,8 @@ ggplot(aes(x = view_count, y = interactions)) +
         panel.spacing = unit(1.4, "lines"),
         tagger.panel.tag.text = element_text(color = "blue", size = 6),
         plot.caption = element_text(color = "blue", size = 8, hjust =0.5),
-        plot.caption.position = "panel") +
+        plot.caption.position = "panel",
+        axis.text.x = NULL) +
   scale_fill_viridis(discrete = T)
 ```
 
