@@ -25,9 +25,9 @@ library(dplyr)
 library(ggridges)
 library(forcats)
 library(scales)
-library(viridis)
-library(tagger)
 library(colorspace)
+library(ggrepel)
+library(cowplot)
 ```
 
 ```{r setup, include=FALSE}
@@ -259,9 +259,203 @@ Limitations:
 
 ---
 
-class: inverse, middle, center
+```{r message=FALSE, echo=FALSE, clean-and-transform-data}
+#message related to grouping by 'brand' and 'year' in summarise, which is what we want
+superbowl_viz <- superbowl %>%
+  select(year, brand, animals, celebrity, use_sex, 
+         funny, show_product_quickly, patriotic, danger) %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
+                        show_product_quickly, patriotic, danger), 
+               names_to = 'ad_type', 
+               values_to = 'have') %>%
+  filter(have == TRUE) %>%
+  group_by(brand, year, ad_type) %>%
+  summarise(ads = n()) %>%
+  mutate(brand = case_when(brand == 'Hynudai' ~ 'Hyundai',
+                           TRUE ~ as.character(brand))) %>%
+  mutate(category = case_when(brand == 'Bud Light' ~ 'Alcohol',
+                          brand == 'Budweiser' ~ 'Alcohol',
+                          brand == 'Doritos' ~ 'Food & Beverage',
+                          brand == 'Pepsi' ~ 'Food & Beverage',
+                          brand == 'Coca-Cola' ~ 'Food & Beverage',
+                          brand == 'Hyundai' ~ 'Automobile',
+                          brand == 'Toyota' ~ 'Automobile',
+                          brand == 'Kia' ~ 'Automobile',
+                          brand == 'E-Trade' ~ 'Financial Services',
+                          brand == 'NFL' ~ 'Sports')) %>%
+  relocate(year, .before = brand) %>%
+  relocate(category, .before = brand)
+```
 
-# Wrap up
+```{r echo=FALSE, brand-totals-label}
+brand_totals <- superbowl_viz %>%
+  filter(ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(brand)  %>%
+  summarise(brand_totals = n())
+```
+
+```{r message=FALSE, echo=FALSE, Q1-Plot-1-Brand}
+#message related to grouping in summarise(), which is how we want it
+brand_viz <- superbowl_viz %>%
+  filter(ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(brand, ad_type)  %>%
+  summarise (ads = n()) %>% 
+  ggplot(aes(factor(brand, levels = c("Bud Light", "Budweiser", "Doritos", 
+                                      "Pepsi", "Coca-Cola", "Hyundai",
+                                      "E-Trade", "Toyota", "Kia",
+                                      "NFL")), 
+             ads, 
+             fill = ad_type)) +
+  geom_bar(stat = "identity", 
+           position = position_stack(0.1)) +
+  geom_text(data = brand_totals, 
+           aes(x = brand, y = brand_totals, 
+               label = brand_totals, 
+               fontface = 3,
+               fill = NULL), 
+           size = 10,
+           nudge_y = 2) +
+  scale_y_continuous(breaks = seq(0, 60, 10)) + 
+  #scale_x_discrete(expand = c(.1,0)) +
+  #facet_grid(. ~ brand, scales = "free_x") +
+  scale_fill_manual(values = c("#56B4E9", "#E69F00", "#009E73"), 
+                     labels = c("Shows Product Quickly", "Funny", "Animals")) +
+  labs(title = "Ad Occurrences by Brand",
+       y = "Ad Occurrences", 
+       x = "Brand",
+       fill = "Ad Type",
+       caption = "Source: FiveThirtyEight") +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", 
+                                  size = 80, 
+                                  hjust = 0.5, vjust = 1),
+        plot.caption = element_text(size = 30, hjust = 1.55),
+        legend.position = c(0.85, 0.7),
+        axis.text.x = element_blank(),
+        strip.text = element_blank(),
+        axis.title.y = element_text(vjust = 1, 
+                                    size = 50),
+        axis.text.y = element_text(hjust = 1.75),
+        axis.title.x = element_text(vjust = -2,
+                                    size = 50),
+        axis.text = element_text(size = 25, 
+                                 lineheight = 10),
+        legend.title = element_text(size = 50),
+        legend.text = element_text(size = 40))
+
+images <- axis_canvas(brand_viz, axis = 'x') + 
+  draw_image("https://1000logos.net/wp-content/uploads/2021/04/Bud-Light-logo-768x432.png", 
+             x = 0.5, scale = 0.75) +
+  draw_image("https://logos-world.net/wp-content/uploads/2020/12/Budweiser-Logo-2016-present.jpg", 
+             x = 1.5, scale = 1.1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2020/07/Doritos-Logo-768x480.png",
+             x = 2.5, scale = 1.1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2017/05/Pepsi-Logo-768x631.png", 
+             x = 3.5, scale = 0.9) +
+  draw_image("https://1000logos.net/wp-content/uploads/2021/05/Coca-Cola-logo-768x432.png",
+             x = 4.5, scale = 1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2018/04/Hyundai-logo-768x432.png",
+             x = 5.5, scale = 1.1) +
+  draw_image("https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco,dpr_1/v1476500866/ukg833gylj7adlryeuig.png", 
+             x = 6.5, scale = 1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2021/04/Toyota-logo-768x432.png", 
+             x = 7.5, scale = 0.8) +
+  draw_image("https://1000logos.net/wp-content/uploads/2020/02/Kia-Logo-2012-1024x635.jpg", 
+             x = 8.5, scale = 0.9) +
+  draw_image("https://1000logos.net/wp-content/uploads/2017/05/NFL-logo-768x518.png", 
+             x = 9.5, scale = 1.1) 
+
+ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
+```
+
+
+---
+
+
+
+```{r message=FALSE, echo=FALSE, ad-labels}
+#message related to grouping in summarise(), which is how we want it
+ad_labels <- superbowl %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
+                        show_product_quickly, patriotic, danger), 
+               names_to = 'ad_type', 
+               values_to = 'have') %>%
+  filter(have == TRUE,
+         ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(ad_type, year) %>%
+  summarise(ads = n()) %>%
+  filter(year == 2005) %>%
+  mutate(ads = case_when(ads == 6 ~ 4.1,
+                         ads == 11 ~ 9.9,
+                         ads == 8 ~ 8.5))
+
+```
+
+
+```{r message=FALSE, echo=FALSE, Q1-Plot-2}
+#message related to geom_smooth() method and formula, 
+#which are both what we want
+superbowl %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
+                        show_product_quickly, patriotic, danger), 
+               names_to = 'ad_type', 
+               values_to = 'have') %>%
+  filter(have == TRUE,
+         ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(year, ad_type) %>%
+  summarise(ads = n()) %>%
+  ggplot(aes(year, ads, color = ad_type)) + 
+  geom_line(aes(linetype = ad_type), 
+            stat = "smooth",
+            size = 12, 
+            se = F,
+            show.legend = FALSE) +
+  geom_text_repel(data = ad_labels, 
+                  aes(label = c("Shows Product Quickly", "Funny", "Animals")),
+                  nudge_x = 0.25,
+                  nudge_y = -0.8,
+                  size = 15,
+                  show.legend = FALSE) +
+  scale_color_manual(values = c("#56B4E9", "#E69F00", "#009E73"), 
+                     labels = c("Shows Product Quickly", "Funny", "Animals"),
+                     guide = guide_legend(reverse = TRUE)) +
+  scale_y_continuous(breaks = seq(0, 13, 2)) +
+  scale_x_continuous(breaks = seq(2000, 2020, 4)) +
+  theme_minimal() + 
+  theme(plot.title = element_text(face = "bold", 
+                                  size = 80, 
+                                  hjust = 0.5, vjust = 1),
+        plot.subtitle = element_text(size = 60, 
+                                  hjust = 0.5, vjust = 1),
+        plot.caption = element_text(size = 30, hjust = 1.55),
+        axis.title.x = element_text(vjust = -2, 
+                                    size = 50),
+        axis.title.y = element_text(vjust = 1, 
+                                    size = 50),
+        axis.text = element_text(size = 30, 
+                                 lineheight = 10)) +
+  labs(y = "Ad Occurrences", 
+       x = "Year",
+       color = "Ad Type",
+       caption = "Source: FiveThirtyEight",
+       title =  "Ad Occurrences by Type",
+       subtitle = "From 2000 - 2020") 
+```
+
+
 
 ---
 
