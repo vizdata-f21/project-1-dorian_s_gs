@@ -164,7 +164,7 @@ superbowl_viz %>%
   scale_fill_manual(values = c("#E69F00", "#56B4E9", "#009E73", 
                                "#F0E442", "#0072B2", 
                                "#D55E00", "#CC79A7"),
-                    labels = c("Sexual", "Show Product Quickly", "Patriotic", 
+                    labels = c("Sexual", "Shows Product Quickly", "Patriotic", 
                                "Funny", "Danger", 
                                "Celebrity", "Animal"))+
   labs(title = "Ad Occurences by Brand",
@@ -191,7 +191,7 @@ ggplot(aes(year, ads, color = variable)) +
   scale_color_manual(values = c("#E69F00", "#56B4E9", "#009E73", 
                                 "#F0E442","#0072B2",
                                 "#D55E00", "#CC79A7"), 
-                     labels = c("Sexual", "Show Product Quickly", "Patriotic", 
+                     labels = c("Sexual", "Shows Product Quickly", "Patriotic", 
                                 "Funny", "Danger", 
                                 "Celebrity", "Animal"),
                      guide = guide_legend(reverse = TRUE)) +
