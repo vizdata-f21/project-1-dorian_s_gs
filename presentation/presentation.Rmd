@@ -44,9 +44,7 @@ superbowl <- readr::read_csv(
 ```
 
 ```{r style-slides, echo = FALSE}
-style_xaringan(
-  title_slide_background_image = "img/darksuperbowl.jpg"
-)
+style_xaringan(title_slide_background_image = "img/darksuperbowl.jpg")
 ```
 
 class: inverse, middle, center
@@ -125,24 +123,24 @@ brand_viz <- superbowl_viz %>%
          ad_type != 'patriotic') %>%
   group_by(brand, ad_type)  %>%
   summarise (ads = n()) %>% 
-  ggplot(aes(factor(brand, levels = c("Bud Light", "Budweiser", "Doritos", 
-                                      "Pepsi", "Coca-Cola", "Hyundai",
-                                      "E-Trade", "Toyota", "Kia",
-                                      "NFL")), 
-             ads, 
-             fill = ad_type)) +
+  ggplot(aes(factor(brand, 
+                    levels = c("Bud Light", "Budweiser", "Doritos", "Pepsi", 
+                               "Coca-Cola", "Hyundai", "E-Trade", 
+                               "Toyota", "Kia", "NFL")), 
+                    ads, 
+                    fill = ad_type)) +
   geom_bar(stat = "identity", 
            position = position_stack(0.1)) +
   geom_text(data = brand_totals, 
-           aes(x = brand, y = brand_totals, 
+            aes(x = brand, y = brand_totals, 
                label = brand_totals, 
                fontface = 3,
                fill = NULL), 
-           size = 10,
-           nudge_y = 2) +
+            size = 10,
+            nudge_y = 2) +
   scale_y_continuous(breaks = seq(0, 60, 10)) + 
   scale_fill_manual(values = c("#56B4E9", "#E69F00", "#009E73"), 
-                     labels = c("Shows Product Quickly", "Funny", "Animals")) +
+                    labels = c("Shows Product Quickly", "Funny", "Animals")) +
   labs(title = "Ad Occurrences by Brand",
        y = "Ad Occurrences", 
        x = "Brand",
@@ -295,9 +293,9 @@ superbowl %>%
     geom_density_ridges(scale = 0.9, show.legend = TRUE) +
     coord_cartesian(xlim = c(0.5, 1.0)) +
     scale_fill_discrete_sequential(palette = "Greens", order = c(1:6),
-                                  labels = c("Less than 4K", "4K to 30K", "30K to 90K", 
+                                   labels = c("Less than 4K", "4K to 30K", "30K to 90K", 
                                              "90K to 500K", "500K to 10M", "10M+"),
-                                  guide = guide_legend(reverse = TRUE)) +
+                                   guide = guide_legend(reverse = TRUE)) +
     scale_x_continuous(expand = c(0, 0.1), labels = scales::percent_format(accuracy = 1)) +
     scale_y_discrete(expand = expand_scale(mult = c(0, .2))) +
     labs(
