@@ -116,21 +116,19 @@ library(tidymodels)
 library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
-library(ggeasy)
 ```
 
 
 
 ```{r}
-superbowl %>%
+testing <- superbowl %>%
    select(year, brand, animals, celebrity, use_sex, funny, show_product_quickly, patriotic, danger) %>%
    pivot_longer(cols = c(animals, celebrity, use_sex, funny, show_product_quickly, patriotic, danger), 
                 names_to = 'variable', 
                values_to = 'have') %>%
    filter(have == TRUE) %>%
    group_by(variable) %>%
-   summarise(x = n())
- 
+   summarise(x = n()) 
 ```
 
 
@@ -144,30 +142,32 @@ superbowl_viz <- superbowl %>%
                values_to = 'have') %>%
   filter(have == TRUE) %>%
   group_by(brand, year, variable) %>%
-  summarise(x = n()) %>%
+  summarise(ads = n()) %>%
   relocate(year, .before = brand) 
 ```
 
 
 
-```{r Q1-plot-1}
+
+
+```{r Q1-Plot1}
 superbowl_viz %>%
-  select(-year) %>%
-  group_by(variable, have)  %>%
-  summarise (aggregate_vc = sum(total_vc),
-            aggregate_ads = n(),
-            average_vc = aggregate_vc / aggregate_ads) %>% 
-  relocate(average_vc, .before = aggregate_vc) %>%
-  ggplot(aes(brand, average_vc, fill = variable)) +
-  geom_bar(stat = "identity", position = "dodge") + 
-  scale_fill_manual(values = c("red", "blue"), 
-                    guide = guide_legend(reverse = TRUE)) + 
-  scale_y_continuous(labels = comma) +
-  labs(title = "Advertisement Views by Category",
-       x = "Category", y = "Average View Count") +
+  group_by(brand, variable)  %>%
+  summarise (ads = n()) %>% 
+  ggplot(aes(ads, brand, fill = variable)) +
+  geom_bar(stat = "identity") + 
+  scale_fill_manual(values = c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
+                               "#0072B2", "#D55E00", "#CC79A7")) +
+  labs(title = "Ad Occurences by Brand",
+       x = "Ad Occurences", y = "Brand",
+       fill = "Ad Type") +
   theme_minimal() +
-  easy_center_title()
+  theme(plot.title = element_text(hjust = 0.5) +
+        scale_fill_discrete(breaks = c("Sexual", "Show Product Quickly", 
+                                       "Patriotic", "Funny", "Danger", 
+                                       "Celebrity", "Animal")))
 ```
+
 
 
 
@@ -175,9 +175,13 @@ superbowl_viz %>%
 
 ```{r}
 superbowl_viz %>%
-ggplot(aes(year, total_vc, color = brand)) + 
-  geom_point() + 
-  coord_cartesian(ylim  = c(0, 2e+08)) + 
+ggplot(aes(year, ads, color = variable)) + 
+  #geom_point(size = 1) + 
+  geom_smooth(size = 2, se=F) +
+  scale_color_manual(values = c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
+                               "#0072B2", "#D55E00", "#CC79A7")) +
+  scale_y_continuous(breaks = seq(0, 3, 0.5)) +
+ # facet_wrap(vars(variable), 4, 2) +
   theme_minimal() + 
   labs(y = "Total View Count", 
        x = "Year",
