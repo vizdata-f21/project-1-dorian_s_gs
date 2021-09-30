@@ -83,7 +83,7 @@ superbowl %>%
     labs(
       title = "Views on Youtube Superbowl Ads and Proportion of Likes",
       x = "Proportion of Likes",
-      y = NULL,
+      y = "Amount of Views",
       caption = "Source: FiveThirtyEight") +
     theme(
       plot.title.position = "plot",
