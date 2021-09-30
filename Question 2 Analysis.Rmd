@@ -1,6 +1,8 @@
 ---
 title: "Question 2 Analysis"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -13,6 +15,21 @@ library(forcats)
 library(scales)
 library(viridis)
 library(tagger)
+library(colorspace)
+library(RColorBrewer)
+```
+
+```{r theme}
+knitr::opts_chunk$set(
+  fig.width = 8,    
+  fig.asp = 0.618, 
+  fig.align = "center",
+  fig.retina = 3,    
+  dpi = 300,         
+  out.width = "60%"
+)
+
+ggplot2::theme_set(ggplot2::theme_minimal(base_size = 16))
 ```
 
 ```{r}
@@ -48,12 +65,12 @@ boxplot.stats(superbowl$view_count)$out
 ```{r}
 superbowl <-superbowl %>%
   mutate(view_category = case_when(
-    view_count < 4000 ~ "Little",
+    view_count < 4000 ~ "Few",
     view_count >=4000 & view_count < 30000 ~ "Some",
-     view_count >= 30000 &view_count < 90000 ~ "Moderate",
+    view_count >= 30000 &view_count < 90000 ~ "Moderate",
     view_count >= 90000 &view_count < 500000 ~ "Many",
     view_count >= 500000 &view_count < 10000000 ~ "High",
-    TRUE ~ "Mega"
+    TRUE ~ "Viral"
   ))
 
 superbowl<-superbowl%>%
@@ -64,32 +81,61 @@ superbowl<-superbowl%>%
 
 ```
 
-
 ```{r}
-superbowl<-superbowl%>%
-  mutate(view_category = fct_relevel(
-    view_category, "Mega", "High", "Many", "Moderate","Some","Little"
-  ))
-  
-ggplot(superbowl, aes(x = ratio, y = view_category, fill = view_category)) +
-  #scale_fill_continuous()
-  geom_density_ridges(show.legend = FALSE)
+superbowl %>%
+  mutate(Views = fct_relevel(
+    view_category, "Viral", "High", "Many", "Moderate","Some","Few"
+  )) %>%
+  ggplot(aes(x = ratio, y = Views, fill = Views)) +
+    geom_density_ridges(scale = 1, show.legend = TRUE) +
+    scale_fill_discrete_sequential(palette = "Greens", order = c(6:1),
+                                   labels = c("1M+", "500k to 1M", 
+                                              "90K to 500K", "30K to 90K", 
+                                              "4k to 30K", "Less than 4K")) +
+    scale_x_continuous(expand = c(0, 0.1)) +
+    scale_y_discrete(expand = expand_scale(mult = c(0.01, .4))) +
+    coord_cartesian(xlim = c(0.5, 1.0)) +
+    labs(
+      title = "YouTube Superbowl Ads and Like Ratios",
+      x = "Proportion of Likes",
+      y = "Views Category",
+      caption = "Source: FiveThirtyEight") +
+    guides(fill = guide_legend(reverse = TRUE)) +
+    theme_minimal() +
+    theme(plot.title = element_text(hjust = .4, vjust = 2),
+          plot.caption = element_text(hjust = 1.41),
+          axis.title.x = element_text(hjust = .4), 
+          axis.title.y = element_text(hjust = .38, vjust = 2)) 
+
 ```
 
 ```{r}
-ggplot(data = superbowl, aes(x = ratio, fill = view_category)) +
-  #scale_fill_continuous()
-  facet_grid(view_category ~., scales = "free_y", space = "free_y") +
-  geom_density(show.legend = FALSE) +
-  #geom_text(aes(y = view_category, label = known_for), x = 2030, show.legend = FALSE, hjust = 0) +
-  #geom_text(aes(label = profession), x = 1809, y = Inf, hjust = 1, vjust = 1, show.legend = FALSE) +
-  theme(
-    plot.title.position = "plot",
-    plot.caption.position = "plot",
-    plot.caption = element_text(hjust = 2), # manual hack
-    strip.background = element_blank(),
-    strip.text = element_blank(),
-    axis.title.x = element_text(hjust = 0),
+superbowl %>%
+  mutate(view_category = fct_relevel(
+    view_category, "Viral", "High", "Many", "Moderate","Some","Few"
+  )) %>%
+  ggplot(aes(x = ratio, y = view_category, fill = view_category)) +
+    geom_density_ridges(show.legend = FALSE) +
+    geom_text(aes(label = view_category), x = 0.45, y = Inf) +
+    scale_fill_discrete_sequential(palette = "Greens") +
+    facet_grid(view_category ~., scales = "free_y", space = "free_y", switch = "x") +
+    coord_cartesian(xlim = c(0.5, 1.0), ) +
+    labs(
+      title = "Views on Youtube Superbowl Ads and Proportion of Likes",
+      x = "Proportion of Likes",
+      y = NULL,
+      caption = "Source: FiveThirtyEight") +
+    theme(
+      plot.margin = unit(c(1, 1, 1, 4), "lines"),
+      plot.title.position = "plot",
+      plot.caption.position = "plot",
+      strip.background = element_blank(),
+      strip.text = element_blank(),
+      axis.title.x = element_text(hjust = 0),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor.y = element_blank()
   )
 ```
 
@@ -115,7 +161,7 @@ superbowl%>%
 superbowl%>%
   mutate(view_category = paste(view_category, "Views"))%>%
    mutate(view_category = fct_relevel(
-    view_category, "Little Views","Some Views","Moderate Views","Many Views", "High Views",  "Mega Views" 
+    view_category, "Few Views","Some Views","Moderate Views","Many Views", "High Views",  "Viral Views" 
   ))%>%
 ggplot(aes(x=view_count, y=interactions))+
     geom_area(aes(fill = view_category, alpha=0.5), show.legend = NULL)+
@@ -126,7 +172,6 @@ ggplot(aes(x=view_count, y=interactions))+
              strip.position="top")+
   tag_facets(tag_pool = c("149","199","222", "232","169", "330"),
              position = list(x=.1, y=.76))+
-  theme_minimal()+
 	scale_y_continuous(label = label_number_si()) +
      scale_x_continuous(label = label_number_si())+
   labs(x= "View Count", y="Number of Interactions", title="Assessing Superbowl Ads Interactions",
@@ -138,13 +183,13 @@ ggplot(aes(x=view_count, y=interactions))+
         plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5),
         panel.spacing = unit(1.4, "lines"),
-        text=element_text(family="Times New Roman"),
         tagger.panel.tag.text = element_text(color = "blue", size = 6),
         plot.caption = element_text(color = "blue", size = 8, hjust =0.5),
         plot.caption.position = "panel")+
   scale_fill_viridis(discrete = T)
 
 ```
+
 
 
 
