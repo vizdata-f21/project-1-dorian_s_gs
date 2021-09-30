@@ -110,23 +110,23 @@ glance(model)
 
 ---
 
-```{r density analysis, echo = FALSE, warning = FALSE, message = FALSE, fig.width = 30, fig.height = 25, fig.align = "center"}
+```{r density_analysis, echo = FALSE, warning = FALSE, message = FALSE, fig.width = 30, fig.height = 25, fig.align = "center"}
 superbowl <- superbowl %>%
   mutate(ratio = like_count / (like_count + dislike_count),
          interactions = like_count + dislike_count + comment_count,
          view_category = case_when(
             view_count < 4000 ~ "Few",
-            view_count >=4000 & view_count < 30000 ~ "Some",
-            view_count >= 30000 &view_count < 90000 ~ "Moderate",
-            view_count >= 90000 &view_count < 500000 ~ "Many",
-            view_count >= 500000 &view_count < 10000000 ~ "High",
+            view_count >= 4000 & view_count < 30000 ~ "Some",
+            view_count >= 30000 & view_count < 90000 ~ "Moderate",
+            view_count >= 90000 & view_count < 500000 ~ "Many",
+            view_count >= 500000 & view_count < 10000000 ~ "High",
             TRUE ~ "Viral"))
 superbowl %>%
   mutate(Views = fct_relevel(
             view_category, "Viral", "High", "Many", "Moderate","Some","Few")
          ) %>%
   ggplot(aes(x = ratio, y = Views, fill = Views)) +
-    geom_density_ridges(scale = 1, show.legend = TRUE) +
+    geom_density_ridges(banwidth = 10, scale = 1, show.legend = TRUE) +
     coord_cartesian(xlim = c(0.5, 1.0)) +
     scale_fill_discrete_sequential(palette = "Greens", order = c(6:1),
                                   labels = c("10M+", "500k to 10M", 
@@ -156,8 +156,7 @@ superbowl %>%
 
 ---
 
-
-```{r interactions, echo = FALSE, warning = FALSE, fig.width = 35, fig.height = 30, fig.align = "center"}
+```{r interactions, echo = FALSE, warning = FALSE, fig.width = 30, fig.height = 25, fig.align = "center"}
 superbowl %>%
   group_by(view_category) %>%
   select(interactions)
@@ -167,20 +166,20 @@ superbowl %>%
   filter(!is.na(interactions)) %>%
   summarise(vti = sum(view_count) / sum(interactions))
 
-superbowl%>%
-  mutate(view_category = paste(view_category, "Views"))%>%
+superbowl %>%
+  mutate(view_category = paste(view_category, "Views")) %>%
    mutate(view_category = fct_relevel(
     view_category, "Few Views","Some Views","Moderate Views","Many Views", "High Views",  "Viral Views" 
-  ))%>%
-ggplot(aes(x=view_count, y=interactions))+
-    geom_area(aes(fill = view_category, alpha=0.5), show.legend = NULL)+
-  geom_line()+
+  )) %>%
+ggplot(aes(x =view_count, y=interactions)) +
+  geom_area(aes(fill = view_category, alpha=0.5), show.legend = NULL)+
+  geom_line() +
   facet_wrap(vars(view_category),  
              scales ="free",
              nrow = 3,
              strip.position = "top") +
   tag_facets(tag_pool = c("149","199","222", "232","169", "330"),
-             position = list(x = .1, y = .76))+
+             position = list(x = .1, y = .76)) +
 	scale_y_continuous(label = label_number_si()) +
   scale_x_continuous(label = label_number_si()) +
   labs(x = "View Count", y ="Number of Interactions", title ="Assessing Superbowl Ads Interactions",
@@ -193,7 +192,7 @@ ggplot(aes(x=view_count, y=interactions))+
         plot.title = element_text(face = "bold", size = 80, hjust = 0.5),
         plot.subtitle = element_text(size = 50, hjust = 0.5),
         panel.spacing = unit(1.4, "lines"),
-        tagger.panel.tag.text = element_text(color = "blue", size = 6),
+        tagger.panel.tag.text = element_text(color = "blue", size = 30),
         plot.caption = element_text(color = "blue", size = 40, hjust =0.5),
         plot.caption.position = "panel",
         axis.text.x = NULL,
