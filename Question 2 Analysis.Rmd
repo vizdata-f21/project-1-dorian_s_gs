@@ -1,6 +1,12 @@
 ---
 title: "Question 2 Analysis"
+<<<<<<< HEAD
 output: html_document
+=======
+output:
+  html_document: default
+  pdf_document: default
+>>>>>>> 3fd8e35e80aca1e7a0238a55a7db3ed54e75360d
 ---
 
 ```{r setup, include=FALSE}
