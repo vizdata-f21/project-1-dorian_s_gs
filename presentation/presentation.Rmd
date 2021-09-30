@@ -118,29 +118,28 @@ superbowl <- superbowl %>%
          view_category = case_when(
             view_count < 4000 ~ "Few",
             view_count >= 4000 & view_count < 30000 ~ "Some",
-            view_count >= 30000 & view_count < 90000 ~ "Medium",
+            view_count >= 30000 & view_count < 90000 ~ "Moderate",
             view_count >= 90000 & view_count < 500000 ~ "Many",
             view_count >= 500000 & view_count < 10000000 ~ "High",
             TRUE ~ "Viral"))
 superbowl %>%
-  mutate(Views = fct_rev(fct_relevel(
-            view_category, "Viral", "High", "Many", "Medium","Some","Few")
+  mutate(Views = fct_relevel(
+            view_category, "Few", "Some", "Moderate", "Many","High","Viral"
          )) %>%
   ggplot(aes(x = ratio, y = Views, fill = Views)) +
-    geom_density_ridges(scale = 1, show.legend = TRUE) +
+    geom_density_ridges(scale = 0.9, show.legend = TRUE) +
     coord_cartesian(xlim = c(0.5, 1.0)) +
-    scale_fill_discrete_sequential(palette = "Greens", order = c(6:1),
-                                  labels = c("10M+", "500k to 10M", 
-                                            "90K to 500K", "30K to 90K", 
-                                            "4k to 30K", "Less than 4K")) +
+    scale_fill_discrete_sequential(palette = "Greens", order = c(1:6),
+                                  labels = c("Less than 4K", "4K to 30K", "30K to 90K", 
+                                             "90K to 500K", "500K to 10M", "10M+"),
+                                  guide = guide_legend(reverse = TRUE)) +
     scale_x_continuous(expand = c(0, 0.1), labels = scales::percent_format(accuracy = 1)) +
-    scale_y_discrete(expand = expand_scale(mult = c(0, .3))) +
+    scale_y_discrete(expand = expand_scale(mult = c(0, .2))) +
     labs(
       title = "Youtube Superbowl Ads and Like Percentages",
       x = "Like Percentage",
       y = "Views",
     caption = "Source: FiveThirtyEight") +
-    guides(fill = guide_legend()) +
     theme_ridges() +
     theme(
       plot.title.position = "plot",
@@ -150,7 +149,7 @@ superbowl %>%
       legend.text = element_text(size = 40),
       legend.title = element_text(size = 50),
       axis.title.x = element_text(face = "bold", size = 70, hjust = 0.42, vjust = -1), 
-      axis.title.y = element_text(face = "bold", size = 70, hjust = 0.45, vjust = 1),
+      axis.title.y = element_text(face = "bold", size = 70, hjust = 0.54, vjust = 1),
       axis.text = element_text(size = 50, lineheight = 10),
       axis.text.x = element_text(vjust = -1))
 ```
@@ -161,14 +160,14 @@ superbowl <- superbowl %>%
   mutate(view_category = paste(view_category, "Views"))
 superbowl <- superbowl %>%
   mutate(view_category = fct_relevel(
-  view_category, "Few Views","Many Views","Some Views","High Views", "Medium Views", "Viral Views"))
+  view_category, "Few Views","Some Views","Moderate Views","Many Views", "High Views", "Viral Views"))
 ```
+
 
 ```{r interactions, echo = FALSE, message = FALSE, warning = FALSE}
 ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
-  geom_point(aes(fill = view_category), show.legend = NULL) +
-  geom_smooth(method = "lm", se = F) +
-  #geom_line() +
+  geom_area(aes(fill = view_category), show.legend = NULL) +
+  geom_line() +
   facet_wrap(vars(view_category),  
              scales ="free",
              nrow = 3,
