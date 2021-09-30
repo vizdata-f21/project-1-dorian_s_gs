@@ -1,0 +1,353 @@
+---
+title: "Question 1 Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r inital-clean-and-transform}
+#transformed dataset that can be used to make visualizations
+# superbowl_viz_data <- superbowl %>%
+#   select(year, view_count, animals, celebrity, use_sex) %>%
+#   group_by(animals, year) %>%
+#   mutate(average_view_count_animals = sum(view_count, na.rm = TRUE) / n()) %>%
+#   ungroup() %>%
+#   group_by(celebrity, year) %>%
+#   mutate(average_view_count_celebrity = sum(view_count, na.rm = TRUE) / n()) %>%
+#   ungroup() %>%
+#   group_by(use_sex, year) %>%
+#   mutate(average_view_count_use_sex = sum(view_count, na.rm = TRUE) / n()) %>%
+#   ungroup() %>%
+#   select(-view_count) %>%
+#   select(year, animals, average_view_count_animals,
+#          celebrity, average_view_count_celebrity,
+#          use_sex, average_view_count_use_sex)
+# 
+# superbowl_viz_data <- superbowl_viz_data[!duplicated(superbowl_viz_data), ]
+# 
+# superbowl_plot <- superbowl_viz_data %>%
+#   mutate(avg_vc_ani_TRUE
+#          = case_when(animals == TRUE ~ average_view_count_animals)) %>%
+#   mutate(avg_vc_ani_FALSE
+#          = case_when(animals == FALSE ~ average_view_count_animals)) %>%
+#   mutate(avg_vc_cel_TRUE
+#          = case_when(celebrity == TRUE ~ average_view_count_celebrity)) %>%
+#   mutate(avg_vc_cel_FALSE
+#          = case_when(celebrity == FALSE ~ average_view_count_celebrity)) %>%
+#   mutate(avg_vc_sex_TRUE
+#          = case_when(use_sex == TRUE ~ average_view_count_use_sex)) %>%
+#   mutate(avg_vc_sex_FALSE
+#          = case_when(use_sex == FALSE ~ average_view_count_use_sex)) %>%
+#   select(year, avg_vc_ani_TRUE, avg_vc_ani_FALSE,
+#                avg_vc_cel_TRUE, avg_vc_cel_FALSE,
+#                avg_vc_sex_TRUE, avg_vc_sex_FALSE)
+# 
+# superbowl_plot_long <- melt(superbowl_plot, id = "year",
+#                            measure = c("avg_vc_ani_TRUE", "avg_vc_ani_FALSE",
+#                                        "avg_vc_cel_TRUE", "avg_vc_cel_FALSE",
+#                                        "avg_vc_sex_TRUE", "avg_vc_sex_FALSE"))
+# 
+# superbowl_plot_long <- superbowl_plot_long[!duplicated(superbowl_plot_long), ]
+# superbowl_plot_long <- superbowl_plot_long %>%
+#   na.omit() %>%
+#   filter(value != 0)
+```
+
+```{r secondary-clean-and-transform}
+# superbowl_animals <- superbowl %>%
+#   select(view_count, animals, year) %>%
+#   filter(!is.na(view_count)) %>%
+#   group_by(animals, year) %>%
+#   mutate(average_view_count = sum(view_count) / n(),
+#          total_view_count = sum(view_count),
+#          total_ads = n())%>%
+#   ungroup() %>%
+#   select(-view_count)
+# 
+# superbowl_animals <- superbowl_animals[!duplicated(superbowl_animals), ]
+# superbowl_animals<- rename(superbowl_animals, 'have' = 'animals')
+# superbowl_animals$variable <- 'animals'
+# 
+# 
+# superbowl_celebrity <- superbowl %>%
+#   select(view_count, celebrity, year) %>%
+#   filter(!is.na(view_count)) %>%
+#   group_by(celebrity, year) %>%
+#   mutate(average_view_count = sum(view_count) / n(),
+#          total_view_count = sum(view_count),
+#          total_ads = n())%>%
+#   ungroup() %>%
+#   select(-view_count)
+# 
+# superbowl_celebrity <- superbowl_celebrity[!duplicated(superbowl_celebrity), ]
+# superbowl_celebrity<- rename(superbowl_celebrity, 'have' = 'celebrity')
+# superbowl_celebrity$variable <- 'celebrity'
+# 
+# 
+# superbowl_use_sex <- superbowl %>%
+#   select(view_count, use_sex, year) %>%
+#   filter(!is.na(view_count)) %>%
+#   group_by(use_sex, year) %>%
+#   mutate(average_view_count = sum(view_count) / n(),
+#          total_view_count = sum(view_count),
+#          total_ads = n())%>%
+#   ungroup() %>%
+#   select(-view_count)
+# 
+# superbowl_use_sex <- superbowl_use_sex[!duplicated(superbowl_use_sex), ]
+# superbowl_use_sex<- rename(superbowl_use_sex, 'have' = 'use_sex')
+# superbowl_use_sex$variable <- 'use_sex'
+# 
+# superbowl_viz <- rbind(superbowl_animals, superbowl_celebrity, superbowl_use_sex)
+# superbowl_viz <- superbowl_viz %>% relocate(variable, .before = have)
+```
+
+```{r load-data, include=FALSE}
+superbowl <- readr::read_csv(
+  'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-02/youtube.csv')
+```
+
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(knitr)
+library(xaringanthemer)
+library(ggrepel)
+library(cowplot)
+```
+
+
+```{r message=FALSE, clean-and-transform-data}
+#message related to grouping by 'brand' and 'year' in summarise, which is what we want
+superbowl_viz <- superbowl %>%
+  select(year, brand, animals, celebrity, use_sex, 
+         funny, show_product_quickly, patriotic, danger) %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
+                        show_product_quickly, patriotic, danger), 
+               names_to = 'ad_type', 
+               values_to = 'have') %>%
+  filter(have == TRUE) %>%
+  group_by(brand, year, ad_type) %>%
+  summarise(ads = n()) %>%
+  mutate(brand = case_when(brand == 'Hynudai' ~ 'Hyundai',
+                           TRUE ~ as.character(brand))) %>%
+  mutate(category = case_when(brand == 'Bud Light' ~ 'Alcohol',
+                          brand == 'Budweiser' ~ 'Alcohol',
+                          brand == 'Doritos' ~ 'Food & Beverage',
+                          brand == 'Pepsi' ~ 'Food & Beverage',
+                          brand == 'Coca-Cola' ~ 'Food & Beverage',
+                          brand == 'Hyundai' ~ 'Automobile',
+                          brand == 'Toyota' ~ 'Automobile',
+                          brand == 'Kia' ~ 'Automobile',
+                          brand == 'E-Trade' ~ 'Financial Services',
+                          brand == 'NFL' ~ 'Sports')) %>%
+  relocate(year, .before = brand) %>%
+  relocate(category, .before = brand)
+```
+
+```{r category-totals-label}
+# category_totals <- superbowl_viz %>%
+#   filter(ad_type != 'celebrity',
+#          ad_type != 'use_sex',
+#          ad_type != 'danger',
+#          ad_type != 'patriotic') %>%
+#   group_by(category)  %>%
+#   summarise(category_totals = n())
+# ```
+# 
+# ```{r message=FALSE, Q1-Plot-1-Category}
+# #message related to grouping in summarise(), which is how we want it
+# superbowl_viz %>%
+#   filter(ad_type != 'celebrity',
+#          ad_type != 'use_sex',
+#          ad_type != 'danger',
+#          ad_type != 'patriotic') %>%
+#   group_by(category, ad_type)  %>%
+#   summarise (ads = n()) %>% 
+#   ggplot(aes(ads, factor(category, levels = c("Sports", "Financial Services", 
+#                                               "Automobile", "Food & Beverage",
+#                                               "Alcohol")), 
+#              fill = ad_type)) +
+#   geom_bar(stat = "identity") +
+#   geom_text(data = category_totals, 
+#            aes(x = category_totals, y = category, 
+#                label = category_totals, 
+#                fill = NULL), 
+#            size = 3,
+#            nudge_x = 2) +
+#   scale_x_continuous(breaks = seq(0, 100, 20)) + 
+#   scale_fill_manual(values = c("#56B4E9", "#E69F00", "#009E73"), 
+#                      labels = c("Shows Product Quickly", "Funny", "Animals")) +
+#   labs(title = "Ad Occurrences by Category",
+#        x = "Ad Occurrences", 
+#        y = "Category",
+#        fill = "Ad Type",
+#        caption = "Source: FiveThirtyEight") +
+#   guides(fill = guide_legend(reverse = TRUE)) +
+#   theme_minimal() +
+#   theme(plot.title = element_text(hjust = 0.075),
+#         plot.caption = element_text(hjust = 1.55),
+#         legend.position = c(0.8, 0.2)) 
+```
+
+
+
+```{r brand-totals-label}
+brand_totals <- superbowl_viz %>%
+  filter(ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(brand)  %>%
+  summarise(brand_totals = n())
+```
+
+```{r message=FALSE, Q1-Plot-1-Brand}
+#message related to grouping in summarise(), which is how we want it
+brand_viz <- superbowl_viz %>%
+  filter(ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(brand, ad_type)  %>%
+  summarise (ads = n()) %>% 
+  ggplot(aes(factor(brand, levels = c("Bud Light", "Budweiser", "Doritos", 
+                                      "Pepsi", "Coca-Cola", "Hyundai",
+                                      "E-Trade", "Toyota", "Kia",
+                                      "NFL")), 
+             ads, 
+             fill = ad_type)) +
+  geom_bar(stat = "identity", 
+           position = position_stack(0.1)) +
+  geom_text(data = brand_totals, 
+           aes(x = brand, y = brand_totals, 
+               label = brand_totals, 
+               fontface = 3,
+               fill = NULL), 
+           size = 3,
+           nudge_y = 2) +
+  scale_y_continuous(breaks = seq(0, 60, 10)) + 
+  #scale_x_discrete(expand = c(.1,0)) +
+  #facet_grid(. ~ brand, scales = "free_x") +
+  scale_fill_manual(values = c("#56B4E9", "#E69F00", "#009E73"), 
+                     labels = c("Shows Product Quickly", "Funny", "Animals")) +
+  labs(title = "Ad Occurrences by Brand",
+       y = "Ad Occurrences", 
+       x = "Brand",
+       fill = "Ad Type",
+       caption = "Source: FiveThirtyEight") +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.075),
+        plot.caption = element_text(hjust = 1.55),
+        legend.position = c(0.85, 0.7),
+        axis.text.x = element_blank(),
+        strip.text = element_blank(),
+        axis.title.y = element_text(vjust = 3, 
+                                    size = 12),
+        axis.title.x = element_text(vjust = 3.5,
+                                    size = 12))
+
+images <- axis_canvas(brand_viz, axis = 'x') + 
+  draw_image("https://1000logos.net/wp-content/uploads/2021/04/Bud-Light-logo-768x432.png", 
+             x = 0.5, scale = 0.75) +
+  draw_image("https://logos-world.net/wp-content/uploads/2020/12/Budweiser-Logo-2016-present.jpg", 
+             x = 1.5, scale = 1.1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2020/07/Doritos-Logo-768x480.png",
+             x = 2.5, scale = 1.1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2017/05/Pepsi-Logo-768x631.png", 
+             x = 3.5, scale = 0.9) +
+  draw_image("https://1000logos.net/wp-content/uploads/2021/05/Coca-Cola-logo-768x432.png",
+             x = 4.5, scale = 1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2018/04/Hyundai-logo-768x432.png",
+             x = 5.5, scale = 1.1) +
+  draw_image("https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco,dpr_1/v1476500866/ukg833gylj7adlryeuig.png", 
+             x = 6.5, scale = 1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2021/04/Toyota-logo-768x432.png", 
+             x = 7.5, scale = 0.8) +
+  draw_image("https://1000logos.net/wp-content/uploads/2020/02/Kia-Logo-2012-1024x635.jpg", 
+             x = 8.5, scale = 0.9) +
+  draw_image("https://1000logos.net/wp-content/uploads/2017/05/NFL-logo-768x518.png", 
+             x = 9.5, scale = 1.1) 
+
+ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
+```
+
+
+## Plots (Q1 Plot 2)
+
+
+
+```{r message=FALSE, ad-labels}
+#message related to grouping in summarise(), which is how we want it
+ad_labels <- superbowl %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
+                        show_product_quickly, patriotic, danger), 
+               names_to = 'ad_type', 
+               values_to = 'have') %>%
+  filter(have == TRUE,
+         ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(ad_type, year) %>%
+  summarise(ads = n()) %>%
+  filter(year == 2005) %>%
+  mutate(ads = case_when(ads == 6 ~ 4.1,
+                         ads == 11 ~ 9.9,
+                         ads == 8 ~ 8.5))
+
+```
+
+
+```{r message=FALSE, Q1-Plot-2}
+#message related to geom_smooth() method and formula, 
+#which are both what we want
+superbowl %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
+                        show_product_quickly, patriotic, danger), 
+               names_to = 'ad_type', 
+               values_to = 'have') %>%
+  filter(have == TRUE,
+         ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(year, ad_type) %>%
+  summarise(ads = n()) %>%
+  ggplot(aes(year, ads, color = ad_type)) + 
+  geom_line(aes(linetype = ad_type), 
+            stat = "smooth",
+            size = 1.5, 
+            se = F,
+            show.legend = FALSE) +
+  geom_text_repel(data = ad_labels, 
+                  aes(label = c("Shows Product Quickly", "Funny", "Animals")),
+                  nudge_x = 0.25,
+                  nudge_y = -0.65,
+                  size = 4,
+                  show.legend = FALSE) +
+  scale_color_manual(values = c("#56B4E9", "#E69F00", "#009E73"), 
+                     labels = c("Shows Product Quickly", "Funny", "Animals"),
+                     guide = guide_legend(reverse = TRUE)) +
+  scale_y_continuous(breaks = seq(0, 13, 2)) +
+  scale_x_continuous(breaks = seq(2000, 2020, 4)) +
+  theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.075),
+        plot.subtitle = element_text(hjust = 0.075),
+        plot.caption = element_text(hjust = 1.48),
+        legend.position = c(0.85, 0.9),
+        axis.title.y = element_text(vjust = 3, 
+                                    size = 12),
+        axis.title.x = element_text(vjust = -2, 
+                                    size = 12)) +
+  labs(y = "Ad Occurrences", 
+       x = "Year",
+       color = "Ad Type",
+       caption = "Source: FiveThirtyEight",
+       title =  "Ad Occurrences by Type",
+       subtitle = "From 2000 - 2020") 
+```
