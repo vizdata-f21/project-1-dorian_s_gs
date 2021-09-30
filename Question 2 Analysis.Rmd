@@ -1,8 +1,8 @@
 ---
 title: "Question 2 Analysis"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -21,26 +21,27 @@ library(RColorBrewer)
 
 ```{r theme}
 knitr::opts_chunk$set(
-  fig.width = 8,    
-  fig.asp = 0.618, 
   fig.align = "center",
   fig.retina = 3,    
-  dpi = 300,         
-  out.width = "60%"
-)
+  dpi = 300,
+    fig.width = 8,    
+  fig.asp = 0.618,
+    out.width = "70%"
 
-ggplot2::theme_set(ggplot2::theme_minimal(base_size = 16))
+)
+ggplot2::theme_set(ggplot2::theme_minimal())
+
 ```
 
-```{r load-data, include=FALSE}
-superbowl <- readr::read_csv(
-  'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-02/youtube.csv')
+```{r}
+superbowl<- read.csv("data/superbowl.csv")
 ```
 
 
 ```{r}
 superbowl <- superbowl %>%
-  mutate(ratio = like_count / (like_count + dislike_count))
+  mutate(ratio = like_count / (like_count + dislike_count),
+         interactions = like_count + dislike_count + comment_count)
 ```
 
 
@@ -73,92 +74,52 @@ superbowl <-superbowl %>%
     view_count >= 500000 &view_count < 10000000 ~ "High",
     TRUE ~ "Viral"
   ))
-
-superbowl<-superbowl%>%
-  mutate(interactions= like_count+dislike_count+comment_count)
-  
-
-
-
 ```
+
 
 ```{r}
 superbowl %>%
   mutate(Views = fct_relevel(
     view_category, "Viral", "High", "Many", "Moderate","Some","Few"
   )) %>%
-  ggplot(aes(x = ratio, y = Views, fill = Views)) +
-    geom_density_ridges(scale = 1, show.legend = TRUE) +
-    scale_fill_discrete_sequential(palette = "Greens", order = c(6:1),
-                                   labels = c("1M+", "500k to 1M", 
-                                              "90K to 500K", "30K to 90K", 
-                                              "4k to 30K", "Less than 4K")) +
-    scale_x_continuous(expand = c(0, 0.1)) +
-    scale_y_discrete(expand = expand_scale(mult = c(0.01, .4))) +
-    coord_cartesian(xlim = c(0.5, 1.0)) +
-    labs(
-      title = "YouTube Superbowl Ads and Like Ratios",
-      x = "Proportion of Likes",
-      y = "Views Category",
-      caption = "Source: FiveThirtyEight") +
-    guides(fill = guide_legend(reverse = TRUE)) +
-    theme_minimal() +
-    theme(plot.title = element_text(hjust = .4, vjust = 2),
-          plot.caption = element_text(hjust = 1.41),
-          axis.title.x = element_text(hjust = .4), 
-          axis.title.y = element_text(hjust = .38, vjust = 2)) 
-
+ggplot(aes(x = ratio, y = Views, fill = Views)) +
+  geom_density_ridges(scale = 1, show.legend = TRUE) +
+  coord_cartesian(xlim = c(0.5, 1.0)) +
+  scale_fill_discrete_sequential(palette = "Greens", order = c(6:1),
+                                  labels = c("10M+", "500k to 10M", 
+                                            "90K to 500K", "30K to 90K", 
+                                            "4k to 30K", "Less than 4K")) +
+  scale_x_continuous(expand = c(0, 0.1), labels = scales::percent_format(accuracy = 1)) +
+  scale_y_discrete(expand = expand_scale(mult = c(0, .4))) +
+  labs(
+    title = "Youtube Superbowl Ads and Like Percentages",
+    x = "Like Percentage",
+    y = "Views Category",
+    caption = "Source: FiveThirtyEight") +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  theme_ridges() +
+  theme(
+    plot.title = element_text(hjust = .4, vjust = 2),
+    plot.caption = element_text(hjust = 1.41),
+    axis.title.x = element_text(hjust = .4), 
+    axis.title.y = element_text(hjust = .38, vjust = 2))
 ```
 
 ```{r}
 superbowl %>%
-  mutate(view_category = fct_relevel(
-    view_category, "Viral", "High", "Many", "Moderate","Some","Few"
-  )) %>%
-  ggplot(aes(x = ratio, y = view_category, fill = view_category)) +
-    geom_density_ridges(show.legend = FALSE) +
-    geom_text(aes(label = view_category), x = 0.45, y = Inf) +
-    scale_fill_discrete_sequential(palette = "Greens") +
-    facet_grid(view_category ~., scales = "free_y", space = "free_y", switch = "x") +
-    coord_cartesian(xlim = c(0.5, 1.0), ) +
-    labs(
-      title = "Views on Youtube Superbowl Ads and Proportion of Likes",
-      x = "Proportion of Likes",
-      y = NULL,
-      caption = "Source: FiveThirtyEight") +
-    theme(
-      plot.margin = unit(c(1, 1, 1, 4), "lines"),
-      plot.title.position = "plot",
-      plot.caption.position = "plot",
-      strip.background = element_blank(),
-      strip.text = element_blank(),
-      axis.title.x = element_text(hjust = 0),
-      axis.text.y = element_blank(),
-      axis.ticks.y = element_blank(),
-      panel.grid.major.y = element_blank(),
-      panel.grid.minor.y = element_blank()
-  )
-```
-
-note: geom_grid
-interaction = likes + dislikes+ comments
-
-```{r}
-superbowl%>%
-  group_by(view_category)%>%
+  group_by(view_category) %>%
   select(interactions)
 ```
 
-
 ```{r}
-superbowl%>%
- group_by(view_category)%>%
-  filter(!is.na(interactions))%>%
-  summarise(vti= sum(view_count)/sum(interactions))
+superbowl %>%
+  group_by(view_category) %>%
+  filter(!is.na(interactions)) %>%
+  summarise(vti = sum(view_count) / sum(interactions))
 ```
 
 
-```{r}
+```{r }
 superbowl%>%
   mutate(view_category = paste(view_category, "Views"))%>%
    mutate(view_category = fct_relevel(
@@ -168,16 +129,16 @@ ggplot(aes(x=view_count, y=interactions))+
     geom_area(aes(fill = view_category, alpha=0.5), show.legend = NULL)+
   geom_line()+
   facet_wrap(vars(view_category),  
-             scales="free",
-             nrow=3,
-             strip.position="top")+
+             scales ="free",
+             nrow = 3,
+             strip.position = "top") +
   tag_facets(tag_pool = c("149","199","222", "232","169", "330"),
-             position = list(x=.1, y=.76))+
+             position = list(x = .1, y = .76))+
 	scale_y_continuous(label = label_number_si()) +
-     scale_x_continuous(label = label_number_si())+
-  labs(x= "View Count", y="Number of Interactions", title="Assessing Superbowl Ads Interactions",
-       subtitle="Interactions is defined by sum of \nlikes, dislikes and comments on a video",
-       caption="Number on Each Panel represents \nthe View To Interations Ratio of that view category")+
+  scale_x_continuous(label = label_number_si()) +
+  labs(x = "View Count", y ="Number of Interactions", title ="Assessing Superbowl Ads Interactions",
+       subtitle ="Interactions is defined by sum of \nlikes, dislikes and comments on a video",
+       caption ="Number on Each Panel represents \nthe View To Interations Ratio of that view category") +
   theme(panel.grid.minor = element_blank(),
         strip.background = element_rect(colour = "black"),
         strip.placement = "inside",
@@ -186,12 +147,10 @@ ggplot(aes(x=view_count, y=interactions))+
         panel.spacing = unit(1.4, "lines"),
         tagger.panel.tag.text = element_text(color = "blue", size = 6),
         plot.caption = element_text(color = "blue", size = 8, hjust =0.5),
-        plot.caption.position = "panel")+
+        plot.caption.position = "panel",
+        axis.text.x = NULL) +
   scale_fill_viridis(discrete = T)
-
 ```
-
-
 
 
 

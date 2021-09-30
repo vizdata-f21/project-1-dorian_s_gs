@@ -1,6 +1,5 @@
 ---
 title: "SuperBowl Ads"
-subtitle: "Presentation subtitle (if any)"
 author: "Dorian's Gs <br> Martha Aboagye, Parker Dingman, Eli Feder, Courtney Lee"
 institute: "Duke University"
 date: "`r Sys.Date()`"
@@ -16,17 +15,22 @@ output:
 ---
 
 ```{r load-packages, include = FALSE}
-# Add any additional packages you need to this chunk
-# Remove any packages from this list that you're not using
+library(ggplot2)
 library(tidyverse)
 library(tidymodels)
-library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
+library(fs)
+library(dplyr)
+library(ggridges)
+library(forcats)
+library(scales)
+library(viridis)
+library(tagger)
+library(colorspace)
 ```
 
 ```{r setup, include=FALSE}
-# For better figure resolution
 knitr::opts_chunk$set(
   fig.retina = 3, 
   dpi = 300, 
@@ -43,29 +47,25 @@ superbowl <- readr::read_csv(
 
 ```{r style-slides, echo = FALSE}
 style_xaringan(
-  title_slide_background_image = "img/watercolour_sys02_img34_teacup-ocean.jpg"
+  title_slide_background_image = "img/darksuperbowl.jpg"
 )
 ```
 
 class: inverse, middle, center
 
-# Using xaringan
+background-image: url(img/superbowlads.jpg)
 
 ---
 
-## xaringan
-
-- The presentation is created using the `xaringan` package
-
-- Use `---` to separate slides and `--` for incremental builds
+## 1. What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
 
 --
 
-- Like this
+- Talk about specific categories here
 
 ---
 
-## Layouts
+## Details
 
 You can use plain text
 
@@ -85,7 +85,7 @@ or text in two columns $^*$
 
 ---
 
-## Code
+## First Plot Name
 
 ```{r boring-regression}
 # a boring regression
@@ -97,23 +97,111 @@ glance(model)
 
 ---
 
-## Plots
+## 2. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
 
-```{r recode-species, echo = FALSE}
-# In this chunk I'm doing a bunch of analysis that I don't want to present 
-# in my slides. But I need the resulting data frame for a plot I want to present.
-penguins_modified <- penguins %>%
-  mutate(species = fct_other(species, keep = "Adelie"))
+--
+
+- Examining the relationship between different popularity and interaction metrics
+
+--
+
+- Popularity: views
+- Interactions: comments, likes, and dislikes
+
+---
+
+```{r density_analysis, echo = FALSE, warning = FALSE, message = FALSE, fig.width = 30, fig.height = 25, fig.align = "center"}
+superbowl <- superbowl %>%
+  mutate(ratio = like_count / (like_count + dislike_count),
+         interactions = like_count + dislike_count + comment_count,
+         view_category = case_when(
+            view_count < 4000 ~ "Few",
+            view_count >= 4000 & view_count < 30000 ~ "Some",
+            view_count >= 30000 & view_count < 90000 ~ "Moderate",
+            view_count >= 90000 & view_count < 500000 ~ "Many",
+            view_count >= 500000 & view_count < 10000000 ~ "High",
+            TRUE ~ "Viral"))
+superbowl %>%
+  mutate(Views = fct_relevel(
+            view_category, "Viral", "High", "Many", "Moderate","Some","Few")
+         ) %>%
+  ggplot(aes(x = ratio, y = Views, fill = Views)) +
+    geom_density_ridges(banwidth = 10, scale = 1, show.legend = TRUE) +
+    coord_cartesian(xlim = c(0.5, 1.0)) +
+    scale_fill_discrete_sequential(palette = "Greens", order = c(6:1),
+                                  labels = c("10M+", "500k to 10M", 
+                                            "90K to 500K", "30K to 90K", 
+                                            "4k to 30K", "Less than 4K")) +
+    scale_x_continuous(expand = c(0, 0.1), labels = scales::percent_format(accuracy = 1)) +
+    scale_y_discrete(expand = expand_scale(mult = c(0, .3))) +
+    labs(
+      title = "Youtube Superbowl Ads and Like Percentages",
+      x = "Like Percentage",
+      y = "Views",
+    caption = "Source: FiveThirtyEight") +
+    guides(fill = guide_legend(reverse = TRUE)) +
+    theme_ridges() +
+    theme(
+      plot.title.position = "plot",
+      plot.title = element_text(face = "bold", size = 90, hjust = 0),
+      plot.caption = element_text(size = 40, hjust = 1.3),
+      legend.key.size = unit(3, 'cm'),
+      legend.text = element_text(size = 40),
+      legend.title = element_text(size = 50),
+      axis.title.x = element_text(face = "bold", size = 70, hjust = 0, vjust = -1), 
+      axis.title.y = element_text(face = "bold", size = 70, hjust = 0, vjust = 1),
+      axis.text = element_text(size = 50, lineheight = 10),
+      axis.text.x = element_text(vjust = -1))
 ```
 
-```{r plot-penguins, echo = FALSE, warning = FALSE, fig.alt = "Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all the others combined together. There is a relatively strong, positive relationship between the two variables. The Adelie penguins are clustered together but they don't exhibit a different trend than the rest of the penguins."}
-# Code hidden with echo = FALSE
-# Uses modified penguins dataset from previous chunk
-# Play around with height and width until you're happy with the look
-ggplot(penguins_modified, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
-  geom_point() + 
-  theme_minimal()
+---
+
+```{r interactions, echo = FALSE, warning = FALSE, fig.width = 30, fig.height = 25, fig.align = "center"}
+superbowl %>%
+  group_by(view_category) %>%
+  select(interactions)
+
+superbowl %>%
+  group_by(view_category) %>%
+  filter(!is.na(interactions)) %>%
+  summarise(vti = sum(view_count) / sum(interactions))
+
+superbowl %>%
+  mutate(view_category = paste(view_category, "Views")) %>%
+   mutate(view_category = fct_relevel(
+    view_category, "Few Views","Some Views","Moderate Views","Many Views", "High Views",  "Viral Views" 
+  )) %>%
+ggplot(aes(x =view_count, y=interactions)) +
+  geom_area(aes(fill = view_category, alpha=0.5), show.legend = NULL)+
+  geom_line() +
+  facet_wrap(vars(view_category),  
+             scales ="free",
+             nrow = 3,
+             strip.position = "top") +
+  tag_facets(tag_pool = c("149","199","222", "232","169", "330"),
+             position = list(x = .1, y = .76)) +
+	scale_y_continuous(label = label_number_si()) +
+  scale_x_continuous(label = label_number_si()) +
+  labs(x = "View Count", y ="Number of Interactions", title ="Assessing Superbowl Ads Interactions",
+       subtitle ="Interactions is defined by sum of \nlikes, dislikes and comments on a video",
+       caption ="Number on Each Panel represents \nthe View To Interations Ratio of that view category") +
+  theme_minimal() +
+  theme(panel.grid.minor = element_blank(),
+        strip.background = element_rect(colour = "black"),
+        strip.placement = "inside",
+        plot.title = element_text(face = "bold", size = 80, hjust = 0.5),
+        plot.subtitle = element_text(size = 50, hjust = 0.5),
+        panel.spacing = unit(1.4, "lines"),
+        tagger.panel.tag.text = element_text(color = "blue", size = 30),
+        plot.caption = element_text(color = "blue", size = 40, hjust =0.5),
+        plot.caption.position = "panel",
+        axis.text.x = NULL,
+        axis.title.y = element_text(size = 50, hjust = 0.5, vjust = 1),
+        axis.text = element_text(size = 25, lineheight = 10),
+        strip.text.x = element_text(size = 30)) +
+  scale_fill_viridis(discrete = T)
 ```
+
 
 ---
 
@@ -127,9 +215,7 @@ ggplot(penguins_modified, aes(x = flipper_length_mm, y = body_mass_g, color = sp
 ```{r warning=FALSE, out.width="100%", fig.width=4, echo=FALSE}
 # see how I changed out.width and fig.width from defaults
 # to make the figure bigger
-ggplot(penguins, aes(x = bill_length_mm, y = species, color = species)) +
-  geom_boxplot() +
-  theme_minimal()
+
 ```
 ]
 
@@ -146,7 +232,7 @@ class: inverse, middle, center
 If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
 
 ```{r penguins-table, echo = FALSE}
-kable(head(penguins), format = "html")
+
 ```
 
 ---

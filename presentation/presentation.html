@@ -3,12 +3,8 @@
   <head>
     <title>SuperBowl Ads</title>
     <meta charset="utf-8" />
-<<<<<<< HEAD
-    <meta name="author" content="Team name   Names of team members" />
-=======
-    <meta name="author" content="Dorian’s Gs   Courtney Lee, Eli Feder, Parker Dingman, Martha Aboagye" />
->>>>>>> f536587ff4d083f1754f56fae209b1004d7e7ed7
-    <meta name="date" content="2021-09-27" />
+    <meta name="author" content="Dorian’s Gs   Martha Aboagye, Parker Dingman, Eli Feder, Courtney Lee" />
+    <meta name="date" content="2021-09-30" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -16,10 +12,9 @@
 class: center, middle, inverse, title-slide
 
 # SuperBowl Ads
-## Presentation subtitle (if any)
-### Dorian’s Gs <br> Courtney Lee, Eli Feder, Parker Dingman, Martha Aboagye
+### Dorian’s Gs <br> Martha Aboagye, Parker Dingman, Eli Feder, Courtney Lee
 ### Duke University
-### 2021-09-27
+### 2021-09-30
 
 ---
 
@@ -34,28 +29,19 @@ class: center, middle, inverse, title-slide
 
 class: inverse, middle, center
 
-# Characteristics Of The Most Viewed Ads
+background-image: url(img/superbowlads.jpg)
 
 ---
 
-class: inverse, middle, center
-
-## What factors contribute to the most viewed ads and  has the relationship between those factors and the views changed over time?
-
----
-
-## Approach
-
-The relevant variables are all numerical and include:
-`view_count`, `like_count`, `dislike_count`, `comment_count`, and `favorite count`. 
+## 1. What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
 
 --
-- The `view_count` is the measure for popularity, while the other variables define interaction with the ad
-  
+
+- Talk about specific categories here
 
 ---
 
-## Layouts
+## Details
 
 You can use plain text
 
@@ -75,7 +61,7 @@ or text in two columns `\(^*\)`
 
 ---
 
-## Code
+## First Plot Name
 
 
 ```r
@@ -104,13 +90,64 @@ glance(model)
 ## # … with 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;
 ```
 
+
 ---
 
-## Plots
+## 2. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
+
+--
+
+- Examining the relationship between different popularity and interaction metrics
+
+--
+
+- Popularity: views
+- Interactions: comments, likes, and dislikes
+
+---
+
+&lt;img src="presentation_files/figure-html/density analysis-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
 
 
 
-&lt;img src="presentation_files/figure-html/plot-penguins-1.png" title="Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all the others combined together. There is a relatively strong, positive relationship between the two variables. The Adelie penguins are clustered together but they don't exhibit a different trend than the rest of the penguins." alt="Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all the others combined together. There is a relatively strong, positive relationship between the two variables. The Adelie penguins are clustered together but they don't exhibit a different trend than the rest of the penguins." width="70%" /&gt;
+```
+## Adding missing grouping variables: `view_category`
+```
+
+```
+## # A tibble: 247 × 2
+## # Groups:   view_category [6]
+##    view_category interactions
+##    &lt;chr&gt;                &lt;dbl&gt;
+##  1 Many                    NA
+##  2 Moderate               513
+##  3 Many                   153
+##  4 Few                      2
+##  5 Some                    25
+##  6 Some                   139
+##  7 Many                  2081
+##  8 Some                    90
+##  9 Moderate               379
+## 10 Few                      7
+## # … with 237 more rows
+```
+
+```
+## # A tibble: 6 × 2
+##   view_category   vti
+##   &lt;chr&gt;         &lt;dbl&gt;
+## 1 Few            149.
+## 2 High           169.
+## 3 Many           232.
+## 4 Moderate       222.
+## 5 Some           199.
+## 6 Viral          330.
+```
+
+&lt;img src="presentation_files/figure-html/interactions-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
 
 ---
 
@@ -121,7 +158,7 @@ glance(model)
 - goes here
 ]
 .pull-right[
-&lt;img src="presentation_files/figure-html/unnamed-chunk-1-1.png" width="100%" /&gt;
+
 ]
 
 ---
@@ -136,82 +173,7 @@ class: inverse, middle, center
 
 If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
 
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; species &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; island &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; bill_length_mm &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; bill_depth_mm &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; flipper_length_mm &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; body_mass_g &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; sex &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 39.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 18.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 181 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3750 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 39.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 17.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 186 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3800 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 40.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 18.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 195 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3250 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 36.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 19.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 193 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3450 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 39.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 20.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 190 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3650 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
+
 
 ---
 
