@@ -10,6 +10,9 @@ library(ggplot2)
 library(dplyr)
 library(ggridges)
 library(forcats)
+library(scales)
+library(viridis)
+library(tagger)
 ```
 
 ```{r}
@@ -52,16 +55,23 @@ superbowl <-superbowl %>%
     view_count >= 500000 &view_count < 10000000 ~ "High",
     TRUE ~ "Mega"
   ))
+
+superbowl<-superbowl%>%
+  mutate(interactions= like_count+dislike_count+comment_count)
+  
+
+
+
 ```
 
 
 ```{r}
-superbowl%>%
+superbowl<-superbowl%>%
   mutate(view_category = fct_relevel(
     view_category, "Mega", "High", "Many", "Moderate","Some","Little"
-  ))%>%
+  ))
   
-ggplot(aes(x = ratio, y = view_category, fill = view_category)) +
+ggplot(superbowl, aes(x = ratio, y = view_category, fill = view_category)) +
   #scale_fill_continuous()
   geom_density_ridges(show.legend = FALSE)
 ```
@@ -82,6 +92,61 @@ ggplot(data = superbowl, aes(x = ratio, fill = view_category)) +
     axis.title.x = element_text(hjust = 0),
   )
 ```
+
+note: geom_grid
+interaction = likes + dislikes+ comments
+
+```{r}
+superbowl%>%
+  group_by(view_category)%>%
+  select(interactions)
+```
+
+
+```{r}
+superbowl%>%
+ group_by(view_category)%>%
+  filter(!is.na(interactions))%>%
+  summarise(vti= sum(view_count)/sum(interactions))
+```
+
+
+```{r}
+superbowl%>%
+  mutate(view_category = paste(view_category, "Views"))%>%
+   mutate(view_category = fct_relevel(
+    view_category, "Little Views","Some Views","Moderate Views","Many Views", "High Views",  "Mega Views" 
+  ))%>%
+ggplot(aes(x=view_count, y=interactions))+
+    geom_area(aes(fill = view_category, alpha=0.5), show.legend = NULL)+
+  geom_line()+
+  facet_wrap(vars(view_category),  
+             scales="free",
+             nrow=3,
+             strip.position="top")+
+  tag_facets(tag_pool = c("149","199","222", "232","169", "330"),
+             position = list(x=.1, y=.76))+
+  theme_minimal()+
+	scale_y_continuous(label = label_number_si()) +
+     scale_x_continuous(label = label_number_si())+
+  labs(x= "View Count", y="Number of Interactions", title="Assessing Superbowl Ads Interactions",
+       subtitle="Interactions is defined by sum of \nlikes, dislikes and comments on a video",
+       caption="Number on Each Panel represents \nthe View To Interations Ratio of that view category")+
+  theme(panel.grid.minor = element_blank(),
+        strip.background = element_rect(colour = "black"),
+        strip.placement = "inside",
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        panel.spacing = unit(1.4, "lines"),
+        text=element_text(family="Times New Roman"),
+        tagger.panel.tag.text = element_text(color = "blue", size = 6),
+        plot.caption = element_text(color = "blue", size = 8, hjust =0.5),
+        plot.caption.position = "panel")+
+  scale_fill_viridis(discrete = T)
+
+```
+
+
 
 
 
