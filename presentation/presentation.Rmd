@@ -110,7 +110,7 @@ glance(model)
 
 ---
 
-```{r desntiy analysis, echo = FALSE, warning = FALSE, message = FALSE, fig.width = 30, fig.align = "center"}
+```{r density analysis, echo = FALSE, warning = FALSE, message = FALSE, fig.width = 30, fig.height = 25, fig.align = "center"}
 superbowl <- superbowl %>%
   mutate(ratio = like_count / (like_count + dislike_count),
          interactions = like_count + dislike_count + comment_count,
@@ -133,7 +133,7 @@ superbowl %>%
                                             "90K to 500K", "30K to 90K", 
                                             "4k to 30K", "Less than 4K")) +
     scale_x_continuous(expand = c(0, 0.1), labels = scales::percent_format(accuracy = 1)) +
-    scale_y_discrete(expand = expand_scale(mult = c(0, .4))) +
+    scale_y_discrete(expand = expand_scale(mult = c(0, .3))) +
     labs(
       title = "Youtube Superbowl Ads and Like Percentages",
       x = "Like Percentage",
@@ -142,22 +142,67 @@ superbowl %>%
     guides(fill = guide_legend(reverse = TRUE)) +
     theme_ridges() +
     theme(
-      plot.title = element_text(face = "bold", size = 70),
-      plot.caption = element_text(size = 30, hjust = 1.3),
+      plot.title.position = "plot",
+      plot.title = element_text(face = "bold", size = 90, hjust = 0),
+      plot.caption = element_text(size = 40, hjust = 1.3),
       legend.key.size = unit(3, 'cm'),
       legend.text = element_text(size = 40),
       legend.title = element_text(size = 50),
-      axis.title.x = element_text(size = 60, hjust = 0.5), 
-      axis.title.y = element_text(size = 60, hjust = 0.5, lineheight = 20),
-      axis.text = element_text(size = 50))
+      axis.title.x = element_text(face = "bold", size = 70, hjust = 0, vjust = -1), 
+      axis.title.y = element_text(face = "bold", size = 70, hjust = 0, vjust = 1),
+      axis.text = element_text(size = 50, lineheight = 10),
+      axis.text.x = element_text(vjust = -1))
 ```
 
-```{r plot-penguins, echo = FALSE, warning = FALSE, fig.alt = "Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all the others combined together. There is a relatively strong, positive relationship between the two variables. The Adelie penguins are clustered together but they don't exhibit a different trend than the rest of the penguins."}
-# Code hidden with echo = FALSE
-# Uses modified penguins dataset from previous chunk
-# Play around with height and width until you're happy with the look
+---
 
+
+```{r interactions, echo = FALSE, warning = FALSE, fig.width = 35, fig.height = 30, fig.align = "center"}
+superbowl %>%
+  group_by(view_category) %>%
+  select(interactions)
+
+superbowl %>%
+  group_by(view_category) %>%
+  filter(!is.na(interactions)) %>%
+  summarise(vti = sum(view_count) / sum(interactions))
+
+superbowl%>%
+  mutate(view_category = paste(view_category, "Views"))%>%
+   mutate(view_category = fct_relevel(
+    view_category, "Few Views","Some Views","Moderate Views","Many Views", "High Views",  "Viral Views" 
+  ))%>%
+ggplot(aes(x=view_count, y=interactions))+
+    geom_area(aes(fill = view_category, alpha=0.5), show.legend = NULL)+
+  geom_line()+
+  facet_wrap(vars(view_category),  
+             scales ="free",
+             nrow = 3,
+             strip.position = "top") +
+  tag_facets(tag_pool = c("149","199","222", "232","169", "330"),
+             position = list(x = .1, y = .76))+
+	scale_y_continuous(label = label_number_si()) +
+  scale_x_continuous(label = label_number_si()) +
+  labs(x = "View Count", y ="Number of Interactions", title ="Assessing Superbowl Ads Interactions",
+       subtitle ="Interactions is defined by sum of \nlikes, dislikes and comments on a video",
+       caption ="Number on Each Panel represents \nthe View To Interations Ratio of that view category") +
+  theme_minimal() +
+  theme(panel.grid.minor = element_blank(),
+        strip.background = element_rect(colour = "black"),
+        strip.placement = "inside",
+        plot.title = element_text(face = "bold", size = 80, hjust = 0.5),
+        plot.subtitle = element_text(size = 50, hjust = 0.5),
+        panel.spacing = unit(1.4, "lines"),
+        tagger.panel.tag.text = element_text(color = "blue", size = 6),
+        plot.caption = element_text(color = "blue", size = 40, hjust =0.5),
+        plot.caption.position = "panel",
+        axis.text.x = NULL,
+        axis.title.y = element_text(size = 50, hjust = 0.5, vjust = 1),
+        axis.text = element_text(size = 25, lineheight = 10),
+        strip.text.x = element_text(size = 30)) +
+  scale_fill_viridis(discrete = T)
 ```
+
 
 ---
 
