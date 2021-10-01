@@ -1,5 +1,5 @@
 ---
-title: "SuperBowl Ads"
+title: "Super Bowl Ads"
 author: "Dorian's Gs <br> Martha Aboagye, Parker Dingman, Eli Feder, Courtney Lee"
 institute: "Duke University"
 date: "`r Sys.Date()`"
@@ -47,9 +47,7 @@ superbowl <- readr::read_csv(
 style_xaringan(title_slide_background_image = "img/darksuperbowl.jpg")
 ```
 
-class: inverse, middle, center
-
-background-image: url(img/superbowlads.png)
+background-image: url(img/adwide.pnj)
 
 ---
 
@@ -58,20 +56,6 @@ background-image: url(img/superbowlads.png)
 --
 
 - Talk about specific categories here
-
----
-
-## 2. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
-
---
-
-- Examining the relationship between different popularity and interaction metrics
-
---
-
-- Popularity: view count
-- Interactions: comments, likes, and dislikes
-- Grouped `view_count` into categories due to outliers
 
 ---
 
@@ -190,10 +174,7 @@ images <- axis_canvas(brand_viz, axis = 'x') +
 ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
 ```
 
-
 ---
-
-
 
 ```{r message=FALSE, echo=FALSE, ad-labels}
 #message related to grouping in summarise(), which is how we want it
@@ -270,7 +251,19 @@ superbowl %>%
        subtitle = "From 2000 - 2020") 
 ```
 
+---
 
+## 2. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
+
+--
+
+- Examining the relationship between different popularity and interaction metrics
+
+--
+
+- Popularity: view count
+- Interactions: comments, likes, and dislikes
+- Grouped `view_count` into categories due to outliers
 
 ---
 
@@ -318,6 +311,7 @@ superbowl %>%
 ```
 
 ---
+
 ```{r set_views, echo = FALSE, message = FALSE, warning = FALSE}
 superbowl <- superbowl %>%
   mutate(view_category = paste(view_category, "Views"))
@@ -354,3 +348,8 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
         strip.text.x = element_text(size = 30))
 ```
 
+---
+
+class: inverse, middle, center
+
+# Questions?
