@@ -14,6 +14,7 @@ output:
       countIncrementalSlides: false
 ---
 
+
 ```{r load-packages, include = FALSE}
 library(ggplot2)
 library(tidyverse)
@@ -43,11 +44,14 @@ superbowl <- readr::read_csv(
   'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-02/youtube.csv')
 ```
 
-```{r style-slides, echo = FALSE}
+```{r title-slides, echo = FALSE}
 style_xaringan(title_slide_background_image = "img/darksuperbowl.jpg")
 ```
 
-background-image: url(img/adwide.pnj)
+#Introduction
+
+
+
 
 ---
 
