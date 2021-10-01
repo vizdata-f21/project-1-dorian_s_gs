@@ -55,7 +55,22 @@ style_xaringan(title_slide_background_image = "img/darksuperbowl.jpg")
 
 ---
 
-## 1. What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
+## 1. What factors do companies value the most in their ads, and how has the use of these factors changed over time?
+
+
+--
+
+- Examining the relationship between different popularity and interaction metrics
+
+--
+
+- Popularity: view count
+- Interactions: comments, likes, and dislikes
+- Grouped `view_count` into categories due to outliers
+
+
+
+
 
 --
 
@@ -257,7 +272,7 @@ superbowl %>%
 
 ---
 
-## 2. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
+## 2. What is the relationship between popularity of a Super Bowl Ad and how well it is interacted with?
 
 --
 
