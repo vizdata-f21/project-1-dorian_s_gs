@@ -58,28 +58,345 @@ The relevant variables include:
 
   - `year`: numerical variable, year the ad was released
 
+More specifically, we investigate how companies choose to include
+animals, humor, and show their product quickly. Even though the dataset
+provides a lot more variables related to ad characteristics, we chose to
+focus on these three because they occurred more than any of the other ad
+types within the dataset, leading us to believe that companies cared the
+most about these three characteristics. For the second part of the
+question, we primarily investigate how the trends and relationships we
+explored in the first part have changed over the years.
+
+We were interested in this question because we have observed how
+influential ads can be if they include characteristics that appeal to
+our emotions, such as our adoration for a cute puppy, longing to be like
+a popstar, or simply our sexual appetite. However, we were curious to
+see if companies, the ones who provided the ads, thought the same as us.
+Emotional appeal would foster more views and think it is important for
+advertisement agencies to know. Additionally, we observed that certain
+ad appeals, especially use of sexuality, have grown in popularity over
+the years, and would like to observe such trends with our data analysis.
+
 ### Approach
 
-(1-2 paragraphs) Describe what types of plots you are going to make to
-address your question. For each plot, provide a clear explanation as to
-why this plot (e.g. boxplot, barplot, histogram, etc.) is best for
-providing the information you are asking about. The two plots should be
-of different types, and at least one of the two plots needs to use
-either color mapping or facets.
+Our initial plan was to create visualizations centered around the
+relationship between the ad type (i.e., what characteristics an ad
+possesses) and view count. After transforming and cleaning the data, we
+ran into the issue of visualizations being overplotted, no distinct
+relationships appearing, and outliers significantly skewing the data.
+Since the data does not contain a ton of observations (247), we found
+that the outliers (very low or very high view count) had a large
+influence when visualizing the data. To address these issues, we shifted
+our focus to looking at commercials from a brand standpoint, as well as
+decided to quantify ad usage by frequency (number of ads) and not view
+count. To accomplish the latter, we added a new variable `ads` to the
+data frame that was the number of occurrences of each ad type in a year.
+To show the relationship between brand and ad type, we displayed brand
+and ad type in a segmented bar chart. The segments showed how each
+category was used by the ten brands in the dataset. To answer the part
+of the question related to how the ad types have fared from 2000 to
+2020, we looked at the frequency of the ad types over time, showing this
+relationship in a line graph with the year on the x-axis and ad
+occurrence on the y-axis.
 
-#### Plot 1:
+We chose a bar chart as they are effective at displaying two variables,
+one continuous and the other discrete. It is easy to compare between
+bars, based on relative height of the bars and/or relative bar segments.
+For the other visualization for this question, we opted for a line chart
+as we were mapping a discrete variable over time. We eventually settled
+on using estimates of the conditional mean functions for each ad type as
+there was overplotting and using a regular line chart led to messy
+visualizations that were difficult to interpret.
 
-#### Plot 2:
+### Analysis
+
+``` r
+# Message related to grouping by 'brand' and 'year' in summarise, 
+# Which is what we want
+superbowl_viz <- superbowl %>%
+  select(year, brand, animals, celebrity, use_sex, 
+         funny, show_product_quickly, patriotic, danger) %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
+                        show_product_quickly, patriotic, danger), 
+               names_to = 'ad_type', 
+               values_to = 'have') %>%
+  filter(have == TRUE) %>%
+  group_by(brand, year, ad_type) %>%
+  summarise(ads = n()) %>%
+  mutate(brand = case_when(brand == 'Hynudai' ~ 'Hyundai',
+                           TRUE ~ as.character(brand))) %>%
+  mutate(category = case_when(brand == 'Bud Light' ~ 'Alcohol',
+                          brand == 'Budweiser' ~ 'Alcohol',
+                          brand == 'Doritos' ~ 'Food & Beverage',
+                          brand == 'Pepsi' ~ 'Food & Beverage',
+                          brand == 'Coca-Cola' ~ 'Food & Beverage',
+                          brand == 'Hyundai' ~ 'Automobile',
+                          brand == 'Toyota' ~ 'Automobile',
+                          brand == 'Kia' ~ 'Automobile',
+                          brand == 'E-Trade' ~ 'Financial Services',
+                          brand == 'NFL' ~ 'Sports')) %>%
+  relocate(year, .before = brand) %>%
+  relocate(category, .before = brand)
+```
+
+    ## `summarise()` has grouped output by 'brand', 'year'. You can override using the `.groups` argument.
+
+``` r
+#Brand Total Labels
+brand_totals <- superbowl_viz %>%
+  filter(ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(brand)  %>%
+  summarise(brand_totals = n())
+
+# Message related to grouping in summarise(), which is how we want it
+brand_viz <- superbowl_viz %>%
+  filter(ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(brand, ad_type)  %>%
+  summarise (ads = n()) %>% 
+  ggplot(aes(factor(brand, 
+                    levels = c("Bud Light", "Budweiser", "Doritos", "Pepsi", 
+                               "Coca-Cola", "Hyundai", "E-Trade", 
+                               "Toyota", "Kia", "NFL")), 
+                    ads, 
+                    fill = ad_type)) +
+  geom_bar(stat = "identity", 
+           position = position_stack(0.1)) +
+  geom_text(data = brand_totals, 
+            aes(x = brand, y = brand_totals, 
+               label = brand_totals, 
+               fontface = 3,
+               fill = NULL), 
+            size = 8,
+            nudge_y = 2) +
+  scale_y_continuous(breaks = seq(0, 60, 10)) + 
+  scale_fill_manual(values = c("#56B4E9", "#E69F00", "#009E73"), 
+                    labels = c("Shows Product Quickly", "Funny", "Animals")) +
+  labs(title = "Ad Occurrences by Brand",
+       y = "Ad Occurrences", 
+       x = "Brand",
+       fill = "Ad Type",
+       caption = "Source: FiveThirtyEight") +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", 
+                                  size = 14, 
+                                  hjust = 0.5, vjust = 1),
+        plot.caption = element_text(size = 10, hjust = 1.55),
+        legend.position = c(0.85, 0.7),
+        axis.text.x = element_blank(),
+        strip.text = element_blank(),
+        axis.title.y = element_text(vjust = 1, 
+                                    size = 12),
+        axis.text.y = element_text(hjust = 1.75),
+        axis.title.x = element_text(vjust = -2,
+                                    size = 12),
+        axis.text = element_text(size = 10, 
+                                 lineheight = 1),
+        legend.title = element_text(size = 12),
+        legend.text = element_text(size = 10))
+```
+
+    ## `summarise()` has grouped output by 'brand'. You can override using the `.groups` argument.
+
+``` r
+images <- axis_canvas(brand_viz, axis = 'x') + 
+  draw_image("https://1000logos.net/wp-content/uploads/2021/04/Bud-Light-logo-768x432.png", 
+             x = 0.5, scale = 0.75) +
+  draw_image("https://logos-world.net/wp-content/uploads/2020/12/Budweiser-Logo-2016-present.jpg", 
+             x = 1.5, scale = 1.1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2020/07/Doritos-Logo-768x480.png",
+             x = 2.5, scale = 1.1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2017/05/Pepsi-Logo-768x631.png", 
+             x = 3.5, scale = 0.9) +
+  draw_image("https://1000logos.net/wp-content/uploads/2021/05/Coca-Cola-logo-768x432.png",
+             x = 4.5, scale = 1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2018/04/Hyundai-logo-768x432.png",
+             x = 5.5, scale = 1.1) +
+  draw_image("https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco,dpr_1/v1476500866/ukg833gylj7adlryeuig.png", 
+             x = 6.5, scale = 1) +
+  draw_image("https://1000logos.net/wp-content/uploads/2021/04/Toyota-logo-768x432.png", 
+             x = 7.5, scale = 0.8) +
+  draw_image("https://1000logos.net/wp-content/uploads/2020/02/Kia-Logo-2012-1024x635.jpg", 
+             x = 8.5, scale = 0.9) +
+  draw_image("https://1000logos.net/wp-content/uploads/2017/05/NFL-logo-768x518.png", 
+             x = 9.5, scale = 1.1) 
+ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
+```
+
+<img src="README_files/figure-gfm/q1p1-1.png" width="70%" style="display: block; margin: auto;" />
+
+``` r
+# Message related to grouping in summarise(), which is how we want it
+ad_labels <- superbowl %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
+                        show_product_quickly, patriotic, danger), 
+               names_to = 'ad_type', 
+               values_to = 'have') %>%
+  filter(have == TRUE,
+         ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(ad_type, year) %>%
+  summarise(ads = n()) %>%
+  filter(year == 2005) %>%
+  mutate(ads = case_when(ads == 6 ~ 4.1,
+                         ads == 11 ~ 9.9,
+                         ads == 8 ~ 8.5))
+```
+
+    ## `summarise()` has grouped output by 'ad_type'. You can override using the `.groups` argument.
+
+``` r
+#message related to geom_smooth() method and formula, 
+#which are both what we want
+superbowl %>%
+  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
+                        show_product_quickly, patriotic, danger), 
+               names_to = 'ad_type', 
+               values_to = 'have') %>%
+  filter(have == TRUE,
+         ad_type != 'celebrity',
+         ad_type != 'use_sex',
+         ad_type != 'danger',
+         ad_type != 'patriotic') %>%
+  group_by(year, ad_type) %>%
+  summarise(ads = n()) %>%
+  ggplot(aes(year, ads, color = ad_type)) + 
+  geom_line(aes(linetype = ad_type), 
+            stat = "smooth",
+            size = 3, 
+            se = F,
+            show.legend = FALSE) +
+  geom_text_repel(data = ad_labels, 
+                  aes(label = c("Shows Product Quickly", "Funny", "Animals")),
+                  nudge_x = 0.25,
+                  nudge_y = -0.8,
+                  size = 4,
+                  show.legend = FALSE) +
+  scale_color_manual(values = c("#56B4E9", "#E69F00", "#009E73"), 
+                     labels = c("Shows Product Quickly", "Funny", "Animals"),
+                     guide = guide_legend(reverse = TRUE)) +
+  scale_y_continuous(breaks = seq(0, 13, 2)) +
+  scale_x_continuous(breaks = seq(2000, 2020, 4)) +
+  theme_minimal() + 
+  theme(plot.title = element_text(face = "bold", 
+                                  size = 14, 
+                                  hjust = 0.5, vjust = 1),
+        plot.subtitle = element_text(size = 12, 
+                                  hjust = 0.5, vjust = 1),
+        plot.caption = element_text(size = 10, hjust = 1.55),
+        axis.title.x = element_text(vjust = -2, 
+                                    size = 12),
+        axis.title.y = element_text(vjust = 1, 
+                                    size = 12),
+        axis.text = element_text(size = 10, 
+                                 lineheight = 1)) +
+  labs(y = "Ad Occurrences", 
+       x = "Year",
+       color = "Ad Type",
+       caption = "Source: FiveThirtyEight",
+       title = "Ad Occurrences by Type",
+       subtitle = "From 2000 - 2020") 
+```
+
+    ## `summarise()` has grouped output by 'year'. You can override using the `.groups` argument.
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+<img src="README_files/figure-gfm/q1p2-1.png" width="70%" style="display: block; margin: auto;" />
+
+### Discussion
+
+In the bar plot, it is clear that the most common ad types are ”Animals”
+and “Funny.” All of these companies aired ads in these categories
+(funny, animals, and shows product quickly), which is indicative of
+their effectiveness in the advertisement industry. It is clear that beer
+companies, such as Bud Light or Budwiser, have more advertisements in
+all three categories when compared to car companies such as Kia or
+Toyota. One interesting observation is that the only company with no ads
+in the “Shows Product Quickly” category is the NFL. This makes sense
+because the NFL hosts the Super Bowl and does not have to worry about
+paying for extra runtime. One limitation with our plot is that the
+categories “double count” ads. If an ad is both funny and contains
+animals, then it will look as if there were two different ads, one funny
+and one with animals. Fortunately, the main goal of this plot was to
+focus on which ad types were popular and the colored stacked bar plots
+accomplish this goal.
+
+In the line plot, there are three smooth curves that graph each ad type
+and show the trend of their yearly occurrences over time. Lines are
+defined by different colors, labels, and type so it is easier to
+distinguish between them. The smooth curves allow the viewer to see
+overall trends more easily. Funny ads peak in occurrence in the
+mid-2000s, but then drop off all the way into the present. Both ads that
+show the product quickly and have animals were on an uptrend, but
+dropped off in the late 2000s/early 2010s. Just like the bar plot, it is
+clear that animal ads and funny ads were the most common types of ads.
+One limitation of this plot is that we plotted an estimate of the
+conditional mean function for each of the three ad types. This means
+that we are not able to look directly at a year and see the exact number
+occurrences of a specific ad-type. However, the original line plot was
+very difficult to spot overall trends due to overplotting, and the
+smooth lines allow us to accomplish our goal of seeing overall trends
+over time.
+
+## 2\. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
+
+### Introduction
+
+The relevant variables are all numerical and include: `view_count`,
+`like_count`, `dislike_count`, and `comment_count`. The `view_count` is
+the measure for popularity, while the other variables define interaction
+with the ad.
+
+We were interested in examining the relationship between different
+popularity and interaction metrics of the advertisements because we want
+to more clearly understand what a “successful ad” entails. Some agencies
+could prefer more comments to an ad to show that consumers are engaging
+with the content, but that might be more heavily associated with the
+like to dislike ratio instead of the view count. If so, that agency
+would create a commercial that fosters more likes than pure views.
+
+### Approach
+
+For the following two plots, we tackled a challenging aspect of our
+dataset; the range of `view count` was so large (from 10 views to more
+than 10 million views) that it was nearly impossible to visualize any
+interaction with just one plot, as most of the data clustered with less
+than 1 million views. However, we didn’t want to simply discard our
+outliers (especially the videos with millions of views) because
+information about these “hit” videos might be sought after by ad
+agencies. To solve that problem, we decided to facet our plot by 6
+categories according to the quantiles of the standard distribution for
+view count: few, some, moderate, many, high, and viral views. According
+to Wynne from Forbes, a video with more than 5 million views in a short
+period or 10’s of millions of views overall is considered “viral”. This
+is why we labeled the highest bin as `viral`.
+
+In the first plot, we examined the relationship between the view count
+and the ratio of likes. More specifically, we wanted to observe whether
+or not the amount of views on a Superbowl ad correlates with a higher or
+lower like percentage. In order to plot the like percentage, we created
+a new variable ratio which is the `like_count` divided by the sum of
+`like_count and dislike_count`, and plotted the x-axis labels to show
+percentage (since the like ratio on Youtube is shown in percentage
+form). We chose a density ridge plot because it clearly shows trends in
+like percentage while comparing these changes by the view count
+category. The peaks of the density ridges stacked vertically make
+comparisons of like percentages among view categories simple to track.
 
 For the second plot, we wanted to look more specifically at the
 relationship between view count and the number of interactions a video
 gets. We defined interactions as the number of likes, dislikes and
 comments a video got. We wanted to plot both `view_count` and
-`interactions` as continuous variables. A unique and challenging aspect
-of our dataset was the range of view count was so large that it was
-nearly impossible to visualize any interaction with just one plot. To
-solve that problem, we decided to facet our plot by the 6 categories for
-view count that we created for part 1. We then freed the scales of each
+`interactions` as continuous variables. We then freed the scales of each
 axis to make it much easier to visualize the trend between interactions
 and view count. Since we are primarily interested in the ratio of the
 views to interactions , the difference in scale between the x-axis(the
@@ -91,90 +408,112 @@ In order to find the best plot, we experimented with scatter plots, line
 plots, step plots, and area plots to see which plot was the most
 informative. There were too little variables for the scatter plot to be
 helpful. It was also hard to follow along with the variable. We found
-that a line plot or step by itself was to fragmented and the connection
+that a line plot or step by itself was too fragmented and the connection
 between points zig-zagged a lot and made it hard to also see the overall
-trend. The combined plot shows each points but the area also makes it
+trend. The combined plot shows each point but the area also makes it
 much easier to trace the trend for each view category. We then added
 labels, captions and made a few styling choices to get to our final
 presentation.
 
 ### Analysis
 
-(2-3 code blocks, 2 figures, text/code comments as needed) In this
-section, provide the code that generates your plots. Use scale functions
-to provide nice axis labels and guides. You are welcome to use theme
-functions to customize the appearance of your plot, but you are not
-required to do so. All plots must be made with ggplot2. Do not use base
-R or lattice plotting functions.
+``` r
+superbowl <- superbowl %>%
+  mutate(ratio = like_count / (like_count + dislike_count),
+         interactions = like_count + dislike_count + comment_count,
+         view_category = case_when(
+            view_count < 4000 ~ "Few",
+            view_count >= 4000 & view_count < 30000 ~ "Some",
+            view_count >= 30000 & view_count < 90000 ~ "Moderate",
+            view_count >= 90000 & view_count < 500000 ~ "Many",
+            view_count >= 500000 & view_count < 10000000 ~ "High",
+            TRUE ~ "Viral"))
+superbowl %>%
+  mutate(Views = fct_relevel(
+            view_category, "Few", "Some", "Moderate", "Many","High","Viral"
+         )) %>%
+  ggplot(aes(x = ratio, y = Views, fill = Views)) +
+    geom_density_ridges(scale = 0.9, show.legend = TRUE) +
+    coord_cartesian(xlim = c(0.5, 1.0)) +
+    scale_fill_discrete_sequential(palette = "Greens", order = c(1:6),
+                                   labels = c("Less than 4K", "4K to 30K", "30K to 90K", 
+                                             "90K to 500K", "500K to 10M", "10M+"),
+                                   guide = guide_legend(reverse = TRUE)) +
+    scale_x_continuous(expand = c(0, 0.1), labels = scales::percent_format(accuracy = 1)) +
+    scale_y_discrete(expand = expand_scale(mult = c(0, .2))) +
+    labs(
+      title = "Youtube Superbowl Ads and Like Percentages",
+      x = "Like Percentage",
+      y = "Views") +
+    theme_ridges() +
+    theme(
+      plot.title.position = "plot",
+      plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+      legend.key.size = unit(0.75, 'cm'),
+      legend.text = element_text(size = 12),
+      legend.title = element_text(size = 12),
+      axis.title.x = element_text(face = "bold", size = 12, hjust = 0.42, vjust = -1), 
+      axis.title.y = element_text(face = "bold", size = 12, hjust = 0.54, vjust = 1),
+      axis.text = element_text(size = 10, lineheight = 1),
+      axis.text.x = element_text(vjust = -1))
+```
+
+    ## Picking joint bandwidth of 0.0275
+
+<img src="README_files/figure-gfm/q2p1-1.png" width="70%" style="display: block; margin: auto;" />
+
+``` r
+superbowl <- superbowl %>%
+  mutate(view_category = paste(view_category, "Views"))
+superbowl <- superbowl %>%
+  mutate(view_category = fct_relevel(
+  view_category, "Few Views","Some Views","Moderate Views","Many Views", "High Views", "Viral Views"))
+
+ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
+  geom_area(aes(fill = view_category), show.legend = NULL) +
+  geom_line() +
+  facet_wrap(vars(view_category),  
+             scales ="free",
+             nrow = 3,
+             strip.position = "top") +
+    scale_y_continuous(label = label_number_si()) +
+  scale_x_continuous(label = label_number_si()) +
+  scale_fill_discrete_sequential(palette = "Blues") +
+  labs(x = "View Count", y ="Number of Interactions", title ="Assessing Superbowl Ad Interactions",
+       caption ="Interaction is defined by the sum of \nlikes, dislikes and comments on a video")+
+  theme_minimal() +
+  theme(panel.grid.minor = element_blank(),
+        strip.background = element_rect(colour = "black"),
+        strip.placement = "inside",
+        plot.title = element_text(face = "bold", size = 14, hjust = 0.5, vjust = 1),
+        plot.caption = element_text(size = 10, hjust = 0),
+        panel.spacing = unit(1.4, "lines"),
+        axis.text.x = NULL,
+        axis.title.x = element_text(size = 12, vjust = -.5),
+        axis.title.y = element_text(size = 12, hjust = 0.5, vjust = 1),
+        axis.text = element_text(size = 10, lineheight = 1),
+        strip.text.x = element_text(size = 10))
+```
+
+<img src="README_files/figure-gfm/q2p2-1.png" width="70%" style="display: block; margin: auto;" />
 
 ### Discussion
 
-(1-3 paragraphs) In the Discussion section, interpret the results of
-your analysis. Identify any trends revealed (or not revealed) by the
-plots. Speculate about why the data looks the way it does.
-
-## 2\. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
-
-### Introduction
-
-We were interested in examining the relationship between different
-popularity and interaction metrics of the superbowl ads because we want
-to more clearly understand what a “successful ad” entails. Some agencies
-could prefer more comments and likes to an ad to show that consumers are
-engaging with the content instead of merely looking at view count. If
-so, that agency would create a commercial that fosters more likes than
-pure views.
-
-The relevant variables are all numerical and include: `view_count`,
-`like_count`, `dislike_count`, `comment_count`, and `favorite count`.
-The `view_count` is the measure for popularity, while the other
-variables define interaction with the ad.
-
-### Approach
-
-For the first plot, we examined the relationship between `view_count`
-and the like percentage of the video using a density ridge plot. More
-specifically, we wanted to observe whether or not the amount of views on
-a Superbowl ad correlates with a higher or lower like percentage. In
-order to plot the like percentage, we created a new variable `ratio`
-which is the `like_count` divided by the sum of `like_count` and
-`dislike_count`, and plotted the x-axis labels to show in percentage
-(since the like ratio on Youtube is shown in percentage form). We
-categorized `view_count` into 6 distinct categories (ranging from few to
-viral). We chose a density ridge plot because it clearly shows changes
-in like percentage while comparing these changes by the view count
-category. The peaks of the denstiy ridges make comparisons of like
-percentages among view categories simple to track. Additionally, since
-we categorized view count into 6 distinct groups, a categorical y-axis
-was necessary.
-
-(1-2 paragraphs) Describe what types of plots you are going to make to
-address your question. For each plot, provide a clear explanation as to
-why this plot (e.g. boxplot, barplot, histogram, etc.) is best for
-providing the information you are asking about. The two plots should be
-of different types, and at least one of the two plots needs to use
-either color mapping or facets.
-
-### Analysis
-
-(2-3 code blocks, 2 figures, text/code comments as needed) In this
-section, provide the code that generates your plots. Use scale functions
-to provide nice axis labels and guides. You are welcome to use theme
-functions to customize the appearance of your plot, but you are not
-required to do so. All plots must be made with ggplot2. Do not use base
-R or lattice plotting functions.
-
-### Discussion
-
-(1-3 paragraphs) In the Discussion section, interpret the results of
-your analysis. Identify any trends revealed (or not revealed) by the
-plots. Speculate about why the data looks the way it does.
-
-#### Question 1
-
-#### Question 2.
-
-\*\* Plot 2.\*\*
+In the density ridges plot, most videos had a like percentage of over
+60%, showing that most of the viewers who interacted with the ad enjoyed
+the video. An interesting finding was that there was generally a
+negative relationship between views and like percentage. That is, the
+category with the fewest video views peaked close to 100% likes and was
+more precisely close to 100 compared to higher view categories.
+Interestingly, the viral videos peaked at close to 75% likes (with a
+smaller peak at 90%) and is the most spread out with like percentages.
+The other categories from some to high views, peak at similar
+percentages with high views having slightly lower like percentages.
+Overall, this plot shows that having more views does not necessarily
+mean that the video is on average more likable. Instead it shows the
+opposite: higher view counts would predict a lower like percentage,
+meaning that companies who value video satisfaction rates (and want to
+avoid high dislikes ratios) would not want a viral ad video.
 
 The area plot of view count by number of interactions reveals quite a
 few interesting results. The first is that on average, the number of
@@ -188,14 +527,14 @@ views would have a significantly high level of interaction. As an
 example, we expected that proportionally, the number of view count to
 interactions would be higher for ads with “Viral Views” compared to
 “Mega Views” and ads with “Mega Views” would be higher that graphs
-with “Many Views”. Our results were turned out to be a bit more
-complicated than that. We found that only ads on either extreme end
-followed this trend. So ads with a “few views” had much a smaller views
-to interaction ratio than videos in all other categories and ads with
-“viral views” had much bigger views to interaction ratio than videos
-in all other “categories.” For videos in the middle categories(“Some
-Views”,“Moderate Views”,“Many Views” and “High Views”), proportion of
-view counts to interactions seemed to be much more random and didn’t
+with “Many Views”. Our results turned out to be a bit more complicated
+than that. We found that only ads on either extreme end followed this
+trend. So ads with a “few views” had much a smaller views to interaction
+ratio than videos in all other categories and ads with “viral views” had
+much bigger views to interaction ratio than videos in all other
+“categories.” For videos in the middle categories(“Some
+Views”,“Moderate Views”,“Many Views” and “High Views”), proportion
+of view counts to interactions seemed to be much more random and didn’t
 follow any discernible patterns. Each panel also had no discernible
 trend in the way they were plotted unlike the “few” and “viral”
 categories which had a discernible linear pattern each.
@@ -217,5 +556,15 @@ Repository, Retrieved September 13, 2021
     Project](https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-03-02/readme.md)
     by way of [FiveThirtyEight’s Github
     Repository](https://github.com/fivethirtyeight/superbowl-ads).
+2.  Viral Reference:
+    <https://www.forbes.com/sites/robertwynne/2018/03/09/there-are-no-guarantees-or-exact-statistics-for-going-viral/?sh=6224f76a5e8c>
 
-2.
+Presentation Images:
+
+3.  Title image: <https://www.pinterest.com/pin/746542075709663730/>
+4.  Youtube logo: Youtube
+5.  Tv image: FiveThirtyEight
+6.  Logos directly from: Budweiser, Bud Light, Pepsi, Doritos,
+    Coca-Cola, Hyundai, E Trade, Kia, Toyota, and NFL
+7.  Youtube interaction bar:
+    <https://www.tubefilter.com/2021/03/30/youtube-experiment-hiding-public-dislikes-creator-well-being/>
