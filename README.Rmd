@@ -140,4 +140,12 @@ Best R and Mehta D, 2021, *Super Bowl Ads*, Electronic Dataset, Github Repositor
 ## References
 
 1. Data Source: Our data source is from [The Tidy Tuesday Project](https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-03-02/readme.md) by way of [FiveThirtyEight's Github Repository](https://github.com/fivethirtyeight/superbowl-ads).
-2. 
+2. Viral Reference: https://www.forbes.com/sites/robertwynne/2018/03/09/there-are-no-guarantees-or-exact-statistics-for-going-viral/?sh=6224f76a5e8c
+
+Presentation Images:
+
+3. Title image: https://www.pinterest.com/pin/746542075709663730/
+4. Youtube logo: Youtube
+5. Tv image: FiveThirtyEight
+6. Logos directly from: Budweiser, Bud Light, Pepsi, Doritos, Coca-Cola, Hyundai, E Trade, Kia, Toyota, and NFL
+7. Youtube interaction bar: https://www.tubefilter.com/2021/03/30/youtube-experiment-hiding-public-dislikes-creator-well-being/
