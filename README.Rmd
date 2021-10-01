@@ -40,7 +40,7 @@ superbowl<- read.csv("data/superbowl.csv")
 
 The dataset `superbowl` is created by FiveThirtyEight, originally collected through superbowl-ads.com. There are 247 different superbowl commercials with 25 different variables, but the team observed only 10 different ads Additionally, the dataset includes defining characteristics of superbowl ads from popular brands like Toyota and Bud Light. 
 
-There are different types of variables included in `superbowl`: 7 of them are integers, including the views, number of likes, and number of dislikes. 11 variables are characters, including the brand, title, and description. 7 variables are logical, which shows either `TRUE` or `FALSE` for some categories, including whether or not the ad is funny, patriotic, includes animals, and includes sex. These logical variables were determined by the FiveThirtyEight team as they watched and categorized all of the advertisements.
+There are different types of variables included in `superbowl`: 7 of them are integers, including the views, number of likes, and number of dislikes. 11 variables are characters, including the brand, title, and description. 7 variables are logical, which shows either `TRUE` or `FALSE` for some categories, including whether or not the ad is funny, patriotic, includes animals, and includes sex. These logical variables were determined by the FiveThirtyEight team as they watched and categorized all of the advertisements. The list of relevant variables and definitions (codebook) are in the introduction of each question.
 
 Using the dataset `superbowl`, we answer the following questions: 
 
@@ -49,11 +49,16 @@ Using the dataset `superbowl`, we answer the following questions:
 ### Introduction
 
 The relevant variables include:
-`animals`: logical variable, whether or not the ad contains animals
-`show_product_quickly`: logical variable, whether or not the ad show a product quickly
-`funny`: logical variable, whether or not the ad contains humor
-`year`: numerical variable, year the ad was released
-`brand`: the brand that ran the ad
+
+* `animals`: logical variable, whether or not the ad contains animals
+
+* `show_product_quickly`: logical variable, whether or not the ad show a product quickly
+
+* `funny`: logical variable, whether or not the ad contains humor
+
+* `year`: numerical variable, year the ad was released
+
+* `brand`: the brand that ran the ad
 
 More specifically, we investigate how companies choose to include animals, humor, and show their product quickly. Even though the dataset provides a lot more variables related to ad characteristics, we chose to focus on these three because they occurred more than any of the other ad types within the dataset, leading us to believe that companies cared the most about these three characteristics. For the second part of the question, we primarily investigate how the trends and relationships we explored in the first part have changed over the years.
 
@@ -68,7 +73,7 @@ We chose a bar chart as they are effective at displaying two variables, one cont
 
 ### Analysis
 
-```{r q1p1, warning = FALSE}
+```{r q1p1, message = FALSE, warning = FALSE}
 # Message related to grouping by 'brand' and 'year' in summarise, 
 # Which is what we want
 superbowl_viz <- superbowl %>%
@@ -199,9 +204,9 @@ ad_labels <- superbowl %>%
 
 
 
-```{r q1p2, warning = FALSE}
-#message related to geom_smooth() method and formula, 
-#which are both what we want
+```{r q1p2, message = FALSE, warning = FALSE}
+# message related to geom_smooth() method and formula, 
+# which are both what we want
 superbowl %>%
   pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
                         show_product_quickly, patriotic, danger), 
@@ -264,10 +269,17 @@ In the line plot, there are three smooth curves that graph each ad type and show
 
 ### Introduction
 
-The relevant variables are all numerical and include: `view_count`, `like_count`, `dislike_count`, and `comment_count`. 
-The `view_count` is the measure for popularity, while the other variables define interaction with the ad.
+The relevant variables are all numerical and include: 
 
-We were interested in examining the relationship between different popularity and interaction metrics of the advertisements because we want to more clearly understand what a “successful ad” entails. Some agencies could prefer more comments to an ad to show that consumers are engaging with the content, but that might be more heavily associated with the like to dislike ratio instead of the view count. If so, that agency would create a commercial that fosters more likes than pure views. 
+* `view_count`: number of views
+
+* `like_count`: number of likes
+
+* `dislike_count`: number of dislikes
+
+* `comment_count`: number of comments
+
+The `view_count` is the measure for popularity, while the other variables define interaction with the ad. We were interested in examining the relationship between different popularity and interaction metrics of the advertisements because we want to more clearly understand what a “successful ad” entails. Some agencies could prefer more comments to an ad to show that consumers are engaging with the content, but that might be more heavily associated with the like to dislike ratio instead of the view count. If so, that agency would create a commercial that fosters more likes than pure views. 
 
 ### Approach
 
@@ -278,7 +290,7 @@ For the second plot, we wanted to look more specifically at the relationship bet
 
 ### Analysis
 
-```{r q2p1, warning = FALSE}
+```{r q2p1, message = FALSE, warning = FALSE}
 superbowl <- superbowl %>%
   mutate(ratio = like_count / (like_count + dislike_count),
          interactions = like_count + dislike_count + comment_count,
@@ -321,7 +333,7 @@ superbowl %>%
 
 
 
-```{r q2p2, warning = FALSE}
+```{r q2p2, message = FALSE, warning = FALSE}
 superbowl <- superbowl %>%
   mutate(view_category = paste(view_category, "Views"))
 superbowl <- superbowl %>%

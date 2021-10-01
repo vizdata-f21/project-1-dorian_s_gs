@@ -18,7 +18,8 @@ description. 7 variables are logical, which shows either `TRUE` or
 `FALSE` for some categories, including whether or not the ad is funny,
 patriotic, includes animals, and includes sex. These logical variables
 were determined by the FiveThirtyEight team as they watched and
-categorized all of the advertisements.
+categorized all of the advertisements. The list of relevant variables
+and definitions (codebook) are in the introduction of each question.
 
 Using the dataset `superbowl`, we answer the following questions:
 
@@ -26,11 +27,18 @@ Using the dataset `superbowl`, we answer the following questions:
 
 ### Introduction
 
-The relevant variables include: `animals`: logical variable, whether or
-not the ad contains animals `show_product_quickly`: logical variable,
-whether or not the ad show a product quickly `funny`: logical variable,
-whether or not the ad contains humor `year`: numerical variable, year
-the ad was released `brand`: the brand that ran the ad
+The relevant variables include:
+
+  - `animals`: logical variable, whether or not the ad contains animals
+
+  - `show_product_quickly`: logical variable, whether or not the ad show
+    a product quickly
+
+  - `funny`: logical variable, whether or not the ad contains humor
+
+  - `year`: numerical variable, year the ad was released
+
+  - `brand`: the brand that ran the ad
 
 More specifically, we investigate how companies choose to include
 animals, humor, and show their product quickly. Even though the dataset
@@ -111,11 +119,7 @@ superbowl_viz <- superbowl %>%
                           brand == 'NFL' ~ 'Sports')) %>%
   relocate(year, .before = brand) %>%
   relocate(category, .before = brand)
-```
 
-    ## `summarise()` has grouped output by 'brand', 'year'. You can override using the `.groups` argument.
-
-``` r
 #Brand Total Labels
 brand_totals <- superbowl_viz %>%
   filter(ad_type != 'celebrity',
@@ -174,11 +178,7 @@ brand_viz <- superbowl_viz %>%
                                  lineheight = 1),
         legend.title = element_text(size = 12),
         legend.text = element_text(size = 10))
-```
 
-    ## `summarise()` has grouped output by 'brand'. You can override using the `.groups` argument.
-
-``` r
 images <- axis_canvas(brand_viz, axis = 'x') + 
   draw_image("https://1000logos.net/wp-content/uploads/2021/04/Bud-Light-logo-768x432.png", 
              x = 0.5, scale = 0.75) +
@@ -225,11 +225,9 @@ ad_labels <- superbowl %>%
                          ads == 8 ~ 8.5))
 ```
 
-    ## `summarise()` has grouped output by 'ad_type'. You can override using the `.groups` argument.
-
 ``` r
-#message related to geom_smooth() method and formula, 
-#which are both what we want
+# message related to geom_smooth() method and formula, 
+# which are both what we want
 superbowl %>%
   pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
                         show_product_quickly, patriotic, danger), 
@@ -280,10 +278,6 @@ superbowl %>%
        subtitle = "From 2000 - 2020") 
 ```
 
-    ## `summarise()` has grouped output by 'year'. You can override using the `.groups` argument.
-
-    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
-
 <img src="README_files/figure-gfm/q1p2-1.png" width="70%" style="display: block; margin: auto;" />
 
 ### Discussion
@@ -325,18 +319,25 @@ over time.
 
 ### Introduction
 
-The relevant variables are all numerical and include: `view_count`,
-`like_count`, `dislike_count`, and `comment_count`. The `view_count` is
-the measure for popularity, while the other variables define interaction
-with the ad.
+The relevant variables are all numerical and include:
 
-We were interested in examining the relationship between different
-popularity and interaction metrics of the advertisements because we want
-to more clearly understand what a “successful ad” entails. Some agencies
-could prefer more comments to an ad to show that consumers are engaging
-with the content, but that might be more heavily associated with the
-like to dislike ratio instead of the view count. If so, that agency
-would create a commercial that fosters more likes than pure views.
+  - `view_count`: number of views
+
+  - `like_count`: number of likes
+
+  - `dislike_count`: number of dislikes
+
+  - `comment_count`: number of comments
+
+The `view_count` is the measure for popularity, while the other
+variables define interaction with the ad. We were interested in
+examining the relationship between different popularity and interaction
+metrics of the advertisements because we want to more clearly understand
+what a “successful ad” entails. Some agencies could prefer more comments
+to an ad to show that consumers are engaging with the content, but that
+might be more heavily associated with the like to dislike ratio instead
+of the view count. If so, that agency would create a commercial that
+fosters more likes than pure views.
 
 ### Approach
 
@@ -412,8 +413,6 @@ superbowl %>%
       axis.text = element_text(size = 10, lineheight = 1),
       axis.text.x = element_text(vjust = -1))
 ```
-
-    ## Picking joint bandwidth of 0.0275
 
 <img src="README_files/figure-gfm/q2p1-1.png" width="70%" style="display: block; margin: auto;" />
 
