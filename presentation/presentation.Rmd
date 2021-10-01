@@ -1,5 +1,5 @@
 ---
-title: "SuperBowl Ads"
+title: "Super Bowl Ads"
 author: "Dorian's Gs <br> Martha Aboagye, Parker Dingman, Eli Feder, Courtney Lee"
 institute: "Duke University"
 date: "`r Sys.Date()`"
@@ -13,6 +13,7 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+
 
 ```{r load-packages, include = FALSE}
 library(ggplot2)
@@ -43,25 +44,19 @@ superbowl <- readr::read_csv(
   'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-02/youtube.csv')
 ```
 
-```{r style-slides, echo = FALSE}
+```{r title-slides, echo = FALSE}
 style_xaringan(title_slide_background_image = "img/darksuperbowl.jpg")
 ```
 
-class: inverse, middle, center
+#Introduction
 
-background-image: url(img/superbowlads.png)
 
----
 
-## 1. What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
-
---
-
-- Talk about specific categories here
 
 ---
 
-## 2. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
+## 1. What factors do companies value the most in their ads, and how has the use of these factors changed over time?
+
 
 --
 
@@ -72,6 +67,14 @@ background-image: url(img/superbowlads.png)
 - Popularity: view count
 - Interactions: comments, likes, and dislikes
 - Grouped `view_count` into categories due to outliers
+
+
+
+
+
+--
+
+- Talk about specific categories here
 
 ---
 
@@ -190,10 +193,7 @@ images <- axis_canvas(brand_viz, axis = 'x') +
 ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
 ```
 
-
 ---
-
-
 
 ```{r message=FALSE, echo=FALSE, ad-labels}
 #message related to grouping in summarise(), which is how we want it
@@ -270,7 +270,19 @@ superbowl %>%
        subtitle = "From 2000 - 2020") 
 ```
 
+---
 
+## 2. What is the relationship between popularity of a Super Bowl Ad and how well it is interacted with?
+
+--
+
+- Examining the relationship between different popularity and interaction metrics
+
+--
+
+- Popularity: view count
+- Interactions: comments, likes, and dislikes
+- Grouped `view_count` into categories due to outliers
 
 ---
 
@@ -318,6 +330,7 @@ superbowl %>%
 ```
 
 ---
+
 ```{r set_views, echo = FALSE, message = FALSE, warning = FALSE}
 superbowl <- superbowl %>%
   mutate(view_category = paste(view_category, "Views"))
@@ -354,3 +367,8 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
         strip.text.x = element_text(size = 30))
 ```
 
+---
+
+class: inverse, middle, center
+
+# Questions?
