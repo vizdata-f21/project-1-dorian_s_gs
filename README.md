@@ -6,15 +6,16 @@ by Dorian’s Gs
 
 The dataset `superbowl` is created by FiveThirtyEight, originally
 collected through superbowl-ads.com. There are 247 different superbowl
-commercials with 25 different variables, but observe only 10 different
-ads Additionally, the dataset includes defining characteristics of
-superbowl ads from popular brands like Toyota and Bud Light.
+commercials with 25 different variables, but the team observed only 10
+different ads Additionally, the dataset includes defining
+characteristics of superbowl ads from popular brands like Toyota and Bud
+Light.
 
 There are different types of variables included in `superbowl`: 7 of
-them are integers, including the view\_count, like\_count,
-dislike\_count. 11 variables are characters, including brand, title, and
-description. 7 variables are logical, which shows either TRUE or FALSE
-for some categories, including whether or not the ad is funny,
+them are integers, including the views, number of likes, and number of
+dislikes. 11 variables are characters, including the brand, title, and
+description. 7 variables are logical, which shows either `TRUE` or
+`FALSE` for some categories, including whether or not the ad is funny,
 patriotic, includes animals, and includes sex. These logical variables
 were determined by the FiveThirtyEight team as they watched and
 categorized all of the advertisements.
@@ -25,38 +26,11 @@ Using the dataset `superbowl`, we answer the following questions:
 
 ### Introduction
 
-We investigated how including different factors such as animals,
-celebrity, and sexuality affect the number of views on an ad. Even
-though the dataset provides a lot more variables related to ad
-characteristics, we chose to focus on these three because we think they
-have the most potential to influence view counts based on our personal
-experiences and observations. For the second part of the question, we
-will primarily investigate how the trends and relationships we explored
-in the first part have changed over the years.
-
-We were interested in this question because we’ve observed how
-influential ads can be if they include characteristics that appeal to
-our emotions, such as our adoration for a cute puppy, longing to be like
-a popstar, or simply our sexual appetite. However, we are unsure which
-emotional appeal would foster more views and think it is important for
-advertisement agencies to know. Additionally, we observed that certain
-ad appeals, especially use of sexuality, have grown in popularity over
-the years, and would like to observe such trends with our data analysis.
-
-The relevant variables include:
-
-  - `animals`: logical variable, whether or not the ad includes an
-    animal
-
-  - `celebrity`: logical variable, whether or not the ad includes a
-    celebrity
-
-  - `use_sex`: logical variable, whether or not the ad includes
-    sexuality
-
-  - `view_count`: numerical variable, number of views on the ad
-
-  - `year`: numerical variable, year the ad was released
+The relevant variables include: `animals`: logical variable, whether or
+not the ad contains animals `show_product_quickly`: logical variable,
+whether or not the ad show a product quickly `funny`: logical variable,
+whether or not the ad contains humor `year`: numerical variable, year
+the ad was released `brand`: the brand that ran the ad
 
 More specifically, we investigate how companies choose to include
 animals, humor, and show their product quickly. Even though the dataset
@@ -366,54 +340,35 @@ would create a commercial that fosters more likes than pure views.
 
 ### Approach
 
-For the following two plots, we tackled a challenging aspect of our
-dataset; the range of `view count` was so large (from 10 views to more
-than 10 million views) that it was nearly impossible to visualize any
-interaction with just one plot, as most of the data clustered with less
-than 1 million views. However, we didn’t want to simply discard our
-outliers (especially the videos with millions of views) because
-information about these “hit” videos might be sought after by ad
-agencies. To solve that problem, we decided to facet our plot by 6
-categories according to the quantiles of the standard distribution for
-view count: few, some, moderate, many, high, and viral views. According
-to Wynne from Forbes, a video with more than 5 million views in a short
-period or 10’s of millions of views overall is considered “viral”. This
-is why we labeled the highest bin as `viral`.
-
-In the first plot, we examined the relationship between the view count
-and the ratio of likes. More specifically, we wanted to observe whether
-or not the amount of views on a Superbowl ad correlates with a higher or
-lower like percentage. In order to plot the like percentage, we created
-a new variable ratio which is the `like_count` divided by the sum of
-`like_count and dislike_count`, and plotted the x-axis labels to show
-percentage (since the like ratio on Youtube is shown in percentage
-form). We chose a density ridge plot because it clearly shows trends in
-like percentage while comparing these changes by the view count
-category. The peaks of the density ridges stacked vertically make
-comparisons of like percentages among view categories simple to track.
+For the following two plots, the range of `view count` was so large
+(from 10 views to more than 10 million views) that it was nearly
+impossible to visualize any interaction with just one plot. We decided
+to facet our plot by 6 categories according to the quantiles of the
+standard distribution for view count: few, some, moderate, many, high,
+and viral views. In the first plot, we examined the relationship between
+the view count and the ratio of likes. In order to plot the like
+percentage, we created a new variable `ratio` which is the `like_count`
+divided by the sum of `like_count and dislike_count`, and plotted the
+x-axis labels to show percentage (since the like ratio on Youtube is
+shown in percentage form). We chose a density ridge plot because it
+clearly shows trends in like percentage while comparing these changes by
+the view count category, and the peaks of the density ridges stacked
+vertically make comparisons between view categories simple to track.
 
 For the second plot, we wanted to look more specifically at the
 relationship between view count and the number of interactions a video
 gets. We defined interactions as the number of likes, dislikes and
 comments a video got. We wanted to plot both `view_count` and
-`interactions` as continuous variables. We then freed the scales of each
-axis to make it much easier to visualize the trend between interactions
-and view count. Since we are primarily interested in the ratio of the
-views to interactions , the difference in scale between the x-axis(the
-view count) and the y-axis(number of interactions) is actually useful
-for getting a sense of the difference in factors between the two
-variables
-
-In order to find the best plot, we experimented with scatter plots, line
-plots, step plots, and area plots to see which plot was the most
-informative. There were too little variables for the scatter plot to be
-helpful. It was also hard to follow along with the variable. We found
-that a line plot or step by itself was too fragmented and the connection
-between points zig-zagged a lot and made it hard to also see the overall
-trend. The combined plot shows each point but the area also makes it
-much easier to trace the trend for each view category. We then added
-labels, captions and made a few styling choices to get to our final
-presentation.
+`interactions` as continuous variables. In order to find the best plot,
+we experimented with scatter plots, line plots, step plots, and area
+plots to see which plot was the most informative. There were too little
+variables for the scatter plot to be helpful. It was also hard to follow
+along with the variable. We found that a line plot or step by itself was
+too fragmented and the connection between points zig-zagged a lot and
+made it hard to also see the overall trend. The combined plot shows each
+point but the area also makes it much easier to trace the trend for each
+view category. We then added labels, captions and made a few styling
+choices to get to our final presentation.
 
 ### Analysis
 
