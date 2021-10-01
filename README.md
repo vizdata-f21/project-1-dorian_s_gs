@@ -2,17 +2,6 @@ Superbowl Ads
 ================
 by Dorian’s Gs
 
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-
-    ## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-    ## ✓ tibble  3.1.5     ✓ dplyr   1.0.7
-    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-    ## ✓ readr   2.0.1     ✓ forcats 0.5.1
-
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## x dplyr::filter() masks stats::filter()
-    ## x dplyr::lag()    masks stats::lag()
-
 ## Introduction
 
 The dataset `superbowl` is created by FiveThirtyEight, originally
@@ -77,6 +66,37 @@ why this plot (e.g. boxplot, barplot, histogram, etc.) is best for
 providing the information you are asking about. The two plots should be
 of different types, and at least one of the two plots needs to use
 either color mapping or facets.
+
+#### Plot 1:
+
+#### Plot 2:
+
+For the second plot, we wanted to look more specifically at the
+relationship between view count and the number of interactions a video
+gets. We defined interactions as the number of likes, dislikes and
+comments a video got. We wanted to plot both `view_count` and
+`interactions` as continuous variables. A unique and challenging aspect
+of our dataset was the range of view count was so large that it was
+nearly impossible to visualize any interaction with just one plot. To
+solve that problem, we decided to facet our plot by the 6 categories for
+view count that we created for part 1. We then freed the scales of each
+axis to make it much easier to visualize the trend between interactions
+and view count. Since we are primarily interested in the ratio of the
+views to interactions , the difference in scale between the x-axis(the
+view count) and the y-axis(number of interactions) is actually useful
+for getting a sense of the difference in factors between the two
+variables
+
+In order to find the best plot, we experimented with scatter plots, line
+plots, step plots, and area plots to see which plot was the most
+informative. There were too little variables for the scatter plot to be
+helpful. It was also hard to follow along with the variable. We found
+that a line plot or step by itself was to fragmented and the connection
+between points zig-zagged a lot and made it hard to also see the overall
+trend. The combined plot shows each points but the area also makes it
+much easier to trace the trend for each view category. We then added
+labels, captions and made a few styling choices to get to our final
+presentation.
 
 ### Analysis
 
@@ -150,18 +170,52 @@ R or lattice plotting functions.
 your analysis. Identify any trends revealed (or not revealed) by the
 plots. Speculate about why the data looks the way it does.
 
+#### Question 1
+
+#### Question 2.
+
+\*\* Plot 2.\*\*
+
+The area plot of view count by number of interactions reveals quite a
+few interesting results. The first is that on average, the number of
+views for ads is larger by a factor of about 100 that the number of
+interactions on that ad. On average, about 100 views resulted in 1
+interaction with the video. Our guess prior to seeing the results of our
+visualization was that as the number of views increased, the number of
+proportions would also increase on a statistically significant rate. In
+terms of our data that means that we expected each higher category of
+views would have a significantly high level of interaction. As an
+example, we expected that proportionally, the number of view count to
+interactions would be higher for ads with “Viral Views” compared to
+“Mega Views” and ads with “Mega Views” would be higher that graphs
+with “Many Views”. Our results were turned out to be a bit more
+complicated than that. We found that only ads on either extreme end
+followed this trend. So ads with a “few views” had much a smaller views
+to interaction ratio than videos in all other categories and ads with
+“viral views” had much bigger views to interaction ratio than videos
+in all other “categories.” For videos in the middle categories(“Some
+Views”,“Moderate Views”,“Many Views” and “High Views”), proportion of
+view counts to interactions seemed to be much more random and didn’t
+follow any discernible patterns. Each panel also had no discernible
+trend in the way they were plotted unlike the “few” and “viral”
+categories which had a discernible linear pattern each.
+
 ## Presentation
 
-Our presentation can be found [here](presentation/presentation.html).
+Our presentation can be found
+[here](https://vizdata-f21.github.io/project-1-dorian_s_gs/presentation/presentation.html#1).
 
 ## Data
 
-Include a citation for your data here. See
-<http://libraryguides.vu.edu.au/c.php?g=386501&p=4347840> for guidance
-on proper citation for datasets. If you got your data off the web, make
-sure to note the retrieval date.
+Best R and Mehta D, 2021, *Super Bowl Ads*, Electronic Dataset, Github
+Repository, Retrieved September 13, 2021
+<https://github.com/fivethirtyeight/superbowl-ads>.
 
 ## References
 
-List any references here. You should, at a minimum, list your data
-source.
+1.  Data Source: Our data source is from [The Tidy Tuesday
+    Project](https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-03-02/readme.md)
+    by way of [FiveThirtyEight’s Github
+    Repository](https://github.com/fivethirtyeight/superbowl-ads).
+
+2.
