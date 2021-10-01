@@ -64,7 +64,7 @@ The Dataset:
     - View Count
 ]
 
-```{r Youtube, echo=FALSE, out.width = "50%", fig.align="right"}
+```{r Youtube, echo=FALSE, out.width = "40%", fig.align="right"}
 
 include_graphics("img/8gzcr6RpGStvZFA2qRt4v6.jpeg")
 
