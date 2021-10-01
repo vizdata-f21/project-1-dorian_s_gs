@@ -49,33 +49,48 @@ style_xaringan(title_slide_background_image = "img/darksuperbowl.jpg")
 ```
 
 #Introduction
+.pull-left[
+The Dataset:
+--
+- Created by FiveThirtyEight
+    - Originally collected through superbowl-ads.com
+    - Based on information from Super Bowl ads on YouTube
+- 247 different Super Bowl ads with 25 different variables
+- Includes characteristics of ads such as:
+    - Brand
+    - Ad Type (e.g. patriotic, sexual, etc.)
+    - Release Year
+    - View Count
+]
 
+```{r Youtube, echo=FALSE, out.width = "50%", fig.align="right"}
 
+include_graphics("img/8gzcr6RpGStvZFA2qRt4v6.jpeg")
 
+```
 
 ---
 
 ## 1. What factors do companies value the most in their ads, and how has the use of these factors changed over time?
 
+.pull-left[
+Examining the relationship between brand and ad type, 
+and ad type over time
 
---
+- Company:
+    - brand
+    
+- Factors: 
+    - if an ad shows the product quickly
+    - if an ad contains comedy
+    - if an ad contains animals
+]
 
-- Examining the relationship between different popularity and interaction metrics
+```{r ads-background, echo=FALSE, out.width = "40%", fig.align="right"}
 
---
+include_graphics("img/superbowlads.png")
 
-- Popularity: view count
-- Interactions: comments, likes, and dislikes
-- Grouped `view_count` into categories due to outliers
-
-
-
-
-
---
-
-- Talk about specific categories here
-
+```
 ---
 
 ```{r message=FALSE, echo=FALSE, clean-and-transform-data}
