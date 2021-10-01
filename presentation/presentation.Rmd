@@ -44,14 +44,12 @@ superbowl <- readr::read_csv(
   'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-02/youtube.csv')
 ```
 
+
 ```{r title-slides, echo = FALSE}
 style_xaringan(title_slide_background_image = "img/darksuperbowl.jpg")
 ```
 
-#Introduction
-
-
-
+# Introduction
 
 ---
 
@@ -259,6 +257,9 @@ superbowl %>%
 
 ## 2. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
 
+```{r image2, echo = FALSE, out.width = "30%", fig.align = "center"}
+knitr::include_graphics("img/youtube-dislikes.jpg")
+```
 --
 
 - Examining the relationship between different popularity and interaction metrics
@@ -266,7 +267,13 @@ superbowl %>%
 --
 
 - Popularity: view count
+
+--
+
 - Interactions: comments, likes, and dislikes
+
+--
+
 - Grouped `view_count` into categories due to outliers
 
 ---
