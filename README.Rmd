@@ -132,7 +132,7 @@ Our guess prior to seeing the results of our visualization was that as the numbe
 
 ## Presentation
 
-Our presentation can be found [here](https://github.com/vizdata-f21/project-1-dorian_s_gs/blob/main/presentation/presentation.html).
+Our presentation can be found [here](https://vizdata-f21.github.io/project-1-dorian_s_gs/presentation/presentation.html#1).
 
 ## Data 
 Best R and Mehta D, 2021, *Super Bowl Ads*, Electronic Dataset, Github Repository, Retrieved September 13, 2021 <https://github.com/fivethirtyeight/superbowl-ads>. 

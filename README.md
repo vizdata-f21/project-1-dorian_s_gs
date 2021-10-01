@@ -203,7 +203,7 @@ categories which had a discernible linear pattern each.
 ## Presentation
 
 Our presentation can be found
-[here](https://github.com/vizdata-f21/project-1-dorian_s_gs/blob/main/presentation/presentation.html).
+[here](https://vizdata-f21.github.io/project-1-dorian_s_gs/presentation/presentation.html#1).
 
 ## Data
 
