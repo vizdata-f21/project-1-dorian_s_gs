@@ -102,14 +102,9 @@ superbowl_viz <- superbowl %>%
                names_to = 'ad_type', 
                values_to = 'have') %>%
   filter(have == TRUE) %>%
-<<<<<<< HEAD
   count(brand, year, ad_type, name  = "ads") %>%
   #group_by(brand, year, ad_type) %>%
   #summarise(ads = n()) %>%
-=======
-  group_by(brand, year, ad_type) %>%
-  summarise(ads = n()) %>%
->>>>>>> 8cc62cb8aef3e41f9eb80d2cc9a820b49167c17b
   mutate(brand = if_else(brand == 'Hynudai', 
                          'Hyundai', 
                          as.character(brand))) %>%
@@ -132,14 +127,9 @@ brand_totals <- superbowl_viz %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-<<<<<<< HEAD
   count(brand, name  = "brand_totals")
   #group_by(brand)  %>%
   #summarise(brand_totals = n())
-=======
-  group_by(brand)  %>%
-  summarise(brand_totals = n())
->>>>>>> 8cc62cb8aef3e41f9eb80d2cc9a820b49167c17b
 
 # Message related to grouping in summarise(), which is how we want it
 brand_viz <- superbowl_viz %>%
@@ -147,14 +137,9 @@ brand_viz <- superbowl_viz %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-<<<<<<< HEAD
   count(brand, ad_type, name  = "ads") %>%
   #group_by(brand, ad_type)  %>%
   #summarise (ads = n()) %>% 
-=======
-  group_by(brand, ad_type)  %>%
-  summarise (ads = n()) %>% 
->>>>>>> 8cc62cb8aef3e41f9eb80d2cc9a820b49167c17b
   ggplot(aes(factor(brand, 
                     levels = c("Bud Light", "Budweiser", "Doritos", "Pepsi", 
                                "Coca-Cola", "Hyundai", "E-Trade", 
@@ -235,14 +220,9 @@ ad_labels <- superbowl %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-<<<<<<< HEAD
   count(ad_type, year, name  = "ads") %>%
   #group_by(ad_type, year) %>%
   #summarise(ads = n()) %>%
-=======
-  group_by(ad_type, year) %>%
-  summarise(ads = n()) %>%
->>>>>>> 8cc62cb8aef3e41f9eb80d2cc9a820b49167c17b
   filter(year == 2005) %>%
   mutate(ads = case_when(ads == 6 ~ 4.1,
                          ads == 11 ~ 9.9,
@@ -262,14 +242,9 @@ superbowl %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-<<<<<<< HEAD
   count(year, ad_type, name  = "ads") %>%
   #group_by(year, ad_type) %>%
   #summarise(ads = n()) %>%
-=======
-  group_by(year, ad_type) %>%
-  summarise(ads = n()) %>%
->>>>>>> 8cc62cb8aef3e41f9eb80d2cc9a820b49167c17b
   ggplot(aes(year, ads, color = ad_type)) + 
   geom_line(aes(linetype = ad_type), 
             stat = "smooth",
@@ -435,18 +410,11 @@ superbowl %>%
     theme_ridges() +
     theme(
       plot.title.position = "plot",
-<<<<<<< HEAD
-      plot.title = element_text(face = "bold", size = 14, hjust = 0.36),
-      plot.caption = element_text(size = 8),
-      axis.title.y = element_text(face = "bold", size = 12, hjust = 0.54, vjust = 1),
-      axis.text = element_text(size = 10, lineheight = 1),
-=======
       plot.title = element_text(face = "bold", size = 16, hjust = 0.36),
       plot.caption = element_text(size = 12),
       axis.title.y = element_text(face = "bold", size = 14, hjust = 0.54, vjust = 1),
       axis.title.x = element_text(face = "bold", size = 14, hjust = 1, vjust = 0),
       axis.text = element_text(size = 12, lineheight = 1),
->>>>>>> 8cc62cb8aef3e41f9eb80d2cc9a820b49167c17b
       axis.text.x = element_text(vjust = -1))
 ```
 
