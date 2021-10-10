@@ -295,37 +295,32 @@ superbowl <- superbowl %>%
   mutate(ratio = like_count / (like_count + dislike_count),
          interactions = like_count + dislike_count + comment_count,
          view_category = case_when(
-            view_count < 4000 ~ "Few",
-            view_count >= 4000 & view_count < 30000 ~ "Some",
-            view_count >= 30000 & view_count < 90000 ~ "Moderate",
-            view_count >= 90000 & view_count < 500000 ~ "Many",
-            view_count >= 500000 & view_count < 10000000 ~ "High",
-            TRUE ~ "Viral"))
+            view_count < 4000 ~ "Few\nLess than 4K",
+            view_count >= 4000 & view_count < 30000 ~ "Some\n4K to 30K",
+            view_count >= 30000 & view_count < 90000 ~ "Moderate\n30K to 90K",
+            view_count >= 90000 & view_count < 500000 ~ "Many\n90K to 500K",
+            view_count >= 500000 & view_count < 10000000 ~ "High\n500K to 10M",
+            TRUE ~ "Viral\n10M+"))
 superbowl %>%
   mutate(Views = fct_relevel(
             view_category, "Few", "Some", "Moderate", "Many","High","Viral"
          )) %>%
   ggplot(aes(x = ratio, y = Views, fill = Views)) +
-    geom_density_ridges(scale = 0.9, show.legend = TRUE) +
+    geom_density_ridges(scale = 0.9, show.legend = FALSE) +
     coord_cartesian(xlim = c(0.5, 1.0)) +
-    scale_fill_discrete_sequential(palette = "Greens", order = c(1:6),
-                                   labels = c("Less than 4K", "4K to 30K", "30K to 90K", 
-                                             "90K to 500K", "500K to 10M", "10M+"),
-                                   guide = guide_legend(reverse = TRUE)) +
+    scale_fill_discrete_sequential(palette = "Greens", order = c(1:6)) +
     scale_x_continuous(expand = c(0, 0.1), labels = scales::percent_format(accuracy = 1)) +
     scale_y_discrete(expand = expand_scale(mult = c(0, .2))) +
     labs(
       title = "Youtube Superbowl Ads and Like Percentages",
       x = "Like Percentage",
-      y = "Views") +
+      y = "Views",
+      caption = "(Percentage of likes to sum of likes and dislikes on the video)") +
     theme_ridges() +
     theme(
       plot.title.position = "plot",
       plot.title = element_text(face = "bold", size = 14, hjust = 0.36),
-      legend.key.size = unit(0.75, 'cm'),
-      legend.text = element_text(size = 12),
-      legend.title = element_text(size = 12),
-      axis.title.x = element_text(face = "bold", size = 12, hjust = 0.42, vjust = -1), 
+      plot.caption = element_text(size = 8),
       axis.title.y = element_text(face = "bold", size = 12, hjust = 0.54, vjust = 1),
       axis.text = element_text(size = 10, lineheight = 1),
       axis.text.x = element_text(vjust = -1))
