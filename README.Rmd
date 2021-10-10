@@ -79,15 +79,15 @@ We chose a bar chart as they are effective at displaying two variables, one cont
 superbowl_viz <- superbowl %>%
   select(year, brand, animals, celebrity, use_sex, 
          funny, show_product_quickly, patriotic, danger) %>%
-  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
-                        show_product_quickly, patriotic, danger), 
+  pivot_longer(cols = c(-year, -brand), 
                names_to = 'ad_type', 
                values_to = 'have') %>%
   filter(have == TRUE) %>%
   group_by(brand, year, ad_type) %>%
   summarise(ads = n()) %>%
-  mutate(brand = case_when(brand == 'Hynudai' ~ 'Hyundai',
-                           TRUE ~ as.character(brand))) %>%
+  mutate(brand = if_else(brand == 'Hynudai', 
+                         'Hyundai', 
+                         as.character(brand))) %>%
   mutate(category = case_when(brand == 'Bud Light' ~ 'Alcohol',
                           brand == 'Budweiser' ~ 'Alcohol',
                           brand == 'Doritos' ~ 'Food & Beverage',
@@ -103,19 +103,19 @@ superbowl_viz <- superbowl %>%
 
 #Brand Total Labels
 brand_totals <- superbowl_viz %>%
-  filter(ad_type != 'celebrity',
-         ad_type != 'use_sex',
-         ad_type != 'danger',
-         ad_type != 'patriotic') %>%
+  filter(!(ad_type %in% c("celebrity", 
+                          "use_sex", 
+                          "danger", 
+                          "patriotic"))) %>%
   group_by(brand)  %>%
   summarise(brand_totals = n())
 
 # Message related to grouping in summarise(), which is how we want it
 brand_viz <- superbowl_viz %>%
-  filter(ad_type != 'celebrity',
-         ad_type != 'use_sex',
-         ad_type != 'danger',
-         ad_type != 'patriotic') %>%
+  filter(!(ad_type %in% c("celebrity", 
+                          "use_sex", 
+                          "danger", 
+                          "patriotic"))) %>%
   group_by(brand, ad_type)  %>%
   summarise (ads = n()) %>% 
   ggplot(aes(factor(brand, 
@@ -190,10 +190,10 @@ ad_labels <- superbowl %>%
                names_to = 'ad_type', 
                values_to = 'have') %>%
   filter(have == TRUE,
-         ad_type != 'celebrity',
-         ad_type != 'use_sex',
-         ad_type != 'danger',
-         ad_type != 'patriotic') %>%
+         !(ad_type %in% c("celebrity", 
+                          "use_sex", 
+                          "danger", 
+                          "patriotic"))) %>%
   group_by(ad_type, year) %>%
   summarise(ads = n()) %>%
   filter(year == 2005) %>%
@@ -213,10 +213,10 @@ superbowl %>%
                names_to = 'ad_type', 
                values_to = 'have') %>%
   filter(have == TRUE,
-         ad_type != 'celebrity',
-         ad_type != 'use_sex',
-         ad_type != 'danger',
-         ad_type != 'patriotic') %>%
+         !(ad_type %in% c("celebrity", 
+                          "use_sex", 
+                          "danger", 
+                          "patriotic"))) %>%
   group_by(year, ad_type) %>%
   summarise(ads = n()) %>%
   ggplot(aes(year, ads, color = ad_type)) + 
@@ -262,7 +262,7 @@ superbowl %>%
 
 In the bar plot, it is clear that the most common ad types are ”Animals” and “Funny.” All of these companies aired ads in these categories (funny, animals, and shows product quickly), which is indicative of their effectiveness in the advertisement industry. It is clear that beer companies, such as Bud Light or Budwiser, have more advertisements in all three categories when compared to car companies such as Kia or Toyota. One interesting observation is that the only company with no ads in the “Shows Product Quickly” category is the NFL. This makes sense because the NFL hosts the Super Bowl and does not have to worry about paying for extra runtime. One limitation with our plot is that the categories “double count” ads. If an ad is both funny and contains animals, then it will look as if there were two different ads, one funny and one with animals. Fortunately, the main goal of this plot was to focus on which ad types were popular and the colored stacked bar plots accomplish this goal.
 
-In the line plot, there are three smooth curves that graph each ad type and show the trend of their yearly occurrences over time. Lines are defined by different colors, labels, and type so it is easier to distinguish between them. The smooth curves allow the viewer to see overall trends more easily. Funny ads peak in occurrence in the mid-2000s, but then drop off all the way into the present. Both ads that show the product quickly and have animals were on an uptrend, but dropped off in the late 2000s/early 2010s. Just like the bar plot, it is clear that animal ads and funny ads were the most common types of ads. One limitation of this plot is that we plotted an estimate of the conditional mean function for each of the three ad types. This means that we are not able to look directly at a year and see the exact number occurrences of a specific ad-type. However, the original line plot was very difficult to spot overall trends due to overplotting, and the smooth lines allow us to accomplish our goal of seeing overall trends over time. 
+In the line plot, there are three smooth curves that graph each ad type and show the trend of their yearly occurrences over time. Lines are defined by different colors, labels, and type so it is easier to distinguish between them. The smooth curves allow the viewer to see overall trends more easily. Funny ads peak in occurrence in the mid-2000s, but then drop off all the way into the present. Both ads that show the product quickly and have animals were on an uptrend, but dropped off in the late 2000s/early 2010s. Just like the bar plot, it is clear that animal ads and funny ads were the most common types of ads. One limitation of this plot is that we plotted an estimate of the conditional mean function for each of the three ad types. This means that we are not able to look directly at a year and see the exact number occurrences of a specific ad-type. However, the original line plot had issues with overplotting; the lines for each of the three line types overlapped, and it was extremely difficult to see the existence of trends over time. The smooth lines used in this visualization are more appropriate as they allow us to accomplish our goal of seeing overall trends over time, which is what we aimed to visualize. 
 
 
 ## 2. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
