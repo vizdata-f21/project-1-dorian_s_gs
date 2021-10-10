@@ -163,21 +163,21 @@ brand_viz <- superbowl_viz %>%
   guides(fill = guide_legend(reverse = TRUE)) +
   theme_minimal() +
   theme(plot.title = element_text(face = "bold", 
-                                  size = 14, 
+                                  size = 16, 
                                   hjust = 0.5, vjust = 1),
-        plot.caption = element_text(size = 10, hjust = 1.55),
+        plot.caption = element_text(size = 14, hjust = 1.55),
         legend.position = c(0.85, 0.7),
         axis.text.x = element_blank(),
         strip.text = element_blank(),
         axis.title.y = element_text(vjust = 1, 
-                                    size = 12),
+                                    size = 14),
         axis.text.y = element_text(hjust = 1.75),
         axis.title.x = element_text(vjust = -2,
-                                    size = 12),
-        axis.text = element_text(size = 10, 
+                                    size = 14),
+        axis.text = element_text(size = 14, 
                                  lineheight = 1),
-        legend.title = element_text(size = 12),
-        legend.text = element_text(size = 10))
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 12))
 
 images <- axis_canvas(brand_viz, axis = 'x') + 
   draw_image("https://1000logos.net/wp-content/uploads/2021/04/Bud-Light-logo-768x432.png", 
@@ -203,7 +203,7 @@ images <- axis_canvas(brand_viz, axis = 'x') +
 ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
 ```
 
-<img src="README_files/figure-gfm/q1p1-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q1p1-1.png" width="80%" style="display: block; margin: auto;" />
 
 ``` r
 # Message related to grouping in summarise(), which is how we want it
@@ -259,16 +259,16 @@ superbowl %>%
   scale_x_continuous(breaks = seq(2000, 2020, 4)) +
   theme_minimal() + 
   theme(plot.title = element_text(face = "bold", 
-                                  size = 14, 
+                                  size = 16, 
                                   hjust = 0.5, vjust = 1),
-        plot.subtitle = element_text(size = 12, 
+        plot.subtitle = element_text(size = 14, 
                                   hjust = 0.5, vjust = 1),
         plot.caption = element_text(size = 10, hjust = 1.55),
         axis.title.x = element_text(vjust = -2, 
-                                    size = 12),
+                                    size = 14),
         axis.title.y = element_text(vjust = 1, 
-                                    size = 12),
-        axis.text = element_text(size = 10, 
+                                    size = 14),
+        axis.text = element_text(size = 12, 
                                  lineheight = 1)) +
   labs(y = "Ad Occurrences", 
        x = "Year",
@@ -278,7 +278,7 @@ superbowl %>%
        subtitle = "From 2000 - 2020") 
 ```
 
-<img src="README_files/figure-gfm/q1p2-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q1p2-1.png" width="80%" style="display: block; margin: auto;" />
 
 ### Discussion
 
@@ -405,15 +405,15 @@ superbowl %>%
     theme_ridges() +
     theme(
       plot.title.position = "plot",
-      plot.title = element_text(face = "bold", size = 22, hjust = 0.36),
-      plot.caption = element_text(size = 14),
-      axis.title.y = element_text(face = "bold", size = 18, hjust = 0.54, vjust = 1),
-      axis.title.x = element_text(face = "bold", size = 18, hjust = 1, vjust = 0),
-      axis.text = element_text(size = 16, lineheight = 1),
+      plot.title = element_text(face = "bold", size = 16, hjust = 0.36),
+      plot.caption = element_text(size = 12),
+      axis.title.y = element_text(face = "bold", size = 14, hjust = 0.54, vjust = 1),
+      axis.title.x = element_text(face = "bold", size = 14, hjust = 1, vjust = 0),
+      axis.text = element_text(size = 12, lineheight = 1),
       axis.text.x = element_text(vjust = -1))
 ```
 
-<img src="README_files/figure-gfm/q2p1-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q2p1-1.png" width="80%" style="display: block; margin: auto;" />
 
 ``` r
 superbowl <- superbowl %>%
@@ -438,17 +438,17 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
   theme(panel.grid.minor = element_blank(),
         strip.background = element_rect(colour = "black"),
         strip.placement = "inside",
-        plot.title = element_text(face = "bold", size = 22, hjust = 0.5, vjust = 1),
-        plot.caption = element_text(size = 14, hjust = 0),
+        plot.title = element_text(face = "bold", size = 16, hjust = 0.5, vjust = 1),
+        plot.caption = element_text(size = 12, hjust = 0),
         panel.spacing = unit(1.4, "lines"),
         axis.text.x = NULL,
-        axis.title.x = element_text(size = 18, vjust = -.5),
-        axis.title.y = element_text(size = 18, hjust = 0.5, vjust = 1),
-        axis.text = element_text(size = 16, lineheight = 1),
-        strip.text.x = element_text(size = 16))
+        axis.title.x = element_text(size = 14, vjust = -.5),
+        axis.title.y = element_text(size = 14, hjust = 0.5, vjust = 1),
+        axis.text = element_text(size = 14, lineheight = 1),
+        strip.text.x = element_text(size = 12))
 ```
 
-<img src="README_files/figure-gfm/q2p2-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q2p2-1.png" width="80%" style="display: block; margin: auto;" />
 
 ### Discussion
 
