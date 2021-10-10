@@ -7,9 +7,9 @@ by Dorian’s Gs
 The dataset `superbowl` is created by FiveThirtyEight, originally
 collected through superbowl-ads.com. FiveThirtyEight is an American
 Website that reports how statistics are relevant in current events.
-There are 247 different superbowl commercials with 25 different
+There are 247 different Super Bowl commercials with 25 different
 variables, but the FiveThirtyEight team observed only 10 different
-brands. The dataset includes defining characteristics of superbowl ads
+brands. The dataset includes defining characteristics of Super Bowl ads
 from these 10 popular brands, two of which are Toyota and Bud Light.
 
 There are different types of variables included in `superbowl`.
@@ -20,8 +20,8 @@ also 7 different ad categories, and a corresponding variable saying
 whether the ad does or does not belong to the category. These logical
 variables were determined by the FiveThirtyEight team as they watched
 and categorized all of the advertisements. 3 of these 7 variables
-include whether the ad is funny, patriotic, and/or includes animals.
-(One ad can belong to more than 1 of these 7 different categories.)
+include whether the ad is funny, patriotic, and/or includes animals. An
+ad can belong to more than one of these 7 different categories.
 
 Using the dataset `superbowl`, we answer the following questions:
 
