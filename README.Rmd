@@ -319,10 +319,11 @@ superbowl %>%
     theme_ridges() +
     theme(
       plot.title.position = "plot",
-      plot.title = element_text(face = "bold", size = 14, hjust = 0.36),
-      plot.caption = element_text(size = 8),
-      axis.title.y = element_text(face = "bold", size = 12, hjust = 0.54, vjust = 1),
-      axis.text = element_text(size = 10, lineheight = 1),
+      plot.title = element_text(face = "bold", size = 22, hjust = 0.36),
+      plot.caption = element_text(size = 14),
+      axis.title.y = element_text(face = "bold", size = 18, hjust = 0.54, vjust = 1),
+      axis.title.x = element_text(face = "bold", size = 18, hjust = 1, vjust = 0),
+      axis.text = element_text(size = 16, lineheight = 1),
       axis.text.x = element_text(vjust = -1))
 ```
 
