@@ -23,22 +23,22 @@ and definitions (codebook) are in the introduction of each question.
 
 Using the dataset `superbowl`, we answer the following questions:
 
-## 1\. What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
+## 1. What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
 
 ### Introduction
 
 The relevant variables include:
 
-  - `animals`: logical variable, whether or not the ad contains animals
+-   `animals`: logical variable, whether or not the ad contains animals
 
-  - `show_product_quickly`: logical variable, whether or not the ad show
+-   `show_product_quickly`: logical variable, whether or not the ad show
     a product quickly
 
-  - `funny`: logical variable, whether or not the ad contains humor
+-   `funny`: logical variable, whether or not the ad contains humor
 
-  - `year`: numerical variable, year the ad was released
+-   `year`: numerical variable, year the ad was released
 
-  - `brand`: the brand that ran the ad
+-   `brand`: the brand that ran the ad
 
 More specifically, we investigate how companies choose to include
 animals, humor, and show their product quickly. Even though the dataset
@@ -315,19 +315,19 @@ very difficult to spot overall trends due to overplotting, and the
 smooth lines allow us to accomplish our goal of seeing overall trends
 over time.
 
-## 2\. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
+## 2. What is the relationship between popularity of a Superbowl Ad and how much interaction it got?
 
 ### Introduction
 
 The relevant variables are all numerical and include:
 
-  - `view_count`: number of views
+-   `view_count`: number of views
 
-  - `like_count`: number of likes
+-   `like_count`: number of likes
 
-  - `dislike_count`: number of dislikes
+-   `dislike_count`: number of dislikes
 
-  - `comment_count`: number of comments
+-   `comment_count`: number of comments
 
 The `view_count` is the measure for popularity, while the other
 variables define interaction with the ad. We were interested in
@@ -362,14 +362,15 @@ gets. We defined interactions as the number of likes, dislikes and
 comments a video got. We wanted to plot both `view_count` and
 `interactions` as continuous variables. In order to find the best plot,
 we experimented with scatter plots, line plots, step plots, and area
-plots to see which plot was the most informative. There were too little
-variables for the scatter plot to be helpful. It was also hard to follow
-along with the variable. We found that a line plot or step by itself was
-too fragmented and the connection between points zig-zagged a lot and
-made it hard to also see the overall trend. The combined plot shows each
-point but the area also makes it much easier to trace the trend for each
-view category. We then added labels, captions and made a few styling
-choices to get to our final presentation.
+plots to see which plot was the most informative. The view counts were
+clustered in the thousands of views but contained very few videos with
+millions of views, so the scatter plot was not helpful. We found that a
+line plot or step by itself was too fragmented and the connection
+between points zig-zagged a lot and made it difficult to see the overall
+trend. The combined plot shows each point but the area also makes it
+much easier to trace the trend for each view category. We then added
+labels, captions and made a few styling choices to get to our final
+presentation.
 
 ### Analysis
 
@@ -378,37 +379,32 @@ superbowl <- superbowl %>%
   mutate(ratio = like_count / (like_count + dislike_count),
          interactions = like_count + dislike_count + comment_count,
          view_category = case_when(
-            view_count < 4000 ~ "Few",
-            view_count >= 4000 & view_count < 30000 ~ "Some",
-            view_count >= 30000 & view_count < 90000 ~ "Moderate",
-            view_count >= 90000 & view_count < 500000 ~ "Many",
-            view_count >= 500000 & view_count < 10000000 ~ "High",
-            TRUE ~ "Viral"))
+            view_count < 4000 ~ "Few\nLess than 4K",
+            view_count >= 4000 & view_count < 30000 ~ "Some\n4K to 30K",
+            view_count >= 30000 & view_count < 90000 ~ "Moderate\n30K to 90K",
+            view_count >= 90000 & view_count < 500000 ~ "Many\n90K to 500K",
+            view_count >= 500000 & view_count < 10000000 ~ "High\n500K to 10M",
+            TRUE ~ "Viral\n10M+"))
 superbowl %>%
   mutate(Views = fct_relevel(
-            view_category, "Few", "Some", "Moderate", "Many","High","Viral"
+            view_category, "Viral\n10M+", "High\n500K to 10M", "Many\n90K to 500K", "Moderate\n30K to 90K","Some\n4K to 30K","Few\nLess than 4K"
          )) %>%
   ggplot(aes(x = ratio, y = Views, fill = Views)) +
-    geom_density_ridges(scale = 0.9, show.legend = TRUE) +
+    geom_density_ridges(scale = 0.9, show.legend = FALSE) +
     coord_cartesian(xlim = c(0.5, 1.0)) +
-    scale_fill_discrete_sequential(palette = "Greens", order = c(1:6),
-                                   labels = c("Less than 4K", "4K to 30K", "30K to 90K", 
-                                             "90K to 500K", "500K to 10M", "10M+"),
-                                   guide = guide_legend(reverse = TRUE)) +
+    scale_fill_discrete_sequential(palette = "Greens", order = c(6:1)) +
     scale_x_continuous(expand = c(0, 0.1), labels = scales::percent_format(accuracy = 1)) +
     scale_y_discrete(expand = expand_scale(mult = c(0, .2))) +
     labs(
       title = "Youtube Superbowl Ads and Like Percentages",
       x = "Like Percentage",
-      y = "Views") +
+      y = "Views",
+      caption = "(Percentage of likes to sum of likes and dislikes on the video)") +
     theme_ridges() +
     theme(
       plot.title.position = "plot",
       plot.title = element_text(face = "bold", size = 14, hjust = 0.36),
-      legend.key.size = unit(0.75, 'cm'),
-      legend.text = element_text(size = 12),
-      legend.title = element_text(size = 12),
-      axis.title.x = element_text(face = "bold", size = 12, hjust = 0.42, vjust = -1), 
+      plot.caption = element_text(size = 8),
       axis.title.y = element_text(face = "bold", size = 12, hjust = 0.54, vjust = 1),
       axis.text = element_text(size = 10, lineheight = 1),
       axis.text.x = element_text(vjust = -1))
@@ -432,7 +428,7 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
              strip.position = "top") +
     scale_y_continuous(label = label_number_si()) +
   scale_x_continuous(label = label_number_si()) +
-  scale_fill_discrete_sequential(palette = "Blues") +
+  scale_fill_discrete_sequential(palette = "Greens") +
   labs(x = "View Count", y ="Number of Interactions", title ="Assessing Superbowl Ad Interactions",
        caption ="Interaction is defined by the sum of \nlikes, dislikes and comments on a video")+
   theme_minimal() +
@@ -480,18 +476,18 @@ terms of our data that means that we expected each higher category of
 views would have a significantly high level of interaction. As an
 example, we expected that proportionally, the number of view count to
 interactions would be higher for ads with “Viral Views” compared to
-“Mega Views” and ads with “Mega Views” would be higher that graphs
-with “Many Views”. Our results turned out to be a bit more complicated
-than that. We found that only ads on either extreme end followed this
-trend. So ads with a “few views” had much a smaller views to interaction
-ratio than videos in all other categories and ads with “viral views” had
-much bigger views to interaction ratio than videos in all other
-“categories.” For videos in the middle categories(“Some
-Views”,“Moderate Views”,“Many Views” and “High Views”), proportion
-of view counts to interactions seemed to be much more random and didn’t
-follow any discernible patterns. Each panel also had no discernible
-trend in the way they were plotted unlike the “few” and “viral”
-categories which had a discernible linear pattern each.
+“Mega Views” and ads with “Mega Views” would be higher that graphs with
+“Many Views”. Our results turned out to be a bit more complicated than
+that. We found that only ads on either extreme end followed this trend.
+So ads with a “few views” had much a smaller views to interaction ratio
+than videos in all other categories and ads with “viral views” had much
+bigger views to interaction ratio than videos in all other “categories.”
+For videos in the middle categories(“Some Views”,“Moderate Views”,“Many
+Views” and “High Views”), proportion of view counts to interactions
+seemed to be much more random and didn’t follow any discernible
+patterns. Each panel also had no discernible trend in the way they were
+plotted unlike the “few” and “viral” categories which had a discernible
+linear pattern each.
 
 ## Presentation
 

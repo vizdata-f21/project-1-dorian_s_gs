@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
   fig.align = "center",
   fig.retina = 3,    
   dpi = 300,
-  fig.width = 8,    
+  fig.width = 12,    
   fig.asp = 0.618,
   out.width = "70%")
 
