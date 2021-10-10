@@ -5,21 +5,23 @@ by Dorian’s Gs
 ## Introduction
 
 The dataset `superbowl` is created by FiveThirtyEight, originally
-collected through superbowl-ads.com. There are 247 different superbowl
-commercials with 25 different variables, but the team observed only 10
-different ads Additionally, the dataset includes defining
-characteristics of superbowl ads from popular brands like Toyota and Bud
-Light.
+collected through superbowl-ads.com. FiveThirtyEight is an American
+Website that reports how statistics are relevant in current events.
+There are 247 different superbowl commercials with 25 different
+variables, but the FiveThirtyEight team observed only 10 different
+brands. The dataset includes defining characteristics of superbowl ads
+from these 10 popular brands, two of which are Toyota and Bud Light.
 
-There are different types of variables included in `superbowl`: 7 of
-them are integers, including the views, number of likes, and number of
-dislikes. 11 variables are characters, including the brand, title, and
-description. 7 variables are logical, which shows either `TRUE` or
-`FALSE` for some categories, including whether or not the ad is funny,
-patriotic, includes animals, and includes sex. These logical variables
-were determined by the FiveThirtyEight team as they watched and
-categorized all of the advertisements. The list of relevant variables
-and definitions (codebook) are in the introduction of each question.
+There are different types of variables included in `superbowl`.
+Variables like views, number of likes, and number of dislikes are
+numeric values based off of YouTube statistics. Variables like brand,
+title, and description act as identifiers for individual ads. There were
+also 7 different ad categories, and a corresponding variable saying
+whether the ad does or does not belong to the category. These logical
+variables were determined by the FiveThirtyEight team as they watched
+and categorized all of the advertisements. 3 of these 7 variables
+include whether the ad is funny, patriotic, and/or includes animals.
+(One ad can belong to more than 1 of these 7 different categories.)
 
 Using the dataset `superbowl`, we answer the following questions:
 
@@ -159,7 +161,6 @@ brand_viz <- superbowl_viz %>%
        x = "Brand",
        fill = "Ad Type",
        caption = "Source: FiveThirtyEight") +
-  guides(fill = guide_legend(reverse = TRUE)) +
   theme_minimal() +
   theme(plot.title = element_text(face = "bold", 
                                   size = 16, 

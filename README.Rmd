@@ -141,7 +141,6 @@ brand_viz <- superbowl_viz %>%
        x = "Brand",
        fill = "Ad Type",
        caption = "Source: FiveThirtyEight") +
-  guides(fill = guide_legend(reverse = TRUE)) +
   theme_minimal() +
   theme(plot.title = element_text(face = "bold", 
                                   size = 16, 
