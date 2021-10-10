@@ -289,6 +289,7 @@ For the second plot, we wanted to look more specifically at the relationship bet
 superbowl <- superbowl %>%
   mutate(ratio = like_count / (like_count + dislike_count),
          interactions = like_count + dislike_count + comment_count,
+         # Added extra line to show view category descriptions
          view_category = case_when(
             view_count < 4000 ~ "Few\nLess than 4K",
             view_count >= 4000 & view_count < 30000 ~ "Some\n4K to 30K",
@@ -298,7 +299,8 @@ superbowl <- superbowl %>%
             TRUE ~ "Viral\n10M+"))
 superbowl %>%
   mutate(Views = fct_relevel(
-            view_category, "Viral\n10M+", "High\n500K to 10M", "Many\n90K to 500K", "Moderate\n30K to 90K","Some\n4K to 30K","Few\nLess than 4K"
+            view_category, "Viral\n10M+", "High\n500K to 10M", "Many\n90K to 500K", 
+            "Moderate\n30K to 90K","Some\n4K to 30K","Few\nLess than 4K"
          )) %>%
   ggplot(aes(x = ratio, y = Views, fill = Views)) +
     geom_density_ridges(scale = 0.9, show.legend = FALSE) +
@@ -325,6 +327,7 @@ superbowl %>%
 
 
 ```{r q2p2, message = FALSE, warning = FALSE}
+# Problem with the order of the facet again!
 superbowl <- superbowl %>%
   mutate(view_category = paste(view_category, "Views"))
 superbowl <- superbowl %>%
