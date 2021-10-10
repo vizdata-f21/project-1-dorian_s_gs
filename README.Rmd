@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
   fig.align = "center",
   fig.retina = 3,    
   dpi = 300,
-  fig.width = 12,    
+  fig.width = 16,    
   fig.asp = 0.618,
   out.width = "70%")
 
@@ -352,14 +352,14 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
   theme(panel.grid.minor = element_blank(),
         strip.background = element_rect(colour = "black"),
         strip.placement = "inside",
-        plot.title = element_text(face = "bold", size = 14, hjust = 0.5, vjust = 1),
-        plot.caption = element_text(size = 10, hjust = 0),
+        plot.title = element_text(face = "bold", size = 22, hjust = 0.5, vjust = 1),
+        plot.caption = element_text(size = 14, hjust = 0),
         panel.spacing = unit(1.4, "lines"),
         axis.text.x = NULL,
-        axis.title.x = element_text(size = 12, vjust = -.5),
-        axis.title.y = element_text(size = 12, hjust = 0.5, vjust = 1),
-        axis.text = element_text(size = 10, lineheight = 1),
-        strip.text.x = element_text(size = 10))
+        axis.title.x = element_text(size = 18, vjust = -.5),
+        axis.title.y = element_text(size = 18, hjust = 0.5, vjust = 1),
+        axis.text = element_text(size = 16, lineheight = 1),
+        strip.text.x = element_text(size = 16))
 ```
 
 

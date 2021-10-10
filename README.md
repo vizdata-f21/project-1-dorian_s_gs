@@ -98,15 +98,15 @@ visualizations that were difficult to interpret.
 superbowl_viz <- superbowl %>%
   select(year, brand, animals, celebrity, use_sex, 
          funny, show_product_quickly, patriotic, danger) %>%
-  pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
-                        show_product_quickly, patriotic, danger), 
+  pivot_longer(cols = c(-year, -brand), 
                names_to = 'ad_type', 
                values_to = 'have') %>%
   filter(have == TRUE) %>%
   group_by(brand, year, ad_type) %>%
   summarise(ads = n()) %>%
-  mutate(brand = case_when(brand == 'Hynudai' ~ 'Hyundai',
-                           TRUE ~ as.character(brand))) %>%
+  mutate(brand = if_else(brand == 'Hynudai', 
+                         'Hyundai', 
+                         as.character(brand))) %>%
   mutate(category = case_when(brand == 'Bud Light' ~ 'Alcohol',
                           brand == 'Budweiser' ~ 'Alcohol',
                           brand == 'Doritos' ~ 'Food & Beverage',
@@ -122,19 +122,19 @@ superbowl_viz <- superbowl %>%
 
 #Brand Total Labels
 brand_totals <- superbowl_viz %>%
-  filter(ad_type != 'celebrity',
-         ad_type != 'use_sex',
-         ad_type != 'danger',
-         ad_type != 'patriotic') %>%
+  filter(!(ad_type %in% c("celebrity", 
+                          "use_sex", 
+                          "danger", 
+                          "patriotic"))) %>%
   group_by(brand)  %>%
   summarise(brand_totals = n())
 
 # Message related to grouping in summarise(), which is how we want it
 brand_viz <- superbowl_viz %>%
-  filter(ad_type != 'celebrity',
-         ad_type != 'use_sex',
-         ad_type != 'danger',
-         ad_type != 'patriotic') %>%
+  filter(!(ad_type %in% c("celebrity", 
+                          "use_sex", 
+                          "danger", 
+                          "patriotic"))) %>%
   group_by(brand, ad_type)  %>%
   summarise (ads = n()) %>% 
   ggplot(aes(factor(brand, 
@@ -213,10 +213,10 @@ ad_labels <- superbowl %>%
                names_to = 'ad_type', 
                values_to = 'have') %>%
   filter(have == TRUE,
-         ad_type != 'celebrity',
-         ad_type != 'use_sex',
-         ad_type != 'danger',
-         ad_type != 'patriotic') %>%
+         !(ad_type %in% c("celebrity", 
+                          "use_sex", 
+                          "danger", 
+                          "patriotic"))) %>%
   group_by(ad_type, year) %>%
   summarise(ads = n()) %>%
   filter(year == 2005) %>%
@@ -234,10 +234,10 @@ superbowl %>%
                names_to = 'ad_type', 
                values_to = 'have') %>%
   filter(have == TRUE,
-         ad_type != 'celebrity',
-         ad_type != 'use_sex',
-         ad_type != 'danger',
-         ad_type != 'patriotic') %>%
+         !(ad_type %in% c("celebrity", 
+                          "use_sex", 
+                          "danger", 
+                          "patriotic"))) %>%
   group_by(year, ad_type) %>%
   summarise(ads = n()) %>%
   ggplot(aes(year, ads, color = ad_type)) + 
@@ -310,10 +310,12 @@ clear that animal ads and funny ads were the most common types of ads.
 One limitation of this plot is that we plotted an estimate of the
 conditional mean function for each of the three ad types. This means
 that we are not able to look directly at a year and see the exact number
-occurrences of a specific ad-type. However, the original line plot was
-very difficult to spot overall trends due to overplotting, and the
-smooth lines allow us to accomplish our goal of seeing overall trends
-over time.
+occurrences of a specific ad-type. However, the original line plot had
+issues with overplotting; the lines for each of the three line types
+overlapped, and it was extremely difficult to see the existence of
+trends over time. The smooth lines used in this visualization are more
+appropriate as they allow us to accomplish our goal of seeing overall
+trends over time, which is what we aimed to visualize.
 
 ## 2. What is the relationship between popularity of a Superbowl Ad and how much interaction it got?
 
@@ -403,10 +405,11 @@ superbowl %>%
     theme_ridges() +
     theme(
       plot.title.position = "plot",
-      plot.title = element_text(face = "bold", size = 14, hjust = 0.36),
-      plot.caption = element_text(size = 8),
-      axis.title.y = element_text(face = "bold", size = 12, hjust = 0.54, vjust = 1),
-      axis.text = element_text(size = 10, lineheight = 1),
+      plot.title = element_text(face = "bold", size = 22, hjust = 0.36),
+      plot.caption = element_text(size = 14),
+      axis.title.y = element_text(face = "bold", size = 18, hjust = 0.54, vjust = 1),
+      axis.title.x = element_text(face = "bold", size = 18, hjust = 1, vjust = 0),
+      axis.text = element_text(size = 16, lineheight = 1),
       axis.text.x = element_text(vjust = -1))
 ```
 
@@ -435,14 +438,14 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
   theme(panel.grid.minor = element_blank(),
         strip.background = element_rect(colour = "black"),
         strip.placement = "inside",
-        plot.title = element_text(face = "bold", size = 14, hjust = 0.5, vjust = 1),
-        plot.caption = element_text(size = 10, hjust = 0),
+        plot.title = element_text(face = "bold", size = 22, hjust = 0.5, vjust = 1),
+        plot.caption = element_text(size = 14, hjust = 0),
         panel.spacing = unit(1.4, "lines"),
         axis.text.x = NULL,
-        axis.title.x = element_text(size = 12, vjust = -.5),
-        axis.title.y = element_text(size = 12, hjust = 0.5, vjust = 1),
-        axis.text = element_text(size = 10, lineheight = 1),
-        strip.text.x = element_text(size = 10))
+        axis.title.x = element_text(size = 18, vjust = -.5),
+        axis.title.y = element_text(size = 18, hjust = 0.5, vjust = 1),
+        axis.text = element_text(size = 16, lineheight = 1),
+        strip.text.x = element_text(size = 16))
 ```
 
 <img src="README_files/figure-gfm/q2p2-1.png" width="70%" style="display: block; margin: auto;" />
