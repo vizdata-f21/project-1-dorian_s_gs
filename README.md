@@ -101,8 +101,9 @@ superbowl_viz <- superbowl %>%
                names_to = 'ad_type', 
                values_to = 'have') %>%
   filter(have == TRUE) %>%
-  group_by(brand, year, ad_type) %>%
-  summarise(ads = n()) %>%
+  count(brand, year, ad_type, name  = "ads") %>%
+  #group_by(brand, year, ad_type) %>%
+  #summarise(ads = n()) %>%
   mutate(brand = if_else(brand == 'Hynudai', 
                          'Hyundai', 
                          as.character(brand))) %>%
@@ -118,23 +119,23 @@ superbowl_viz <- superbowl %>%
                           brand == 'NFL' ~ 'Sports')) %>%
   relocate(year, .before = brand) %>%
   relocate(category, .before = brand)
-
 #Brand Total Labels
 brand_totals <- superbowl_viz %>%
   filter(!(ad_type %in% c("celebrity", 
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(brand)  %>%
-  summarise(brand_totals = n())
-
+  count(brand, name  = "brand_totals")
+  #group_by(brand)  %>%
+  #summarise(brand_totals = n())
 brand_viz <- superbowl_viz %>%
   filter(!(ad_type %in% c("celebrity", 
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(brand, ad_type)  %>%
-  summarise (ads = n()) %>% 
+  count(brand, ad_type, name  = "ads") %>%
+  #group_by(brand, ad_type)  %>%
+  #summarise (ads = n()) %>% 
   ggplot(aes(factor(brand, 
                     levels = c("Bud Light", "Budweiser", "Doritos", "Pepsi", 
                                "Coca-Cola", "Hyundai", "E-Trade", 
@@ -175,7 +176,6 @@ brand_viz <- superbowl_viz %>%
                                  lineheight = 1),
         legend.title = element_text(size = 14),
         legend.text = element_text(size = 12))
-
 images <- axis_canvas(brand_viz, axis = 'x') + 
   draw_image("https://1000logos.net/wp-content/uploads/2021/04/Bud-Light-logo-768x432.png", 
              x = 0.5, scale = 0.75) +
@@ -213,8 +213,9 @@ ad_labels <- superbowl %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(ad_type, year) %>%
-  summarise(ads = n()) %>%
+  count(ad_type, year, name  = "ads") %>%
+  #group_by(ad_type, year) %>%
+  #summarise(ads = n()) %>%
   filter(year == 2005) %>%
   mutate(ads = case_when(ads == 6 ~ 4.1,
                          ads == 11 ~ 9.9,
@@ -234,8 +235,9 @@ superbowl %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(year, ad_type) %>%
-  summarise(ads = n()) %>%
+  count(year, ad_type, name  = "ads") %>%
+  #group_by(year, ad_type) %>%
+  #summarise(ads = n()) %>%
   ggplot(aes(year, ads, color = ad_type)) + 
   geom_line(aes(linetype = ad_type), 
             stat = "smooth",
@@ -385,8 +387,7 @@ superbowl <- superbowl %>%
             TRUE ~ "Viral\n10M+"))
 superbowl %>%
   mutate(Views = fct_relevel(
-            view_category, "Viral\n10M+", "High\n500K to 10M", "Many\n90K to 500K", 
-            "Moderate\n30K to 90K","Some\n4K to 30K","Few\nLess than 4K"
+            view_category, "Viral\n10M+", "High\n500K to 10M", "Many\n90K to 500K", "Moderate\n30K to 90K","Some\n4K to 30K","Few\nLess than 4K"
          )) %>%
   ggplot(aes(x = ratio, y = Views, fill = Views)) +
     geom_density_ridges(scale = 0.9, show.legend = FALSE) +
@@ -417,9 +418,7 @@ superbowl <- superbowl %>%
   mutate(view_category = paste(view_category, "Views"))
 superbowl <- superbowl %>%
   mutate(view_category = fct_relevel(
-  view_category, "Few Views", "Some Views", "Moderate Views", 
-  "Many Views", "High Views", "Viral Views"))
-
+  view_category, "Few Views","Some Views","Moderate Views","Many Views", "High Views", "Viral Views"))
 ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
   geom_area(aes(fill = view_category), show.legend = NULL) +
   geom_line() +

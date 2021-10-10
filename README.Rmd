@@ -28,7 +28,6 @@ knitr::opts_chunk$set(
   fig.width = 12,    
   fig.asp = 0.618,
   out.width = "80%")
-
 ggplot2::theme_set(ggplot2::theme_minimal())
 ```
 
@@ -44,38 +43,36 @@ There are different types of variables included in `superbowl`. Variables like v
 
 Using the dataset `superbowl`, we answer the following questions: 
 
-## 1. What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
+## 1. What factors contribute to a greater number of ad views and has the relationship between those factors and the views changed over time?
 
 ### Introduction
 
 The relevant variables include:
 
-* `animals`: logical variable, whether or not the ad contains animals
+* `animals`: whether or not the ad contains animals
 
-* `show_product_quickly`: logical variable, whether or not the ad show a product quickly
+* `show_product_quickly`: whether or not the ad show a product quickly
 
-* `funny`: logical variable, whether or not the ad contains humor
+* `funny`: whether or not the ad contains humor
 
-* `year`: numerical variable, year the ad was released
+* `year`: the year the ad was released
 
 * `brand`: the brand that ran the ad
 
 More specifically, we investigate how companies choose to include animals, humor, and show their product quickly. Even though the dataset provides a lot more variables related to ad characteristics, we chose to focus on these three because they occurred more than any of the other ad types within the dataset, leading us to believe that companies cared the most about these three characteristics. For the second part of the question, we primarily investigate how the trends and relationships we explored in the first part have changed over the years.
 
-We were interested in this question because we have observed how influential ads can be if they include characteristics that appeal to our emotions, such as our adoration for a cute puppy, longing to be like a popstar, or simply our sexual appetite. However, we were curious to see if companies, the ones who provided the ads, thought the same as us. Emotional appeal would foster more views and think it is important for advertisement agencies to know. Additionally, we observed that certain ad appeals, especially use of sexuality, have grown in popularity over the years, and would like to observe such trends with our data analysis. 
+We were interested in this question because we have observed how influential ads can be if they include characteristics that appeal to our emotions, such as our adoration for a cute puppy, longing to be like a popstar, or simply our sexual appetite. However, we were curious to see if companies, the ones who provided the ads, thought the same as us. Emotional appeal would foster more views and we think it is important for advertisement agencies to know. Additionally, we observed that certain ad appeals, especially use of sexuality, have grown in popularity over the years, and would like to observe such trends with our data analysis. 
 
 
 ### Approach
 
-Our initial plan was to create visualizations centered around the relationship between the ad type (i.e., what characteristics an ad possesses) and view count. After transforming and cleaning the data, we ran into the issue of visualizations being overplotted, no distinct relationships appearing, and outliers significantly skewing the data. Since the data does not contain a ton of observations (247), we found that the outliers (very low or very high view count) had a large influence when visualizing the data. To address these issues, we shifted our focus to looking at commercials from a brand standpoint, as well as decided to quantify ad usage by frequency (number of ads) and not view count. To accomplish the latter, we added a new variable `ads` to the data frame that was the number of occurrences of each ad type in a year. To show the relationship between brand and ad type, we displayed brand and ad type in a segmented bar chart. The segments showed how each category was used by the ten brands in the dataset. To answer the part of the question related to how the ad types have fared from 2000 to 2020, we looked at the frequency of the ad types over time, showing this relationship in a line graph with the year on the x-axis and ad occurrence on the y-axis.
+Our initial plan was to create visualizations centered around the relationship between the ad type (i.e., what characteristics an ad possesses) and view count. After transforming and cleaning the data, we ran into the issue of visualizations being overplotted, no distinct relationships appearing, and outliers contributing to messy visualizations (e.g., a Doritos ad from 2012 had greater than six times the number of views than any other ad). To address these issues, we shifted our focus to looking at commercials from a brand standpoint, as well as decided to quantify ad usage by frequency (number of ads) and not view count. To accomplish the latter, we added a new variable `ads` to the data frame that was the number of occurrences of each ad type in a year. To show the relationship between brand and ad type, we displayed brand and ad type in a segmented bar chart. The segments showed how each category was used by the ten brands in the dataset. To answer the part of the question related to how the ad types have fared from 2000 to 2020, we looked at the frequency of the ad types over time, showing this relationship in a line graph with the year on the x-axis and ad occurrence on the y-axis.
 
-We chose a bar chart as they are effective at displaying two variables, one continuous and the other discrete. It is easy to compare between bars, based on relative height of the bars and/or relative bar segments. For the other visualization for this question, we opted for a line chart as we were mapping a discrete variable over time. We eventually settled on using estimates of the conditional mean functions for each ad type as there was overplotting and using a regular line chart led to messy visualizations that were difficult to interpret.
+We chose a bar chart as they are effective at displaying two variables, one continuous and the other discrete. It is easy to compare between bars, based on relative height of the bars and/or relative bar segments. For the other visualization for this question, we opted for a line chart as we were mapping a discrete variable over time. We eventually settled on using estimates of the means for each ad type as there was overplotting and using a line chart led to messy visualizations that were difficult to interpret.
 
 ### Analysis
 
 ```{r q1p1, message = FALSE, warning = FALSE}
-# Message related to grouping by 'brand' and 'year' in summarise, 
-# Which is what we want
 superbowl_viz <- superbowl %>%
   select(year, brand, animals, celebrity, use_sex, 
          funny, show_product_quickly, patriotic, danger) %>%
@@ -83,8 +80,9 @@ superbowl_viz <- superbowl %>%
                names_to = 'ad_type', 
                values_to = 'have') %>%
   filter(have == TRUE) %>%
-  group_by(brand, year, ad_type) %>%
-  summarise(ads = n()) %>%
+  count(brand, year, ad_type, name  = "ads") %>%
+  #group_by(brand, year, ad_type) %>%
+  #summarise(ads = n()) %>%
   mutate(brand = if_else(brand == 'Hynudai', 
                          'Hyundai', 
                          as.character(brand))) %>%
@@ -100,24 +98,23 @@ superbowl_viz <- superbowl %>%
                           brand == 'NFL' ~ 'Sports')) %>%
   relocate(year, .before = brand) %>%
   relocate(category, .before = brand)
-
 #Brand Total Labels
 brand_totals <- superbowl_viz %>%
   filter(!(ad_type %in% c("celebrity", 
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(brand)  %>%
-  summarise(brand_totals = n())
-
-# Message related to grouping in summarise(), which is how we want it
+  count(brand, name  = "brand_totals")
+  #group_by(brand)  %>%
+  #summarise(brand_totals = n())
 brand_viz <- superbowl_viz %>%
   filter(!(ad_type %in% c("celebrity", 
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(brand, ad_type)  %>%
-  summarise (ads = n()) %>% 
+  count(brand, ad_type, name  = "ads") %>%
+  #group_by(brand, ad_type)  %>%
+  #summarise (ads = n()) %>% 
   ggplot(aes(factor(brand, 
                     levels = c("Bud Light", "Budweiser", "Doritos", "Pepsi", 
                                "Coca-Cola", "Hyundai", "E-Trade", 
@@ -158,7 +155,6 @@ brand_viz <- superbowl_viz %>%
                                  lineheight = 1),
         legend.title = element_text(size = 14),
         legend.text = element_text(size = 12))
-
 images <- axis_canvas(brand_viz, axis = 'x') + 
   draw_image("https://1000logos.net/wp-content/uploads/2021/04/Bud-Light-logo-768x432.png", 
              x = 0.5, scale = 0.75) +
@@ -181,8 +177,6 @@ images <- axis_canvas(brand_viz, axis = 'x') +
   draw_image("https://1000logos.net/wp-content/uploads/2017/05/NFL-logo-768x518.png", 
              x = 9.5, scale = 1.1) 
 ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
-
-# Message related to grouping in summarise(), which is how we want it
 ad_labels <- superbowl %>%
   pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
                         show_product_quickly, patriotic, danger), 
@@ -193,8 +187,9 @@ ad_labels <- superbowl %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(ad_type, year) %>%
-  summarise(ads = n()) %>%
+  count(ad_type, year, name  = "ads") %>%
+  #group_by(ad_type, year) %>%
+  #summarise(ads = n()) %>%
   filter(year == 2005) %>%
   mutate(ads = case_when(ads == 6 ~ 4.1,
                          ads == 11 ~ 9.9,
@@ -216,8 +211,9 @@ superbowl %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(year, ad_type) %>%
-  summarise(ads = n()) %>%
+  count(year, ad_type, name  = "ads") %>%
+  #group_by(year, ad_type) %>%
+  #summarise(ads = n()) %>%
   ggplot(aes(year, ads, color = ad_type)) + 
   geom_line(aes(linetype = ad_type), 
             stat = "smooth",
@@ -302,8 +298,7 @@ superbowl <- superbowl %>%
             TRUE ~ "Viral\n10M+"))
 superbowl %>%
   mutate(Views = fct_relevel(
-            view_category, "Viral\n10M+", "High\n500K to 10M", "Many\n90K to 500K", 
-            "Moderate\n30K to 90K","Some\n4K to 30K","Few\nLess than 4K"
+            view_category, "Viral\n10M+", "High\n500K to 10M", "Many\n90K to 500K", "Moderate\n30K to 90K","Some\n4K to 30K","Few\nLess than 4K"
          )) %>%
   ggplot(aes(x = ratio, y = Views, fill = Views)) +
     geom_density_ridges(scale = 0.9, show.legend = FALSE) +
@@ -331,12 +326,14 @@ superbowl %>%
 
 ```{r q2p2, message = FALSE, warning = FALSE}
 superbowl <- superbowl %>%
-  mutate(Views = paste(Views, "Views"))
-
+  mutate(view_category = paste(view_category, "Views"))
+superbowl <- superbowl %>%
+  mutate(view_category = fct_relevel(
+  view_category, "Few Views","Some Views","Moderate Views","Many Views", "High Views", "Viral Views"))
 ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
-  geom_area(aes(fill = Views), show.legend = NULL) +
+  geom_area(aes(fill = view_category), show.legend = NULL) +
   geom_line() +
-  facet_wrap(vars(Views),  
+  facet_wrap(vars(view_category),  
              scales ="free",
              nrow = 3,
              strip.position = "top") +
