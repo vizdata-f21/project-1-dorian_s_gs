@@ -335,7 +335,8 @@ superbowl <- superbowl %>%
   mutate(view_category = paste(view_category, "Views"))
 superbowl <- superbowl %>%
   mutate(view_category = fct_relevel(
-  view_category, "Few Views","Some Views","Moderate Views","Many Views", "High Views", "Viral Views"))
+  view_category, "Few Views", "Some Views", "Moderate Views", 
+  "Many Views", "High Views", "Viral Views"))
 
 ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
   geom_area(aes(fill = view_category), show.legend = NULL) +
