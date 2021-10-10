@@ -74,8 +74,6 @@ We chose a bar chart as they are effective at displaying two variables, one cont
 ### Analysis
 
 ```{r q1p1, message = FALSE, warning = FALSE}
-# Message related to grouping by 'brand' and 'year' in summarise, 
-# Which is what we want
 superbowl_viz <- superbowl %>%
   select(year, brand, animals, celebrity, use_sex, 
          funny, show_product_quickly, patriotic, danger) %>%
@@ -112,7 +110,6 @@ brand_totals <- superbowl_viz %>%
   #group_by(brand)  %>%
   #summarise(brand_totals = n())
 
-# Message related to grouping in summarise(), which is how we want it
 brand_viz <- superbowl_viz %>%
   filter(!(ad_type %in% c("celebrity", 
                           "use_sex", 
@@ -186,7 +183,7 @@ images <- axis_canvas(brand_viz, axis = 'x') +
              x = 9.5, scale = 1.1) 
 ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
 
-# Message related to grouping in summarise(), which is how we want it
+
 ad_labels <- superbowl %>%
   pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
                         show_product_quickly, patriotic, danger), 

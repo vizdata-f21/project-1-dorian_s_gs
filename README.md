@@ -23,20 +23,19 @@ and definitions (codebook) are in the introduction of each question.
 
 Using the dataset `superbowl`, we answer the following questions:
 
-## 1. What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
+## 1. What factors contribute to a greater number of ad views and has the relationship between those factors and the views changed over time?
 
 ### Introduction
 
 The relevant variables include:
 
--   `animals`: logical variable, whether or not the ad contains animals
+-   `animals`: whether or not the ad contains animals
 
--   `show_product_quickly`: logical variable, whether or not the ad show
-    a product quickly
+-   `show_product_quickly`: whether or not the ad show a product quickly
 
--   `funny`: logical variable, whether or not the ad contains humor
+-   `funny`: whether or not the ad contains humor
 
--   `year`: numerical variable, year the ad was released
+-   `year`: the year the ad was released
 
 -   `brand`: the brand that ran the ad
 
@@ -54,10 +53,11 @@ influential ads can be if they include characteristics that appeal to
 our emotions, such as our adoration for a cute puppy, longing to be like
 a popstar, or simply our sexual appetite. However, we were curious to
 see if companies, the ones who provided the ads, thought the same as us.
-Emotional appeal would foster more views and think it is important for
-advertisement agencies to know. Additionally, we observed that certain
-ad appeals, especially use of sexuality, have grown in popularity over
-the years, and would like to observe such trends with our data analysis.
+Emotional appeal would foster more views and we think it is important
+for advertisement agencies to know. Additionally, we observed that
+certain ad appeals, especially use of sexuality, have grown in
+popularity over the years, and would like to observe such trends with
+our data analysis.
 
 ### Approach
 
@@ -65,16 +65,15 @@ Our initial plan was to create visualizations centered around the
 relationship between the ad type (i.e., what characteristics an ad
 possesses) and view count. After transforming and cleaning the data, we
 ran into the issue of visualizations being overplotted, no distinct
-relationships appearing, and outliers significantly skewing the data.
-Since the data does not contain a ton of observations (247), we found
-that the outliers (very low or very high view count) had a large
-influence when visualizing the data. To address these issues, we shifted
-our focus to looking at commercials from a brand standpoint, as well as
-decided to quantify ad usage by frequency (number of ads) and not view
-count. To accomplish the latter, we added a new variable `ads` to the
-data frame that was the number of occurrences of each ad type in a year.
-To show the relationship between brand and ad type, we displayed brand
-and ad type in a segmented bar chart. The segments showed how each
+relationships appearing, and outliers contributing to messy
+visualizations (e.g., a Doritos ad from 2012 had greater than six times
+the number of views than any other ad). To address these issues, we
+shifted our focus to looking at commercials from a brand standpoint, as
+well as decided to quantify ad usage by frequency (number of ads) and
+not view count. To accomplish the latter, we added a new variable `ads`
+to the data frame that was the number of occurrences of each ad type in
+a year. To show the relationship between brand and ad type, we displayed
+brand and ad type in a segmented bar chart. The segments showed how each
 category was used by the ten brands in the dataset. To answer the part
 of the question related to how the ad types have fared from 2000 to
 2020, we looked at the frequency of the ad types over time, showing this
@@ -86,15 +85,13 @@ one continuous and the other discrete. It is easy to compare between
 bars, based on relative height of the bars and/or relative bar segments.
 For the other visualization for this question, we opted for a line chart
 as we were mapping a discrete variable over time. We eventually settled
-on using estimates of the conditional mean functions for each ad type as
-there was overplotting and using a regular line chart led to messy
-visualizations that were difficult to interpret.
+on using estimates of the means for each ad type as there was
+overplotting and using a line chart led to messy visualizations that
+were difficult to interpret.
 
 ### Analysis
 
 ``` r
-# Message related to grouping by 'brand' and 'year' in summarise, 
-# Which is what we want
 superbowl_viz <- superbowl %>%
   select(year, brand, animals, celebrity, use_sex, 
          funny, show_product_quickly, patriotic, danger) %>%
@@ -131,7 +128,6 @@ brand_totals <- superbowl_viz %>%
   #group_by(brand)  %>%
   #summarise(brand_totals = n())
 
-# Message related to grouping in summarise(), which is how we want it
 brand_viz <- superbowl_viz %>%
   filter(!(ad_type %in% c("celebrity", 
                           "use_sex", 
@@ -209,7 +205,6 @@ ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
 <img src="README_files/figure-gfm/q1p1-1.png" width="80%" style="display: block; margin: auto;" />
 
 ``` r
-# Message related to grouping in summarise(), which is how we want it
 ad_labels <- superbowl %>%
   pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
                         show_product_quickly, patriotic, danger), 
