@@ -23,20 +23,19 @@ and definitions (codebook) are in the introduction of each question.
 
 Using the dataset `superbowl`, we answer the following questions:
 
-## 1. What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
+## 1. What factors contribute to a greater number of ad views and has the relationship between those factors and the views changed over time?
 
 ### Introduction
 
 The relevant variables include:
 
--   `animals`: logical variable, whether or not the ad contains animals
+-   `animals`: whether or not the ad contains animals
 
--   `show_product_quickly`: logical variable, whether or not the ad show
-    a product quickly
+-   `show_product_quickly`: whether or not the ad show a product quickly
 
--   `funny`: logical variable, whether or not the ad contains humor
+-   `funny`: whether or not the ad contains humor
 
--   `year`: numerical variable, year the ad was released
+-   `year`: the year the ad was released
 
 -   `brand`: the brand that ran the ad
 
@@ -54,10 +53,11 @@ influential ads can be if they include characteristics that appeal to
 our emotions, such as our adoration for a cute puppy, longing to be like
 a popstar, or simply our sexual appetite. However, we were curious to
 see if companies, the ones who provided the ads, thought the same as us.
-Emotional appeal would foster more views and think it is important for
-advertisement agencies to know. Additionally, we observed that certain
-ad appeals, especially use of sexuality, have grown in popularity over
-the years, and would like to observe such trends with our data analysis.
+Emotional appeal would foster more views and we think it is important
+for advertisement agencies to know. Additionally, we observed that
+certain ad appeals, especially use of sexuality, have grown in
+popularity over the years, and would like to observe such trends with
+our data analysis.
 
 ### Approach
 
@@ -65,16 +65,15 @@ Our initial plan was to create visualizations centered around the
 relationship between the ad type (i.e., what characteristics an ad
 possesses) and view count. After transforming and cleaning the data, we
 ran into the issue of visualizations being overplotted, no distinct
-relationships appearing, and outliers significantly skewing the data.
-Since the data does not contain a ton of observations (247), we found
-that the outliers (very low or very high view count) had a large
-influence when visualizing the data. To address these issues, we shifted
-our focus to looking at commercials from a brand standpoint, as well as
-decided to quantify ad usage by frequency (number of ads) and not view
-count. To accomplish the latter, we added a new variable `ads` to the
-data frame that was the number of occurrences of each ad type in a year.
-To show the relationship between brand and ad type, we displayed brand
-and ad type in a segmented bar chart. The segments showed how each
+relationships appearing, and outliers contributing to messy
+visualizations (e.g., a Doritos ad from 2012 had greater than six times
+the number of views than any other ad). To address these issues, we
+shifted our focus to looking at commercials from a brand standpoint, as
+well as decided to quantify ad usage by frequency (number of ads) and
+not view count. To accomplish the latter, we added a new variable `ads`
+to the data frame that was the number of occurrences of each ad type in
+a year. To show the relationship between brand and ad type, we displayed
+brand and ad type in a segmented bar chart. The segments showed how each
 category was used by the ten brands in the dataset. To answer the part
 of the question related to how the ad types have fared from 2000 to
 2020, we looked at the frequency of the ad types over time, showing this
@@ -86,15 +85,13 @@ one continuous and the other discrete. It is easy to compare between
 bars, based on relative height of the bars and/or relative bar segments.
 For the other visualization for this question, we opted for a line chart
 as we were mapping a discrete variable over time. We eventually settled
-on using estimates of the conditional mean functions for each ad type as
-there was overplotting and using a regular line chart led to messy
-visualizations that were difficult to interpret.
+on using estimates of the means for each ad type as there was
+overplotting and using a line chart led to messy visualizations that
+were difficult to interpret.
 
 ### Analysis
 
 ``` r
-# Message related to grouping by 'brand' and 'year' in summarise, 
-# Which is what we want
 superbowl_viz <- superbowl %>%
   select(year, brand, animals, celebrity, use_sex, 
          funny, show_product_quickly, patriotic, danger) %>%
@@ -102,8 +99,9 @@ superbowl_viz <- superbowl %>%
                names_to = 'ad_type', 
                values_to = 'have') %>%
   filter(have == TRUE) %>%
-  group_by(brand, year, ad_type) %>%
-  summarise(ads = n()) %>%
+  count(brand, year, ad_type, name  = "ads") %>%
+  #group_by(brand, year, ad_type) %>%
+  #summarise(ads = n()) %>%
   mutate(brand = if_else(brand == 'Hynudai', 
                          'Hyundai', 
                          as.character(brand))) %>%
@@ -126,17 +124,18 @@ brand_totals <- superbowl_viz %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(brand)  %>%
-  summarise(brand_totals = n())
+  count(brand, name  = "brand_totals")
+  #group_by(brand)  %>%
+  #summarise(brand_totals = n())
 
-# Message related to grouping in summarise(), which is how we want it
 brand_viz <- superbowl_viz %>%
   filter(!(ad_type %in% c("celebrity", 
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(brand, ad_type)  %>%
-  summarise (ads = n()) %>% 
+  count(brand, ad_type, name  = "ads") %>%
+  #group_by(brand, ad_type)  %>%
+  #summarise (ads = n()) %>% 
   ggplot(aes(factor(brand, 
                     levels = c("Bud Light", "Budweiser", "Doritos", "Pepsi", 
                                "Coca-Cola", "Hyundai", "E-Trade", 
@@ -163,21 +162,21 @@ brand_viz <- superbowl_viz %>%
   guides(fill = guide_legend(reverse = TRUE)) +
   theme_minimal() +
   theme(plot.title = element_text(face = "bold", 
-                                  size = 14, 
+                                  size = 16, 
                                   hjust = 0.5, vjust = 1),
-        plot.caption = element_text(size = 10, hjust = 1.55),
+        plot.caption = element_text(size = 14, hjust = 1.55),
         legend.position = c(0.85, 0.7),
         axis.text.x = element_blank(),
         strip.text = element_blank(),
         axis.title.y = element_text(vjust = 1, 
-                                    size = 12),
+                                    size = 14),
         axis.text.y = element_text(hjust = 1.75),
         axis.title.x = element_text(vjust = -2,
-                                    size = 12),
-        axis.text = element_text(size = 10, 
+                                    size = 14),
+        axis.text = element_text(size = 14, 
                                  lineheight = 1),
-        legend.title = element_text(size = 12),
-        legend.text = element_text(size = 10))
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 12))
 
 images <- axis_canvas(brand_viz, axis = 'x') + 
   draw_image("https://1000logos.net/wp-content/uploads/2021/04/Bud-Light-logo-768x432.png", 
@@ -203,10 +202,9 @@ images <- axis_canvas(brand_viz, axis = 'x') +
 ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
 ```
 
-<img src="README_files/figure-gfm/q1p1-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q1p1-1.png" width="80%" style="display: block; margin: auto;" />
 
 ``` r
-# Message related to grouping in summarise(), which is how we want it
 ad_labels <- superbowl %>%
   pivot_longer(cols = c(animals, celebrity, use_sex, funny, 
                         show_product_quickly, patriotic, danger), 
@@ -217,8 +215,9 @@ ad_labels <- superbowl %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(ad_type, year) %>%
-  summarise(ads = n()) %>%
+  count(ad_type, year, name  = "ads") %>%
+  #group_by(ad_type, year) %>%
+  #summarise(ads = n()) %>%
   filter(year == 2005) %>%
   mutate(ads = case_when(ads == 6 ~ 4.1,
                          ads == 11 ~ 9.9,
@@ -238,8 +237,9 @@ superbowl %>%
                           "use_sex", 
                           "danger", 
                           "patriotic"))) %>%
-  group_by(year, ad_type) %>%
-  summarise(ads = n()) %>%
+  count(year, ad_type, name  = "ads") %>%
+  #group_by(year, ad_type) %>%
+  #summarise(ads = n()) %>%
   ggplot(aes(year, ads, color = ad_type)) + 
   geom_line(aes(linetype = ad_type), 
             stat = "smooth",
@@ -259,16 +259,16 @@ superbowl %>%
   scale_x_continuous(breaks = seq(2000, 2020, 4)) +
   theme_minimal() + 
   theme(plot.title = element_text(face = "bold", 
-                                  size = 14, 
+                                  size = 16, 
                                   hjust = 0.5, vjust = 1),
-        plot.subtitle = element_text(size = 12, 
+        plot.subtitle = element_text(size = 14, 
                                   hjust = 0.5, vjust = 1),
         plot.caption = element_text(size = 10, hjust = 1.55),
         axis.title.x = element_text(vjust = -2, 
-                                    size = 12),
+                                    size = 14),
         axis.title.y = element_text(vjust = 1, 
-                                    size = 12),
-        axis.text = element_text(size = 10, 
+                                    size = 14),
+        axis.text = element_text(size = 12, 
                                  lineheight = 1)) +
   labs(y = "Ad Occurrences", 
        x = "Year",
@@ -278,7 +278,7 @@ superbowl %>%
        subtitle = "From 2000 - 2020") 
 ```
 
-<img src="README_files/figure-gfm/q1p2-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q1p2-1.png" width="80%" style="display: block; margin: auto;" />
 
 ### Discussion
 
@@ -405,15 +405,15 @@ superbowl %>%
     theme_ridges() +
     theme(
       plot.title.position = "plot",
-      plot.title = element_text(face = "bold", size = 22, hjust = 0.36),
-      plot.caption = element_text(size = 14),
-      axis.title.y = element_text(face = "bold", size = 18, hjust = 0.54, vjust = 1),
-      axis.title.x = element_text(face = "bold", size = 18, hjust = 1, vjust = 0),
-      axis.text = element_text(size = 16, lineheight = 1),
+      plot.title = element_text(face = "bold", size = 16, hjust = 0.36),
+      plot.caption = element_text(size = 12),
+      axis.title.y = element_text(face = "bold", size = 14, hjust = 0.54, vjust = 1),
+      axis.title.x = element_text(face = "bold", size = 14, hjust = 1, vjust = 0),
+      axis.text = element_text(size = 12, lineheight = 1),
       axis.text.x = element_text(vjust = -1))
 ```
 
-<img src="README_files/figure-gfm/q2p1-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q2p1-1.png" width="80%" style="display: block; margin: auto;" />
 
 ``` r
 superbowl <- superbowl %>%
@@ -438,17 +438,17 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
   theme(panel.grid.minor = element_blank(),
         strip.background = element_rect(colour = "black"),
         strip.placement = "inside",
-        plot.title = element_text(face = "bold", size = 22, hjust = 0.5, vjust = 1),
-        plot.caption = element_text(size = 14, hjust = 0),
+        plot.title = element_text(face = "bold", size = 16, hjust = 0.5, vjust = 1),
+        plot.caption = element_text(size = 12, hjust = 0),
         panel.spacing = unit(1.4, "lines"),
         axis.text.x = NULL,
-        axis.title.x = element_text(size = 18, vjust = -.5),
-        axis.title.y = element_text(size = 18, hjust = 0.5, vjust = 1),
-        axis.text = element_text(size = 16, lineheight = 1),
-        strip.text.x = element_text(size = 16))
+        axis.title.x = element_text(size = 14, vjust = -.5),
+        axis.title.y = element_text(size = 14, hjust = 0.5, vjust = 1),
+        axis.text = element_text(size = 14, lineheight = 1),
+        strip.text.x = element_text(size = 12))
 ```
 
-<img src="README_files/figure-gfm/q2p2-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q2p2-1.png" width="80%" style="display: block; margin: auto;" />
 
 ### Discussion
 
