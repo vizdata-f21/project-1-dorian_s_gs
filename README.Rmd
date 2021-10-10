@@ -44,32 +44,32 @@ There are different types of variables included in `superbowl`: 7 of them are in
 
 Using the dataset `superbowl`, we answer the following questions: 
 
-## 1. What factors contribute to a greater number of views and has the relationship between those factors and the views changed over time?
+## 1. What factors contribute to the most viewed ads and has the relationship between those factors and the views changed over time?
 
 ### Introduction
 
 The relevant variables include:
 
-* `animals`: whether or not the ad contains animals
+* `animals`: logical variable, whether or not the ad contains animals
 
-* `show_product_quickly`: whether or not the ad show a product quickly
+* `show_product_quickly`: logical variable, whether or not the ad show a product quickly
 
-* `funny`: whether or not the ad contains humor
+* `funny`: logical variable, whether or not the ad contains humor
 
-* `year`: the year the ad was released
+* `year`: numerical variable, year the ad was released
 
 * `brand`: the brand that ran the ad
 
 More specifically, we investigate how companies choose to include animals, humor, and show their product quickly. Even though the dataset provides a lot more variables related to ad characteristics, we chose to focus on these three because they occurred more than any of the other ad types within the dataset, leading us to believe that companies cared the most about these three characteristics. For the second part of the question, we primarily investigate how the trends and relationships we explored in the first part have changed over the years.
 
-We were interested in this question because we have observed how influential ads can be if they include characteristics that appeal to our emotions, such as our adoration for a cute puppy, longing to be like a popstar, or simply our sexual appetite. However, we were curious to see if companies, the ones who provided the ads, thought the same as us. Emotional appeal would foster more views and we think it is important for advertisement agencies to know. Additionally, we observed that certain ad appeals, especially use of sexuality, have grown in popularity over the years, and would like to observe such trends with our data analysis. 
+We were interested in this question because we have observed how influential ads can be if they include characteristics that appeal to our emotions, such as our adoration for a cute puppy, longing to be like a popstar, or simply our sexual appetite. However, we were curious to see if companies, the ones who provided the ads, thought the same as us. Emotional appeal would foster more views and think it is important for advertisement agencies to know. Additionally, we observed that certain ad appeals, especially use of sexuality, have grown in popularity over the years, and would like to observe such trends with our data analysis. 
 
 
 ### Approach
 
-Our initial plan was to create visualizations centered around the relationship between the ad type (i.e., what characteristics an ad possesses) and view count. After transforming and cleaning the data, we ran into the issue of visualizations being overplotted, no distinct relationships appearing, and outliers contributing to messy visualizations (e.g., a Doritos ad from 2012 had greater than six times the number of views than any other ad). To address these issues, we shifted our focus to looking at commercials from a brand standpoint, as well as decided to quantify ad usage by frequency (number of ads) and not view count. To accomplish the latter, we added a new variable `ads` to the data frame that was the number of occurrences of each ad type in a year. To show the relationship between brand and ad type, we displayed brand and ad type in a segmented bar chart. The segments showed how each category was used by the ten brands in the dataset. To answer the part of the question related to how the ad types have fared from 2000 to 2020, we looked at the frequency of the ad types over time, showing this relationship in a line graph with the year on the x-axis and ad occurrence on the y-axis.
+Our initial plan was to create visualizations centered around the relationship between the ad type (i.e., what characteristics an ad possesses) and view count. After transforming and cleaning the data, we ran into the issue of visualizations being overplotted, no distinct relationships appearing, and outliers significantly skewing the data. Since the data does not contain a ton of observations (247), we found that the outliers (very low or very high view count) had a large influence when visualizing the data. To address these issues, we shifted our focus to looking at commercials from a brand standpoint, as well as decided to quantify ad usage by frequency (number of ads) and not view count. To accomplish the latter, we added a new variable `ads` to the data frame that was the number of occurrences of each ad type in a year. To show the relationship between brand and ad type, we displayed brand and ad type in a segmented bar chart. The segments showed how each category was used by the ten brands in the dataset. To answer the part of the question related to how the ad types have fared from 2000 to 2020, we looked at the frequency of the ad types over time, showing this relationship in a line graph with the year on the x-axis and ad occurrence on the y-axis.
 
-We chose a bar chart as they are effective at displaying two variables, one continuous and the other discrete. It is easy to compare between bars, based on relative height of the bars and/or relative bar segments. For the other visualization for this question, we opted for a line chart as we were mapping a discrete variable over time. We eventually settled on using estimates of the means for each ad type as there was overplotting and using a line chart led to messy visualizations that were difficult to interpret.
+We chose a bar chart as they are effective at displaying two variables, one continuous and the other discrete. It is easy to compare between bars, based on relative height of the bars and/or relative bar segments. For the other visualization for this question, we opted for a line chart as we were mapping a discrete variable over time. We eventually settled on using estimates of the conditional mean functions for each ad type as there was overplotting and using a regular line chart led to messy visualizations that were difficult to interpret.
 
 ### Analysis
 
@@ -265,7 +265,7 @@ In the bar plot, it is clear that the most common ad types are ”Animals” and
 In the line plot, there are three smooth curves that graph each ad type and show the trend of their yearly occurrences over time. Lines are defined by different colors, labels, and type so it is easier to distinguish between them. The smooth curves allow the viewer to see overall trends more easily. Funny ads peak in occurrence in the mid-2000s, but then drop off all the way into the present. Both ads that show the product quickly and have animals were on an uptrend, but dropped off in the late 2000s/early 2010s. Just like the bar plot, it is clear that animal ads and funny ads were the most common types of ads. One limitation of this plot is that we plotted an estimate of the conditional mean function for each of the three ad types. This means that we are not able to look directly at a year and see the exact number occurrences of a specific ad-type. However, the original line plot was very difficult to spot overall trends due to overplotting, and the smooth lines allow us to accomplish our goal of seeing overall trends over time. 
 
 
-## 2. What is the relationship between popularity of a Superbowl Ad and how well it is interacted with?
+## 2. What is the relationship between popularity of a Superbowl Ad and how much interaction it got?
 
 ### Introduction
 
@@ -285,7 +285,7 @@ The `view_count` is the measure for popularity, while the other variables define
 
 For the following two plots, the range of `view count` was so large (from 10 views to more than 10 million views) that it was nearly impossible to visualize any interaction with just one plot. We decided to facet our plot by 6 categories according to the quantiles of the standard distribution for view count: few, some, moderate, many, high, and viral views. In the first plot, we examined the relationship between the view count and the ratio of likes. In order to plot the like percentage, we created a new variable `ratio` which is the `like_count` divided by the sum of `like_count and dislike_count`, and plotted the x-axis labels to show percentage (since the like ratio on Youtube is shown in percentage form). We chose a density ridge plot because it clearly shows trends in like percentage while comparing these changes by the view count category, and the peaks of the density ridges stacked vertically make comparisons between view categories simple to track. 
 
-For the second plot, we wanted to look more specifically at the relationship between view count and the number of interactions a video gets. We defined interactions as the number of likes, dislikes and comments a video got. We wanted to plot both `view_count` and `interactions` as continuous variables. In order to find the best plot, we experimented with  scatter plots, line plots, step plots, and area plots to see which plot was the most informative. There were too little variables for the scatter plot to be helpful. It was also hard to follow along with the variable. We found that a line plot or step by itself was too fragmented and the connection between points zig-zagged a lot and made it hard to also see the overall trend. The combined plot shows each point but the area also makes it much easier to trace the trend for each view category. We then added labels, captions and made a few styling choices to get to our final presentation. 
+For the second plot, we wanted to look more specifically at the relationship between view count and the number of interactions a video gets. We defined interactions as the number of likes, dislikes and comments a video got. We wanted to plot both `view_count` and `interactions` as continuous variables. In order to find the best plot, we experimented with  scatter plots, line plots, step plots, and area plots to see which plot was the most informative. The view counts were clustered in the thousands of views but contained very few videos with millions of views, so the scatter plot was not helpful. We found that a line plot or step by itself was too fragmented and the connection between points zig-zagged a lot and made it difficult to see the overall trend. The combined plot shows each point but the area also makes it much easier to trace the trend for each view category. We then added labels, captions and made a few styling choices to get to our final presentation. 
 
 
 ### Analysis
