@@ -332,16 +332,12 @@ superbowl %>%
 
 ```{r q2p2, message = FALSE, warning = FALSE}
 superbowl <- superbowl %>%
-  mutate(view_category = paste(view_category, "Views"))
-superbowl <- superbowl %>%
-  mutate(view_category = fct_relevel(
-  view_category, "Few Views", "Some Views", "Moderate Views", 
-  "Many Views", "High Views", "Viral Views"))
+  mutate(Views = paste(Views, "Views"))
 
 ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
-  geom_area(aes(fill = view_category), show.legend = NULL) +
+  geom_area(aes(fill = Views), show.legend = NULL) +
   geom_line() +
-  facet_wrap(vars(view_category),  
+  facet_wrap(vars(Views),  
              scales ="free",
              nrow = 3,
              strip.position = "top") +
