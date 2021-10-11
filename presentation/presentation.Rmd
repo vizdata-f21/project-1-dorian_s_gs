@@ -65,7 +65,7 @@ The Dataset:
 
 ```{r Youtube, echo=FALSE, out.width = "40%", fig.align="right"}
 
-include_graphics("img/8gzcr6RpGStvZFA2qRt4v6.jpeg")
+include_graphics("img/youtube-logo.jpeg")
 
 ```
 
