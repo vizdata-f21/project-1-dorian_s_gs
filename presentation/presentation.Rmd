@@ -374,7 +374,7 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
              strip.position = "top") +
 	scale_y_continuous(label = label_number_si()) +
   scale_x_continuous(label = label_number_si()) +
-  scale_fill_discrete_sequential(palette = "Blues") +
+  scale_fill_discrete_sequential(palette = "Greens") +
   labs(x = "View Count", y ="Number of Interactions", title ="Assessing Superbowl Ad Interactions",
        caption ="Interaction is defined by the sum of \nlikes, dislikes and comments on a video")+
   theme_minimal() +
