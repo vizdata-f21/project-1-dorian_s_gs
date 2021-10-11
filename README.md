@@ -351,9 +351,9 @@ the view count and the ratio of likes. In order to plot the like
 percentage, we created a new variable `ratio` which is the `like_count`
 divided by the sum of `like_count and dislike_count`, and plotted the
 x-axis labels to show percentage (since the like ratio on Youtube is
-shown in percentage form). We chose a density ridge plot because it
-clearly shows trends in like percentage while comparing these changes by
-the view count category, and the peaks of the density ridges stacked
+shown in percentage form). We chose a ridge plot because it clearly
+shows trends in like percentage while comparing these changes by the
+view count category, and the peaks of the density ridges stacked
 vertically make comparisons between view categories simple to track.
 
 For the second plot, we wanted to look more specifically at the
@@ -387,7 +387,8 @@ superbowl <- superbowl %>%
             TRUE ~ "Viral\n10M+"))
 superbowl %>%
   mutate(Views = fct_relevel(
-            view_category, "Viral\n10M+", "High\n500K to 10M", "Many\n90K to 500K", "Moderate\n30K to 90K","Some\n4K to 30K","Few\nLess than 4K"
+            view_category, "Viral\n10M+", "High\n500K to 10M", "Many\n90K to 500K", 
+            "Moderate\n30K to 90K","Some\n4K to 30K","Few\nLess than 4K"
          )) %>%
   ggplot(aes(x = ratio, y = Views, fill = Views)) +
     geom_density_ridges(scale = 0.9, show.legend = FALSE) +
@@ -414,11 +415,13 @@ superbowl %>%
 <img src="README_files/figure-gfm/q2p1-1.png" width="80%" style="display: block; margin: auto;" />
 
 ``` r
+# Problem with the order of the facet again!
+
 superbowl <- superbowl %>%
   mutate(view_category = paste(view_category, "Views"))
 superbowl <- superbowl %>%
   mutate(view_category = fct_relevel(
-  view_category, "Few Views","Some Views","Moderate Views","Many Views", "High Views", "Viral Views"))
+  view_category, "Few\nLess than 4K Views", "Some\n4K to 30K Views", "Moderate\n30K to 90K Views","Many\n90K to 500K Views", "High\n500K to 10M Views", "Viral\n10M+ Views"))
 ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
   geom_area(aes(fill = view_category), show.legend = NULL) +
   geom_line() +
@@ -449,12 +452,12 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
 
 ### Discussion
 
-In the density ridges plot, most videos had a like percentage of over
-60%, showing that most of the viewers who interacted with the ad enjoyed
-the video. An interesting finding was that there was generally a
-negative relationship between views and like percentage. That is, the
-category with the fewest video views peaked close to 100% likes and was
-more precisely close to 100 compared to higher view categories.
+In the ridge plot, most videos had a like percentage of over 60%,
+showing that most of the viewers who interacted with the ad enjoyed the
+video. An interesting finding was that there was generally a negative
+relationship between views and like percentage. That is, the category
+with the fewest video views peaked close to 100% likes and was more
+precisely close to 100 compared to higher view categories.
 Interestingly, the viral videos peaked at close to 75% likes (with a
 smaller peak at 90%) and is the most spread out with like percentages.
 The other categories from some to high views, peak at similar
@@ -486,8 +489,11 @@ For videos in the middle categories(“Some Views”,“Moderate Views”,“Man
 Views” and “High Views”), proportion of view counts to interactions
 seemed to be much more random and didn’t follow any discernible
 patterns. Each panel also had no discernible trend in the way they were
-plotted unlike the “few” and “viral” categories which had a discernible
-linear pattern each.
+plotted. Only videos that are in the viral category show a discernibly
+linear relationship between the number of views and number of
+interactions. The caveat for that seemingly linear trend is that the
+viral category has the least number of data points so it is possible
+that with more data points, the linear relationship may not be present.
 
 ## Presentation
 

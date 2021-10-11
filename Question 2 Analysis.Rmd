@@ -20,15 +20,6 @@ library(RColorBrewer)
 ```
 
 ```{r theme}
-knitr::opts_chunk$set(
-  fig.align = "center",
-  fig.retina = 3,    
-  dpi = 300,
-    fig.width = 8,    
-  fig.asp = 0.618,
-    out.width = "70%"
-
-)
 ggplot2::theme_set(ggplot2::theme_minimal())
 
 ```
@@ -51,7 +42,7 @@ outliers <- boxplot.stats(superbowl$view_count)$out
 
 
 superbowl_no_outliers <- superbowl %>%
-  filter(!(view_count %in% outliers))
+  filter((view_count %in% outliers))
 
 
 quantile(superbowl_no_outliers$view_count,na.rm = TRUE)
@@ -118,6 +109,17 @@ superbowl %>%
   summarise(vti = sum(view_count) / sum(interactions))
 ```
 
+```{r}
+global_labeller=  <- labeller(
+  view_category = capitalize,
+  conservation = conservation_status,
+  conservation2 = label_wrap_gen(10),
+  .default = label_both
+)
+```
+
+
+
 
 ```{r }
 superbowl%>%
@@ -131,9 +133,8 @@ ggplot(aes(x=view_count, y=interactions))+
   facet_wrap(vars(view_category),  
              scales ="free",
              nrow = 3,
-             strip.position = "top") +
-  tag_facets(tag_pool = c("149","199","222", "232","169", "330"),
-             position = list(x = .1, y = .76))+
+             strip.position = "top",
+             labeller= labeller("label_both")) +
 	scale_y_continuous(label = label_number_si()) +
   scale_x_continuous(label = label_number_si()) +
   labs(x = "View Count", y ="Number of Interactions", title ="Assessing Superbowl Ads Interactions",
@@ -145,7 +146,6 @@ ggplot(aes(x=view_count, y=interactions))+
         plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5),
         panel.spacing = unit(1.4, "lines"),
-        tagger.panel.tag.text = element_text(color = "blue", size = 6),
         plot.caption = element_text(color = "blue", size = 8, hjust =0.5),
         plot.caption.position = "panel",
         axis.text.x = NULL) +
