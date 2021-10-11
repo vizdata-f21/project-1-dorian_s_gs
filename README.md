@@ -119,6 +119,7 @@ superbowl_viz <- superbowl %>%
                           brand == 'NFL' ~ 'Sports')) %>%
   relocate(year, .before = brand) %>%
   relocate(category, .before = brand)
+
 #Brand Total Labels
 brand_totals <- superbowl_viz %>%
   filter(!(ad_type %in% c("celebrity", 
@@ -149,7 +150,7 @@ brand_viz <- superbowl_viz %>%
                label = brand_totals, 
                fontface = 3,
                fill = NULL), 
-            size = 8,
+            size = 5,
             nudge_y = 2) +
   scale_y_continuous(breaks = seq(0, 60, 10)) + 
   scale_fill_manual(values = c("#56B4E9", "#E69F00", "#009E73"), 
@@ -161,21 +162,21 @@ brand_viz <- superbowl_viz %>%
        caption = "Source: FiveThirtyEight") +
   theme_minimal() +
   theme(plot.title = element_text(face = "bold", 
-                                  size = 16, 
+                                  size = 18, 
                                   hjust = 0.5, vjust = 1),
-        plot.caption = element_text(size = 14, hjust = 1.55),
+        plot.caption = element_text(size = 12, hjust = 1, vjust = 6),
         legend.position = c(0.85, 0.7),
         axis.text.x = element_blank(),
         strip.text = element_blank(),
         axis.title.y = element_text(vjust = 1, 
-                                    size = 14),
+                                    size = 16),
         axis.text.y = element_text(hjust = 1.75),
-        axis.title.x = element_text(vjust = -2,
-                                    size = 14),
-        axis.text = element_text(size = 14, 
+        axis.title.x = element_text(vjust = 0,
+                                    size = 16),
+        axis.text = element_text(size = 13, 
                                  lineheight = 1),
-        legend.title = element_text(size = 14),
-        legend.text = element_text(size = 12))
+        legend.title = element_text(size = 16),
+        legend.text = element_text(size = 13))
 images <- axis_canvas(brand_viz, axis = 'x') + 
   draw_image("https://1000logos.net/wp-content/uploads/2021/04/Bud-Light-logo-768x432.png", 
              x = 0.5, scale = 0.75) +
@@ -200,7 +201,7 @@ images <- axis_canvas(brand_viz, axis = 'x') +
 ggdraw(insert_xaxis_grob(brand_viz, images, position = "bottom"))
 ```
 
-<img src="README_files/figure-gfm/q1p1-1.png" width="80%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q1p1-1.png" width="90%" style="display: block; margin: auto;" />
 
 ``` r
 ad_labels <- superbowl %>%
@@ -246,9 +247,9 @@ superbowl %>%
             show.legend = FALSE) +
   geom_text_repel(data = ad_labels, 
                   aes(label = c("Shows Product Quickly", "Funny", "Animals")),
-                  nudge_x = 0.25,
+                  nudge_x = 0.10,
                   nudge_y = -0.8,
-                  size = 4,
+                  size = 5,
                   show.legend = FALSE) +
   scale_color_manual(values = c("#56B4E9", "#E69F00", "#009E73"), 
                      labels = c("Shows Product Quickly", "Funny", "Animals"),
@@ -257,16 +258,16 @@ superbowl %>%
   scale_x_continuous(breaks = seq(2000, 2020, 4)) +
   theme_minimal() + 
   theme(plot.title = element_text(face = "bold", 
-                                  size = 16, 
+                                  size = 18, 
                                   hjust = 0.5, vjust = 1),
-        plot.subtitle = element_text(size = 14, 
+        plot.subtitle = element_text(size = 16, 
                                   hjust = 0.5, vjust = 1),
-        plot.caption = element_text(size = 10, hjust = 1.55),
+        plot.caption = element_text(size = 12, hjust = 1),
         axis.title.x = element_text(vjust = -2, 
-                                    size = 14),
+                                    size = 16),
         axis.title.y = element_text(vjust = 1, 
-                                    size = 14),
-        axis.text = element_text(size = 12, 
+                                    size = 16),
+        axis.text = element_text(size = 13, 
                                  lineheight = 1)) +
   labs(y = "Ad Occurrences", 
        x = "Year",
@@ -276,7 +277,7 @@ superbowl %>%
        subtitle = "From 2000 - 2020") 
 ```
 
-<img src="README_files/figure-gfm/q1p2-1.png" width="80%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q1p2-1.png" width="90%" style="display: block; margin: auto;" />
 
 ### Discussion
 
@@ -412,7 +413,7 @@ superbowl %>%
       axis.text.x = element_text(vjust = -1))
 ```
 
-<img src="README_files/figure-gfm/q2p1-1.png" width="80%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q2p1-1.png" width="90%" style="display: block; margin: auto;" />
 
 ``` r
 # Problem with the order of the facet again!
@@ -428,7 +429,8 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
   facet_wrap(vars(view_category),  
              scales ="free",
              nrow = 3,
-             strip.position = "top") +
+             strip.position = "top",
+             labeller = labeller("label_both")) +
     scale_y_continuous(label = label_number_si()) +
   scale_x_continuous(label = label_number_si()) +
   scale_fill_discrete_sequential(palette = "Greens") +
@@ -448,7 +450,7 @@ ggplot(data = superbowl, aes(x = view_count, y = interactions)) +
         strip.text.x = element_text(size = 12))
 ```
 
-<img src="README_files/figure-gfm/q2p2-1.png" width="80%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/q2p2-1.png" width="90%" style="display: block; margin: auto;" />
 
 ### Discussion
 
